@@ -1,0 +1,163 @@
+<vex-page-layout mode="card">
+  <vex-page-layout-header fxLayout="column" fxLayoutAlign="center">
+    <div
+      vexContainer
+      fxLayout="row"
+      fxLayoutAlign="start"
+      fxLayoutAlign.lt-m="column"
+    >
+      <div fxFlex="25">
+        <h1 class="title mt-0 mb-1">Order Management</h1>
+        <vex-breadcrumbs
+          [crumbs]="breadCrum"
+          class="bread-white-space"
+        ></vex-breadcrumbs>
+      </div>
+      <div fxFlex="75" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end">
+        <button
+          mat-raised-button
+          mat-button
+          class="weight-400"
+          style="height: 40px;"
+          (click)="updateOrderStatus('Cancelled')"
+        >
+          <ic-icon [icon]="icBlock" size="18px" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true"></ic-icon>
+          <span>Cancel Order</span>
+        </button>
+        <div>
+          <mat-button-toggle-group class="toggle-btn-40">
+            <mat-button-toggle value="center" style="min-width: 130px;" (click)="goToEdit()">Edit Order</mat-button-toggle>
+            <!-- <mat-button-toggle value="center" style="min-width: 130px;" (click)="createInovoice()">Create Invoice</mat-button-toggle> -->
+            <mat-button-toggle value="center" style="min-width: 130px;"
+            (click)="openUpdatePackingModalComponent()"
+              >Update Packing</mat-button-toggle
+            >
+            <mat-button-toggle value="center" style="min-width: 130px;"
+            (click)="openCreateShipmentDailog()"
+              >Create Shipment</mat-button-toggle
+            >
+          </mat-button-toggle-group>
+        </div>
+        <button
+          mat-raised-button
+          mat-button
+          type="button"
+          class="btn-large text-contrast-white"
+          style="background-color: #14af9b; height: 40px;"
+          (click)="updateOrderStatus('completed')"
+        >
+          Mark as Complete
+        </button>
+      </div>
+    </div>
+  </vex-page-layout-header>
+  <vex-page-layout-content vexContainer>
+    <div class="card">
+      <mat-tab-group class="myclass">
+        <mat-tab label="Order Progress" class="set-aio-table">
+          <div 
+            style="min-height: 300px;"            
+          >
+            <div 
+              fxLayout="row"
+              fxLayoutAlign="center center"            
+              style="min-height: 300px;"            
+              *ngIf="!showFirstTab && !firstApiCall && !secondApiCall && !thirdApiCall"
+            >
+              <mat-progress-spinner mode="indeterminate" diameter="50"                
+              ></mat-progress-spinner>
+            </div>
+            <vex-order-progress 
+              [ordersArray]="ordersArray" 
+              [productsArray]="productsArray"
+              [variationsArray]="variationsArray"
+              [sizeSpecificationProperties]="sizeSpecificationProperties"
+              [cartonSpecificationProperties]="cartonSpecificationProperties"
+              [packingSpecificationsProperties]="packingSpecificationsProperties"
+              [totalPiecesOfProducts]="totalPiecesOfProducts"
+              [totalCartonsOfProducts]="totalCartonsOfProducts"
+              [totalShippedCartons]="totalShippedCartons"
+              [totalPackedCartons]="totalPackedCartons"
+              *ngIf="showFirstTab && firstApiCall && secondApiCall && thirdApiCall"
+            ></vex-order-progress>
+          </div>
+        </mat-tab>
+        <!-- <mat-tab label="Order Details" class="set-aio-table">
+          <div class="px-6">
+            <div 
+              fxLayout="row"
+              fxLayoutAlign="center center"
+              style="height: 300px;"
+              *ngIf="!showFirstTab && !firstApiCall && !secondApiCall && !thirdApiCall"
+            >
+              <mat-progress-spinner mode="indeterminate" diameter="50"
+              ></mat-progress-spinner>
+            </div>
+            <div 
+              *ngIf="showFirstTab && firstApiCall && secondApiCall && thirdApiCall"
+              style="min-height: 300px;"
+            >
+            <vex-order-details-tab
+              [ordersArray]="ordersArray" 
+              [productsArray]="productsArray"
+              [variationsArray]="variationsArray"  
+            ></vex-order-details-tab>
+            </div>
+          </div>
+        </mat-tab> -->
+        <mat-tab label="Invoice Details" class="set-aio-table">
+          <div class="px-6"  *ngIf="showFirstTab && firstApiCall && secondApiCall && thirdApiCall">
+            <vex-invoice-details-tab
+            [allInvoice]="allInvoice" 
+            [ordersArray]="ordersArray" 
+            [productsArray]="productsArray"
+            [variationsArray]="variationsArray" 
+            [countries]="countries" 
+            [currencyList]="currencyList" 
+            [customerList]="customerList" 
+            [customerBranchList]="customerBranchList" 
+            [packingSpecificationsProperties]="packingSpecificationsProperties"
+            
+            ></vex-invoice-details-tab>
+          </div>
+        </mat-tab>
+        <mat-tab label="Shipment Summary" class="set-aio-table">
+          <div class="px-6"  *ngIf="showFirstTab && firstApiCall && secondApiCall && thirdApiCall && shipmentsArray">
+            <vex-shipment-summary-tab
+            [allInvoice]="allInvoice" 
+            [ordersArray]="ordersArray" 
+            [productsArray]="productsArray"
+            [variationsArray]="variationsArray" 
+            [countries]="countries" 
+            [currencyList]="currencyList" 
+            [customerList]="customerList" 
+            [customerBranchList]="customerBranchList" 
+            [shipmentsArray]="shipmentsArray"
+            [packingSpecificationsProperties]="packingSpecificationsProperties"
+            [cartonSpecificationProperties]="cartonSpecificationProperties"
+
+            ></vex-shipment-summary-tab>
+          </div>
+        </mat-tab>
+        <mat-tab label="Packing Materials" class="set-aio-table">
+          <div class="px-6"  *ngIf="showFirstTab && firstApiCall && secondApiCall && thirdApiCall && shipmentsArray">
+            <vex-packing-materials-tab
+            [allInvoice]="allInvoice" 
+            [singleOrder]="ordersArray" 
+            [productsArray]="productsArray"
+            [variationsArray]="variationsArray" 
+            [countries]="countries" 
+            [currencyList]="currencyList" 
+            [customerList]="customerList" 
+            [customerBranchList]="customerBranchList" 
+            [shipmentsArray]="shipmentsArray"
+            [packingSpecificationsProperties]="packingSpecificationsProperties"
+            [cartonSpecificationProperties]="cartonSpecificationProperties"
+
+            ></vex-packing-materials-tab>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </vex-page-layout-content>
+</vex-page-layout>

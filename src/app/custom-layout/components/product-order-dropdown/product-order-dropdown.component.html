@@ -1,0 +1,17 @@
+<div fxLayoutAlign="end"> 
+
+    <mat-button-toggle-group  #group="matButtonToggleGroup" [value]="selectedVal" (change)="onValChange(group.value)" class="mt-4 sm:mt-0">
+        <mat-button-toggle   value="/order-view">ORDERS</mat-button-toggle>
+        <mat-button-toggle   value="/product-view">PRODUCTS</mat-button-toggle>
+      </mat-button-toggle-group>
+
+    <!-- <mat-form-field fxFlex="none" class="ol-dropdown"  name="selectPolicy">
+        <mat-label>Dashboard</mat-label>
+        <mat-select (selectionChange)="navigateTo($event.value)" [(ngModel)]="href">
+            <mat-option *ngFor="let type of types" [value]="type.code">
+                {{ type.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field> -->
+
+</div>

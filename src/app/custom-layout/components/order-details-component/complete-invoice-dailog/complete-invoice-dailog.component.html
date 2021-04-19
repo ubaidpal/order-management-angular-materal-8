@@ -1,0 +1,195 @@
+<mat-dialog-content fxLayout="column" class="-mt-6" style="width: 750px;">
+    <form (ngSubmit)="submit()" [formGroup]="form">
+      <vex-page-layout>
+        <vex-page-layout-content class="-mx-6" style="padding: 0;">
+          <div class="overflow-auto" style="min-height: 400px;">
+            <div
+              class="bg-app-bar px-6 h-16 border-b sticky left-0"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              style="background-color: #1a202e; color: #fff;"
+            >
+              <h2 class="title my-0" fxFlex="50" fxHide.xs>
+                <span>Complete Invoice: {{invoiceDetails?.invoiceNo}} </span>
+              </h2>
+              <div fxFlex="50">
+                <button
+                  class="text-secondary float-right"
+                  mat-dialog-close
+                  mat-icon-button
+                  type="button"
+                >
+                  <mat-icon [icIcon]="icClose" style="color: #fff;"></mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div
+              fxLayout="row"
+              fxLayout.lt-sm="column"
+              fxLayoutGap="15px"
+              fxLayoutGap.lt-sm="0"
+              class="px-6 pt-6 border-dark"
+            >
+            
+              <mat-form-field appearance="outline" fxFlex="33.33" class="readonly-field pb-00 ">
+                <input readonly
+                  matInput
+                  [matDatepicker]="shipmentDate"
+                  placeholder="Shippment Date"
+                  formControlName="shipmentDate"
+                  (click)="$event.stopPropagation()"
+                />
+                <mat-datepicker-toggle class="readonly-field pb-00 "
+                  matSuffix
+                  [for]="shipmentDate"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #shipmentDate></mat-datepicker>
+              </mat-form-field>
+
+
+              <mat-form-field appearance="outline" fxFlex="33.33">
+                <input
+                  matInput
+                  [matDatepicker]="shippedOn"
+                  placeholder="Shipped On"
+                  formControlName="shippedOn"
+                  (click)="$event.stopPropagation()"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="shippedOn"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #shippedOn></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field
+                appearance="outline"
+                fxFlex="33.33"
+                >
+                <mat-label>Vessel ID </mat-label>
+                    <input matInput class="text-right" formControlName="vesselId" />
+                </mat-form-field>
+            </div>
+  
+            <!-- table -->
+            <div>
+              <table class="w-full mt-6" mat-table matSort>
+                <thead>
+                  <tr class="border-b">
+                    <th
+                      class="pl-6 pr-4 py-4 weight-400 text-secondary font-13 text-left"
+                      style="width: 200px;"
+                    >
+                      {{ "Item Name" | uppercase }}
+                    </th>
+                    <th
+                      class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+                    >
+                      {{ "Size" | uppercase }}
+                    </th>
+                    <th
+                      class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+                      style="width: 150px;"
+                    >
+                      {{ "Order QTY" | uppercase }}
+                    </th>
+                    <th
+                      class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+                      style="width: 150px;"
+                    >
+                      {{ "Cartons packed" | uppercase }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="field-pb-0" *ngIf="invoiceDetails.invoiceProducts">
+                  <tr class="border-b"  *ngFor="let invoice of invoiceDetails.invoiceProducts; let personIndex = index">
+                    <td class="pl-6 pr-4 pt-4 pb-2" >
+                      <div>{{getProductById(invoice?.productId ,'name')}} </div>
+                      <span class="text-secondary" style="font-size: 11px;">{{getProductById(invoice?.productId, 'code')}} </span>
+                    </td>
+                    <td class="pl-6 pr-4 py-2">
+                      {{getProductVariant(invoice?.productId, invoice?.productVariationId)}}
+                    </td>
+                    <td class="px-4 py-2" >
+                      {{invoice?.quantity}}
+                    </td>
+                    <td class="px-4 py-2" >
+                      {{invoice?.quantityPacked}}
+                      </td>
+                  </tr>
+                  
+                   
+                </tbody>
+              </table>
+            </div>
+            <!-- /table -->
+  
+            <ng-template #branchesEmptyData>
+              <div class="empty-table" align="center">
+                <svg
+                  fill="#9AA5B6"
+                  version="1.0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="50.000000pt"
+                  height="50.000000pt"
+                  viewBox="0 0 512.000000 512.000000"
+                  preserveAspectRatio="xMidYMid meet"
+                >
+                  <metadata>
+                    Created by potrace 1.15, written by Peter Selinger 2001-2017
+                  </metadata>
+                  <g
+                    transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+                    fill="#9AA5B6"
+                    stroke="#9AA5B6"
+                  >
+                    <path
+                      d="M1152 4299 c-71 -28 -144 -101 -171 -174 -21 -55 -21 -64 -21 -1210
+                    l0 -1155 160 0 160 0 0 1120 0 1120 960 0 960 0 0 160 0 160 -997 -1 c-978 0
+                    -999 0 -1051 -20z"
+                    />
+                    <path
+                      d="M1792 3659 c-72 -28 -144 -102 -171 -174 -21 -57 -21 -58 -19 -1263
+                    l3 -1207 23 -43 c29 -55 89 -115 144 -144 l43 -23 967 -3 c961 -2 967 -2 1022
+                    19 75 28 147 99 175 174 21 55 21 64 21 1245 0 1176 0 1190 -21 1244 -23 64
+                    -86 133 -150 168 l-44 23 -970 2 c-955 2 -971 2 -1023 -18z m1888 -1419 l0
+                    -1120 -880 0 -880 0 0 1120 0 1120 880 0 880 0 0 -1120z"
+                    />
+                  </g>
+                </svg>
+  
+                <h4>No Record Found</h4>
+                <br />
+              </div>
+            </ng-template>
+          </div>
+        </vex-page-layout-content>
+      </vex-page-layout>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions class="border-t border-dark -mx-6">
+    <div class="py-3 px-6 w-100">
+      <div
+        class="float-right"
+        fxLayout="row"
+        fxLayoutGap="15px"
+        fxLayoutAlign="end"
+      >
+        <button mat-button mat-raised-button mat-dialog-close type="button" class="btn-large border c-dark">
+          Cancel
+        </button>
+        <button
+        (click)="submit()"
+          color="primary"
+          mat-raised-button
+          mat-button
+          type="submit"
+          class="btn-large"
+          [disabled]="!form.valid"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </mat-dialog-actions>
+  

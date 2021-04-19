@@ -1,0 +1,373 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+
+    <h2 *ngIf="form.get('piNumber').value" class="headline m-0" fxFlex="auto">{{ form.get('piNumber').value}}</h2>
+    <h2 *ngIf="!form.get('piNumber').value" class="headline m-0" fxFlex="auto">Create Invoice</h2>
+
+    <button [matMenuTriggerFor]="settingsMenu" class="text-secondary" mat-icon-button type="button">
+      <mat-icon [icIcon]="icMoreVert"></mat-icon>
+    </button>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="-mx-6 text-border"></mat-divider>
+
+  <mat-dialog-content fxLayout="column">
+    <div @fadeInUp class="" fxFlex="auto">
+
+      <div class="px-12 py-12" fxLayout="column">
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="60px" fxLayoutGap.lt-sm="0">
+          <mat-form-field fxFlex="auto">
+            <mat-label>All Customers *</mat-label>
+            <mat-select formControlName="customer" (click)="$event.stopPropagation();">
+              <mat-option value="Jamal">Jamal</mat-option>
+              <mat-option value="Dejesus">Dejesus</mat-option>
+            </mat-select>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+          <mat-form-field fxFlex="auto">
+            <mat-label>From Port *</mat-label>
+            <mat-select formControlName="fromPort" (click)="$event.stopPropagation();">
+              <mat-option value="pending">Pending</mat-option>
+              <mat-option value="inProgress">In Progress</mat-option>
+              <mat-option value="completed">Completed</mat-option>
+            </mat-select>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="auto">
+            <mat-label>Po Number *</mat-label>
+            <input cdkFocusInitial formControlName="poNumber" matInput>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+
+        </div>
+
+
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="60px" fxLayoutGap.lt-sm="0">
+          <mat-form-field fxFlex="auto">
+            <mat-label>All Branch *</mat-label>
+            <mat-select formControlName="customer" (click)="$event.stopPropagation();">
+              <mat-option value="Jamal">Jamal</mat-option>
+              <mat-option value="Dejesus">Dejesus</mat-option>
+            </mat-select>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+          <mat-form-field fxFlex="auto">
+            <mat-label>Pi Number *</mat-label>
+            <mat-select formControlName="piNumber" (click)="$event.stopPropagation();">
+              <mat-option value="pi-121212">Pi-121212</mat-option>
+              <mat-option value="pi-121211">Pi-121211</mat-option>
+            </mat-select>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="auto">
+            <input matInput [matDatepicker]="poDate" placeholder="Po Date" formControlName="poDate"
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="poDate"></mat-datepicker-toggle>
+            <mat-datepicker #poDate></mat-datepicker>
+          </mat-form-field>
+
+        </div>
+
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="60px" fxLayoutGap.lt-sm="0">
+          <mat-form-field fxFlex="auto">
+            <mat-label>Ship To *</mat-label>
+            <mat-select formControlName="shipTo" (click)="$event.stopPropagation();">
+              <mat-option value="Jamal">Jamal</mat-option>
+              <mat-option value="Dejesus">Dejesus</mat-option>
+            </mat-select>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+
+
+          <mat-form-field fxFlex="auto">
+            <input matInput [matDatepicker]="piDate" placeholder="PI Date" formControlName="piDate"
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="piDate"></mat-datepicker-toggle>
+            <mat-datepicker #piDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="auto">
+            <mat-label>Select Currency *</mat-label>
+            <mat-select formControlName="currency" (click)="$event.stopPropagation();">
+              <mat-option value="usd">USD</mat-option>
+              <mat-option value="pkr">PKR</mat-option>
+            </mat-select>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="60px" fxLayoutGap.lt-sm="0">
+           <mat-form-field fxFlex="auto" style="width:56% !important">
+            <mat-label>Country *</mat-label>
+            <mat-select formControlName="country" (click)="$event.stopPropagation();">
+              <mat-option value="Jamal">Jamal</mat-option>
+              <mat-option value="Dejesus">Dejesus</mat-option>
+            </mat-select>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+
+
+          <mat-form-field fxFlex="auto">
+            <input matInput [matDatepicker]="shipmentDate" placeholder="Shipment Date" formControlName="shipmentDate"
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="shipmentDate"></mat-datepicker-toggle>
+            <mat-datepicker #shipmentDate></mat-datepicker>
+          </mat-form-field>
+
+        </div>
+
+
+        <mat-divider class="-mx-6 text-border"></mat-divider>
+
+        <button color="primary" (click)="toggleExtraField()" fxLayoutAlign="end" mat-button type="button">
+          {{buttonName}}
+         
+        </button>
+      
+
+        <ng-container *ngIf="show" (click)="$event.stopPropagation();">
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="60px" fxLayoutGap.lt-sm="0">
+            <mat-form-field fxFlex="auto">
+              <mat-label>Contact Person </mat-label>
+              <mat-select formControlName="contactPerson" (click)="$event.stopPropagation();">
+                <mat-option value="Ayesha">Ayesha</mat-option>
+                <mat-option value="Denial DeGeateno">Denial DeGeateno</mat-option>
+              </mat-select>
+              <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+            </mat-form-field>
+            <mat-form-field fxFlex="auto">
+              <mat-label>Ship By</mat-label>
+              <mat-select formControlName="shipBy" (click)="$event.stopPropagation();">
+                <mat-option value="Sea Fright">Sea Fright</mat-option>
+                <mat-option value="Sea Fright 2">Sea Fright 2</mat-option>
+                <mat-option value="Sea Fright 3">Sea Fright 3</mat-option>
+              </mat-select>
+              <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="auto">
+              <mat-label>Transhipment</mat-label>
+              <mat-select formControlName="transhipment" (click)="$event.stopPropagation();">
+                <mat-option value="Allowed">Allowed</mat-option>
+                <mat-option value="notAllowed">Not Allowed</mat-option>
+              </mat-select>
+              <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+            </mat-form-field>
+
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="60px" fxLayoutGap.lt-sm="0">
+            <mat-form-field fxFlex="auto">
+              <mat-label>Contact Detail</mat-label>
+              <input cdkFocusInitial formControlName="contactDetails" matInput>
+              <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+            </mat-form-field>
+            <mat-form-field fxFlex="auto">
+              <mat-label>Delevery Terms</mat-label>
+              <mat-select formControlName="deleveryTerms" (click)="$event.stopPropagation();">
+                <mat-option value="F.O.B Port Klang">F.O.B Port Klang</mat-option>
+              </mat-select>
+              <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="auto">
+              <mat-label>Origin OF Goods</mat-label>
+              <mat-select formControlName="orginOFGoods" (click)="$event.stopPropagation();">
+                <mat-option value="Malyasia">Malyasia</mat-option>
+                <mat-option value="Pakistan">Pakistan</mat-option>
+              </mat-select>
+              <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+            </mat-form-field>
+
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="60px" fxLayoutAlign="end" fxLayoutGap.lt-sm="0">
+            <mat-form-field fxFlex="none">
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="type" (click)="$event.stopPropagation();">
+                <mat-option value="Import">Import</mat-option>
+                <mat-option value="Export">Export</mat-option>
+              </mat-select>
+              <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+            </mat-form-field>
+
+
+          </div>
+        </ng-container>
+
+
+        <mat-divider class="-mx-6 text-border"></mat-divider>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="60px" fxLayoutGap.lt-sm="0">
+
+          <table @stagger class="w-full" mat-table matSort>
+
+            <thead>
+              <tr>
+                <th class="w-1/4 px-4 py-2">#</th>
+                <th class="w-1/4 px-4 py-2">ITEM NAME</th>
+                <th class="w-1/4 px-4 py-2">SIZE</th>
+                <th class="w-1/4 px-4 py-2">CARTONS</th>
+                <th class="w-1/4 px-4 py-2">PRICES</th>
+                <th class="w-1/4 px-4 py-2">CURRENCY</th>
+                <th class="w-1/4 px-4 py-2">PRICE/CARTON</th>
+                <th class="w-1/4 px-4 py-2">TOTAL Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr formArrayName="orderPrize" *ngFor="let orderPrize of serverData; let personIndex = index">
+                <td [formGroupName]="personIndex" class="w-1/4 px-4 py-2">
+                  {{personIndex }}
+                </td>
+                <td [formGroupName]="personIndex" class="w-1/4 px-4 py-2">
+                  <mat-form-field>
+
+                    <input cdkFocusInitial formControlName="itemName" matInput>
+                  </mat-form-field>
+                </td>
+                <td [formGroupName]="personIndex" class="w-1/4 px-4 py-2">
+
+                  <mat-form-field fxFlex="auto">
+                    <mat-label>Select Size </mat-label>
+                    <mat-select formControlName="size" (click)="$event.stopPropagation();">
+                      <mat-option value="large">Large</mat-option>
+                      <mat-option value="xLarge">xx Large</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td [formGroupName]="personIndex" class="w-1/4 px-4 py-2">
+                  <mat-form-field>
+                    <input cdkFocusInitial formControlName="cartons" matInput>
+                  </mat-form-field>
+                </td>
+                <td [formGroupName]="personIndex" class="w-1/4 px-4 py-2">
+                  <mat-form-field>
+                    <input cdkFocusInitial formControlName="price" matInput>
+
+                  </mat-form-field>
+                </td>
+
+                <td [formGroupName]="personIndex" class="w-1/4 px-4 py-2">
+
+                  <span>{{serverData[personIndex].currency }}</span>
+                </td>
+
+                <td [formGroupName]="personIndex" class="w-1/4 px-4 py-2">
+                  <span>{{totalAmount(serverData[personIndex].cartons , serverData[personIndex].price)}}</span>
+                </td>
+
+                <td [formGroupName]="personIndex" class="w-1/4 px-4 py-2">
+                  <span>0</span>
+                </td>
+
+                <td class="w-1/4 px-4 py-2">
+                  <button color="primary" (click)="removeField(personIndex)" mat-button type="button">
+                    <mat-icon [icIcon]="icDelete"></mat-icon>
+                  </button>
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutGap.lt-sm="0" align="center">
+          <button color="primary" (click)="addMoreField()" mat-button type="button">Add More Field</button>
+        </div>
+
+
+
+        <mat-divider class="-mx-6 text-border"></mat-divider>
+
+        <mat-grid-list cols="4" rowHeight="100px">
+          <mat-grid-tile [colspan]="3" [rowspan]="1">
+            <mat-form-field fxFlex="auto">
+              <mat-label>Payment Terms</mat-label>
+              <input cdkFocusInitial formControlName="paymentTerms" matInput>
+            </mat-form-field>
+          </mat-grid-tile>
+
+          <mat-grid-tile [colspan]="1" [rowspan]="3">
+
+            <div class="mt-8" fxLayout="column" fxLayoutAlign="start end">
+
+              <table class="font-medium pr-2">
+                <tbody>
+                  <tr>
+                    <td class="text-secondary text-right">Total Cartons</td>
+                    <td class="pl-12">{{getTotalCartan()}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-secondary text-right">Total Pieces</td>
+                    <td class="pl-12">0</td>
+                  </tr>
+                  <tr>
+                    <td class="text-secondary text-right">Total Volume</td>
+                    <td class="pl-12">0‬ m3</td>
+                  </tr>
+                  <tr>
+                    <td class="text-secondary text-right">Gross Weight</td>
+                    <td class="pl-12">0 Kgs</td>
+                  </tr>
+
+                  <tr>
+                    <td class="headline font-medium text-right pt-6">Grand Total</td>
+                    <td class="headline font-medium pl-12 pt-6">{{getTotalAmount()}}‬</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile [colspan]="3" [rowspan]="1">
+            <mat-form-field fxFlex="auto">
+              <mat-label>Special Clause</mat-label>
+              <textarea formControlName="specialClause" matInput></textarea>
+            </mat-form-field>
+          </mat-grid-tile>
+
+        </mat-grid-list>
+
+
+
+
+      </div>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">CANCEL</button>
+    <button *ngIf="isCreateMode()" color="primary" mat-button type="submit">Create Order</button>
+    <button *ngIf="isUpdateMode()" color="primary" mat-button type="submit">Update Order</button>
+  </mat-dialog-actions>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icPrint"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDownload"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDelete"></mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

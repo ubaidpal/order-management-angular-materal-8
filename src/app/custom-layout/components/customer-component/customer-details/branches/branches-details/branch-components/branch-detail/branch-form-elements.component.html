@@ -1,0 +1,136 @@
+<form [formGroup]="form"   (ngSubmit)="onSubmit()">
+<div>
+  <div [@stagger]="true" class="p-gutter" vexContainer>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px">
+      <div @fadeInUp class="card" style="width: 100%;">
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start end"
+          class="px-6 py-4 border-b"
+        >
+          <div fxFlex="50">
+            <h2 class="title m-0" *ngIf="!form.get('name') ? form.get('name').value : '' ">Branch Details</h2>
+            <h2 class="title m-0" *ngIf="form.get('name') ? form.get('name').value : '' ">{{ form.get('name') ? form.get('name').value : ''  }}</h2>
+          </div>
+          <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+            
+            <mat-progress-spinner mode="indeterminate" diameter="35"
+            *ngIf="showLoader"
+            ></mat-progress-spinner>
+            
+            <button
+              class="btn-large border"
+              [disabled]="disableButton"
+              (click)="onSubmit()"
+              mat-raised-button
+              type="submit"
+              style="float: right;"
+              color="primary">
+              SAVE DETAILS
+            </button>
+            
+            <!-- <button
+              class="btn-large border"
+            
+              mat-raised-button
+              type="button"
+              style="float: right;margin-right: 5px;"
+            
+              (click)="backToCustomerPage()"
+            >
+              CANCEL
+            </button> -->
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start end" class="px-6 pt-4">
+          <h2 class="title m-0">Business Information</h2>
+        </div>
+
+        <div class="px-6 py-4" fxLayout="column">
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50" >
+              <mat-label>Business Name</mat-label>
+              <input matInput formControlName="name" id="custom-field">
+              <div *ngIf="formNameValid" class="invalid-feedback">
+                <div style="color: #f55c51;" *ngIf="f.name.errors.required">Company name is required</div>
+              </div>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Country</mat-label>
+              <mat-select formControlName="country"
+                (selectionChange)="onCountrySelect($event.value)"
+              >
+                <mat-option *ngFor="let c of countries" [value]="c.id" >{{ c.name}}</mat-option>
+              
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Address Line 1</mat-label>
+              <input formControlName="addressLine1" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Address Line 2</mat-label>
+              <input formControlName="addressLine2"  matInput>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>City</mat-label>
+              <input formControlName="city"  matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>State</mat-label>
+              <input formControlName="state"  matInput>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Post Code</mat-label>
+              <input formControlName="postCode" matInput>
+            </mat-form-field>
+            <div
+                  fxFlex="50"
+                  fxLayout="row"
+                  fxLayoutGap="8px"
+                  class="phone-number-block"
+                >
+                  <mat-form-field
+                    fxFlex="none"
+                    class="vex-flex-form-field field-pb-0"
+                    appearance="outline"
+                    color="primary"
+                    class="phone-number"
+                  >
+                    <mat-label>Phone Number</mat-label>
+                    <mat-select formControlName="phonePrefix">
+                      <mat-option *ngFor="let ph of phonePrefixOptions" [value]="ph">{{ ph }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field
+                    fxFlex="auto"
+                    appearance="outline"
+                    color="primary"
+                    class="field-top-5 field-pb-0"
+                  >
+                    <mat-label></mat-label>
+                    <input formControlName="phone" matInput (input)="phoneNumberValidation($event, 'phone')">
+                    <mat-hint align="end"></mat-hint>
+                  </mat-form-field>
+                </div>
+             
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>

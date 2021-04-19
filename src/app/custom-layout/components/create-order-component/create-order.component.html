@@ -1,0 +1,577 @@
+<alert></alert>
+<vex-page-layout mode="card">
+  <vex-page-layout-header fxLayout="column" fxLayoutAlign="center">
+    <div
+      vexContainer
+      fxLayout="row"
+      fxLayoutAlign="start"
+      fxLayoutAlign.lt-m="column"
+    >
+      <div fxFlex="50">
+        <h1 class="title mt-0 mb-1">Order Management</h1>
+        <vex-breadcrumbs
+          [crumbs]="breadcrumbsParams"
+        ></vex-breadcrumbs>
+      </div>
+    </div>
+  </vex-page-layout-header>
+</vex-page-layout>
+<vex-page-layout class="px-6 -mt-5">
+  <form (ngSubmit)="save()" [formGroup]="form">
+    <div fxLayout="column" class="">
+      <div @fadeInUp class="card" style="margin-top: 1px;">
+        <div fxLayout="column" class="mb-6">
+          <h3 class="m-0 px-6 py-4" fxFlex="auto" *ngIf="isUpdateMode()">Update Order</h3>
+          <h3 class="m-0 px-6 py-4" fxFlex="auto" *ngIf="isCreateMode()">Create Order</h3>
+          <mat-divider class="border-dark"></mat-divider>
+        </div>
+
+        <div class="px-6" fxLayout="column">
+          <div
+            fxLayout="row"
+            fxLayout.lt-sm="column"
+            fxLayoutGap="15px"
+            fxLayoutGap.lt-sm="0"
+          >
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>Customer</mat-label>
+              <mat-select formControlName="customer" (click)="$event.stopPropagation()"
+              (selectionChange)="getBranchByCustomerById($event.value)"
+              >
+
+
+                <mat-option *ngFor="let customer of customerData"  [value]="customer?.id"
+                   
+                      
+                      >{{ customer?.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>From Port </mat-label>
+              <input formControlName="fromPort" matInput />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>PO Number </mat-label>
+              <input formControlName="poNumber" cdkFocusInitial matInput
+              (input)="onChangePoNumber($event.target.value)"
+              />
+            </mat-form-field>
+          </div>
+
+          <div
+            fxLayout="row"
+            fxLayout.lt-sm="column"
+            fxLayoutGap="15px"
+            fxLayoutGap.lt-sm="0"
+          >
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>Branch </mat-label>
+              <mat-select formControlName="branch" (click)="$event.stopPropagation()"  (selectionChange)="getShipToByBranchId($event.value)">
+                <mat-option *ngFor="let b of branchData"    [value]="b.id"
+                    
+                      
+                >{{ b.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div fxFlex="33.333" style="overflow: hidden;">
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="0px">
+                <mat-form-field
+                  appearance="outline"
+                  fxFlex="100"
+                  style="padding-right: 10px;"
+                >
+                    <mat-label>PI Number </mat-label>
+                    <input formControlName="piNumber" cdkFocusInitial matInput />
+                  </mat-form-field>
+                    
+                  <!-- <mat-select formControlName="piNumber" (click)="$event.stopPropagation()"                  
+                  >
+                    <mat-option value="BHSB">BHSB</mat-option>
+                    <mat-option value="CH">CH</mat-option>
+                    <mat-option value="LG">LG</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field
+                  appearance="outline"
+                  fxFlex="25"
+                  style="padding-right: 10px;"
+                >
+                  <input formControlName="piNumber2" cdkFocusInitial matInput />
+                </mat-form-field>
+                <mat-form-field
+                  appearance="outline"
+                  fxFlex="25"
+                  style="padding-right: 10px;"
+                >
+                  <input formControlName="piNumber3" cdkFocusInitial matInput />
+                </mat-form-field>
+                <mat-form-field appearance="outline" fxFlex="25" class="readonly-field pb-00">
+                  <input formControlName="piNumber4" cdkFocusInitial matInput readonly  />
+                </mat-form-field> -->
+              </div>
+            </div>
+
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>PO Date </mat-label>
+              <input formControlName="poDate"
+                matInput
+                [matDatepicker]="poDate"
+                (click)="$event.stopPropagation()"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="poDate"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #poDate></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxLayout="row"
+            fxLayout.lt-sm="column"
+            fxLayoutGap="15px"
+            fxLayoutGap.lt-sm="0"
+          >
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>Ship To </mat-label>
+              <mat-select formControlName="shipTo" (click)="$event.stopPropagation()" (selectionChange)="getCustomerAddressById($event.value)">
+                <mat-option *ngFor="let s of shipToData"    [value]="s.id"
+                    
+                >{{ s.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>PI Date </mat-label>
+              <input formControlName="piDate"
+                matInput
+                [matDatepicker]="piDate"
+                (click)="$event.stopPropagation()"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="piDate"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #piDate></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>Currency </mat-label>
+              <mat-select formControlName="currency" (click)="$event.stopPropagation()">
+                <mat-option *ngFor="let c of currency"  [value]="c.id"
+                    
+                      
+                >{{ c.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxLayout="row"
+            fxLayout.lt-sm="column"
+            fxLayoutGap="15px"
+            fxLayoutGap.lt-sm="0"
+          >
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>Country </mat-label>
+              <mat-select formControlName="country" (click)="$event.stopPropagation()">
+                <mat-option *ngFor="let c of countries"  [value]="c.id"
+                    
+                      
+                >{{ c.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>Shipment Date </mat-label>
+              <input formControlName="shipmentDate"
+                matInput
+                [matDatepicker]="shipmentDate"
+                (click)="$event.stopPropagation()"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="shipmentDate"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #shipmentDate></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="33.333">
+              <mat-label>Ship By</mat-label>
+              <mat-select formControlName="shipBy" (click)="$event.stopPropagation()">
+                <mat-option *ngFor="let c of shippingMethodValues; let pointIndex = index"  [value]="c" 
+                >{{ c}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- <mat-divider class="-mx-6 text-border"></mat-divider> -->
+          <div>
+            <a
+              (click)="toggleExtraField()"
+              fxLayoutAlign="end"
+              mat-a
+              type="button"
+              class="mb-4 text-primary float-right pointer"
+            >
+              {{ buttonName }}
+              <mat-icon
+                [icIcon]="expandLess"
+                class=" rtl:ml-3"
+                matPrefix
+                *ngIf="show"
+              ></mat-icon>
+              <mat-icon
+                [icIcon]="expandMore"
+                class=" rtl:ml-3"
+                matPrefix
+                *ngIf="!show"
+              ></mat-icon>
+            </a>
+          </div>
+
+          <ng-container *ngIf="show" (click)="$event.stopPropagation()">
+            <div
+              fxLayout="row"
+              fxLayout.lt-sm="column"
+              fxLayoutGap="15px"
+              fxLayoutGap.lt-sm="0"
+            >
+              <mat-form-field appearance="outline" fxFlex="33.333">
+                <mat-label>Contact Person </mat-label>
+                <mat-select formControlName="contactPerson" (click)="$event.stopPropagation()">
+                  <mat-option *ngFor="let c of contacts; let pointIndex = index" (click)="getContactById(c?.id)"   [value]="c?.id" 
+                >{{ c?.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" fxFlex="33.333">
+                  <mat-label>Delivery Terms</mat-label>
+                  <input formControlName="deliveryTerms" matInput />
+              </mat-form-field>
+              <mat-form-field appearance="outline" fxFlex="33.333">
+                <mat-label>Transhipment</mat-label>
+                <mat-select formControlName="isTranshipmentAllowed" (click)="$event.stopPropagation()">
+                  <mat-option [value]="true">Allowed</mat-option>
+                  <mat-option [value]="false">Not Allowed</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div
+              fxLayout="row"
+              fxLayout.lt-sm="column"
+              fxLayoutGap="15px"
+              fxLayoutGap.lt-sm="0"
+            >
+              <mat-form-field appearance="outline" fxFlex="33.333" class="readonly-field pb-00 ">
+                <mat-label>Contact Details</mat-label>
+                <input formControlName="contactDetails" cdkFocusInitial matInput readonly />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" fxFlex="33.333" *ngIf="countries">
+                <mat-label>Origin Of Goods</mat-label>
+                <mat-select formControlName="originOfGoods"  (click)="$event.stopPropagation()">
+                  <mat-option *ngFor="let c of countries"  [value]="c?.id"
+                
+                  >{{ c?.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" fxFlex="33.333">
+                <mat-label>Type</mat-label>
+                <mat-select formControlName="shippingType" (click)="$event.stopPropagation()">
+                  <mat-option *ngFor="let s of shippingTypeValues; let pointIndex = index"  [value]="s" 
+                  >{{ s}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+        <div class="" fxLayout="column">
+          <mat-divider class="  text-border"></mat-divider>
+          <div
+            fxLayout="row"
+            fxLayout.lt-sm="column"
+            fxLayoutGap="15px"
+            fxLayoutGap.lt-sm="0"
+          >
+            <table @stagger class="w-full" mat-table matSort>
+              <thead>
+                <tr class="border-b">
+                  <th
+                    class="w-1/4 pl-6 pr-4 py-4 weight-400 text-secondary font-13 text-left"
+                    style="width: 100px;"
+                  >
+                    #
+                  </th>
+                  <th
+                    class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left"
+                  >
+                    ITEM NAME
+                  </th>
+                  <th
+                    class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left"
+                  >
+                    SIZE
+                  </th>
+                  <th
+                    class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left"
+                  >
+                    CARTONS
+                  </th>
+                  <th
+                    class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left"
+                  >
+                    PIECES
+                  </th>
+                  <th
+                    class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left"
+                  >
+                    CURRENCY
+                  </th>
+                  <th
+                    class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-right"
+                  >
+                    PRICE/CARTON
+                  </th>
+                  <th
+                    class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-right"
+                    style="white-space: nowrap;"
+                  >
+                    TOTAL VALUE
+                  </th>
+                  <th
+                    class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left"
+                  ></th>
+                </tr>
+              </thead>
+              <tbody class="field-pb-0 " *ngIf="products">
+                <tr class="border-b" formArrayName="orderPrize" *ngFor="let orderPrize of orderPrize.controls; let personIndex = index">
+                  <td  [formGroupName]="personIndex" class="pl-6 pr-4 py-2">
+                    {{personIndex + 1}}
+                    <input formControlName="itemId" type="hidden" [value]="" />
+                  </td>
+                  <td class=" px-4 py-2" [formGroupName]="personIndex">
+
+                    <!-- <input-auto-with-array
+                      placeholder="" 
+                      [(value)]="orderPrize.product"
+                      (valueChanged)="getVariationById($event ? $event.id : '',personIndex)"
+                      [options]="products"
+                    >
+                    </input-auto-with-array> -->
+
+                    <ng-autocomplete 
+                      [data]="products"
+                      formControlName="productName"
+                      [searchKeyword]="keyword"
+                      (selected)="getVariationById($event ? $event.id : '',personIndex)"
+                      [itemTemplate]="itemTemplate"
+                      [notFoundTemplate]="notFoundTemplate"
+                      placeHolder="Select Product"
+                      class="w-100"
+                      >
+                    </ng-autocomplete>
+                    <ng-template #itemTemplate let-item>
+                    <a [innerHTML]="item.name"></a>
+                    </ng-template>
+                      
+                    <ng-template #notFoundTemplate let-notFound>
+                    <div [innerHTML]="notFound"></div>
+                    </ng-template>
+
+                    
+                    <!-- <mat-form-field
+                      appearance="outline"
+                    >                    
+                    <mat-select formControlName="itemName" (click)="$event.stopPropagation()" >
+                      <mat-option *ngFor="let p of products" [value]="p.id"
+                      (click)="getVariationById(p.id,personIndex)"
+                        >{{ p.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field> -->
+                  </td>
+                  <td class=" px-4 py-2" [formGroupName]="personIndex" >
+                    <mat-form-field
+                      appearance="outline"
+                      style="width: 120px;"
+                    >
+                      <mat-label>Select </mat-label>
+                      <mat-select formControlName="size"  (click)="$event.stopPropagation()" (selectionChange)="onVariantSelect($event.value, personIndex)">
+                        <mat-option *ngFor="let v of getProductVariants(personIndex)"  [value]="v.id">{{ getSizeName(v.variationId)}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                  <td class=" px-4 py-2" [formGroupName]="personIndex">
+                    <mat-form-field appearance="outline" style="width: 100px;">
+                      <input 
+                        formControlName="cartons" cdkFocusInitial matInput 
+                        (input)="onFieldChange($event.target.value, personIndex, 'cartons')"
+                        (input)="checkNumberValidation($event, 'cartons', personIndex)"
+                      />
+                    </mat-form-field>
+                  </td>
+                  <td [formGroupName]="personIndex" class=" px-4 py-2">
+                    <input type="hidden" formControlName="pieces"/>
+                    <span>{{getValues(personIndex, 'pieces') | number:'1.0-2'}}</span>
+                  </td>
+
+                  <td [formGroupName]="personIndex" class=" px-4 py-2">
+                    <span>{{getCurrencyName()}}</span>
+                  </td>
+
+                  <td class=" px-4 py-2 text-right" [formGroupName]="personIndex">
+                    <mat-form-field
+                      appearance="outline"
+                      style="width: 100px;"
+                      class="text-right"
+                    >
+                      <input formControlName="price" cdkFocusInitial matInput
+                        (input)="onFieldChange($event.target.value, personIndex, '')"
+                        (input)="checkDecimalValidation($event, 'price', personIndex)"
+                        (blur)="twoDecimal($event, 'price', personIndex)"
+                      />
+                    </mat-form-field>
+                  </td>
+
+                  <td class=" px-4 py-2 text-right" [formGroupName]="personIndex">
+                    <input type="hidden" formControlName="totalValue"/>
+                    <span>{{getValues(personIndex, 'totalValue') | number:'1.2-2'}}</span>
+                  </td>
+
+                  <td class=" px-4 py-2">
+                    <button color="primary" mat-button type="button" (click)="removeField(personIndex)">
+                      <mat-icon
+                        [icIcon]="icDelete"
+                        style="color: #b8bfca;"                        
+                      ></mat-icon>
+                    </button>
+                  </td>
+                </tr>
+               
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          fxLayout="row"
+          fxLayout.lt-sm="column"
+          fxLayoutGap="32px"
+          fxLayoutGap.lt-sm="0"
+          class="px-6 py-2"
+        >
+          <a href="javascript:void(null)" 
+          class="text-primary pointer"
+           fxLayout="row" 
+          fxLayoutAlign="center center" 
+          (click)="addMoreField()">
+            <mat-icon [icIcon]="icAdd" color="primary" size="16px" class="mt-2"></mat-icon>
+            Add More Field
+          </a>
+        </div>
+
+        <mat-divider class="  text-border"></mat-divider>
+        <div class="px-6" fxLayout="column">
+          <div
+            fxLayout="row"
+            fxLayout.lt-sm="column"
+            fxLayoutGap="15px"
+            fxLayoutGap.lt-sm="10"
+            class="mt-5"
+          >
+            <div fxFlex="70" fxLayout="column">
+              <mat-form-field appearance="outline" fxFlex="auto">
+                <mat-label>Payment Terms</mat-label>
+                <input formControlName="paymentTerms" cdkFocusInitial matInput />
+              </mat-form-field>
+              <mat-form-field
+                appearance="outline"
+                fxFlex="auto"
+                class="field-pb-0"
+              >
+                <mat-label>Special Clause</mat-label>
+                <textarea formControlName="specialClause" matInput style="min-height: 106px;"></textarea>
+              </mat-form-field>
+            </div>
+            <div fxFlex="30">
+              <div class="w-100 p-5" style="background-color: #f8f9fa;">
+                <table class="font-medium w-100">
+                  <tbody>
+                    <tr>
+                      <td class="pb-4 text-secondary text-left">
+                        Total Cartons
+                      </td>
+                      <td class="pb-4 pl-12 text-right">
+                        {{ totalValues('total_cartons') | number:'1.0-2'}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="pb-4 text-secondary text-left">
+                        Total Pieces
+                      </td>
+                      <td class="pb-4 pl-12 text-right">{{ totalValues('total_pieces') | number:'1.0-2'}}</td>
+                    </tr>
+                    <tr>
+                      <td class="pb-4 text-secondary text-left">
+                        Total Volume
+                      </td>
+                      <td class="pb-4 pl-12 text-right">{{ totalValues('total_volume')  | number:'1.2-2'}}‬‬ m3</td>
+                    </tr>
+                    <tr>
+                      <td class="pb-4 text-secondary text-left">
+                        Gross Weight
+                      </td>
+                      <td class="pb-4 pl-12 text-right">{{ totalValues('gross_weight')  | number:'1.2-2'}} Kgs</td>
+                    </tr>
+
+                    <tr>
+                      <td class=" headline text-left " style="font-size: 19px;">
+                        Grand Total
+                      </td>
+                      <td
+                        class=" headline pl-12  text-right"
+                        style="font-size: 19px;"
+                      >
+                      {{getCurrencyName()}} {{ totalValues('grand_total')  | number:'1.2-2'}}‬
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <mat-divider class="-mx-6 border-dark mt-6"></mat-divider>
+          <div class="py-4 ">
+            <div class="float-right" fxLayout="row" fxLayoutGap="15px">
+              <button mat-button type="button" (click)="backToOrder()" class="btn-large border c-dark ">
+                Cancel
+              </button>
+              <button 
+                *ngIf="isCreateMode()"
+                color="primary"
+                mat-raised-button
+                mat-button
+                type="submit"
+                class="btn-large"
+                [disabled]="!form.valid"
+              >
+                Create Order
+              </button>
+              <button [disabled]="updateCreateDisabled"
+                *ngIf="isUpdateMode()"
+                color="primary"
+                mat-raised-button
+                type="submit"
+                class="btn-large"
+                [disabled]="!form.valid"
+              >
+                Update Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</vex-page-layout>

@@ -1,0 +1,213 @@
+<vex-page-layout-content
+fxFlex="300px"
+>
+  <div class="overflow-auto">
+    <div
+      class=" h-16 sticky left-0"
+      fxLayout="row"
+      fxLayoutAlign="start center"
+    >
+      <div
+        class="bg-card rounded border px-4"
+        fxFlex="100"
+        fxFlex.lt-md="auto"
+        fxHide.xs
+        fxLayout="row"
+        fxLayoutAlign="start center"
+      >
+        <ic-icon [icIcon]="icSearch" size="20px"></ic-icon>
+        <input
+          [formControl]="searchCtrl"
+          class="px-4 py-3 border-0 outline-none w-full bg-transparent"
+          placeholder="Search..."
+          type="search"
+        />
+      </div>
+
+      <span fxFlex></span>
+
+      <button
+        class="ml-4"
+        fxFlex="none"
+        fxHide.gt-xs
+        mat-icon-button
+        type="button"
+      >
+        <mat-icon [icIcon]="icSearch"></mat-icon>
+      </button>
+
+      <button
+        [matMenuTriggerFor]="columnFilterMenu"
+        class="ml-1"
+        fxFlex="none"
+        mat-icon-button
+        matTooltip="Filter Columns"
+        type="button"
+      >
+        <mat-icon [icIcon]="icFilterList" color="primary"></mat-icon>
+      </button>
+    </div>
+    <div class="overflow-auto packing-left-block">
+      <table @stagger [dataSource]="dataSource" class="w-full bg-transparent" mat-table matSort>
+        <ng-container matColumnDef="proformaInvoiceNo">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ "proformaInvoice No" | uppercase }}
+          </th>
+          <td *matCellDef="let row" mat-cell class="border-b-0" [ngClass]="{'activeRow': (row && row.id) === (selectedRow && selectedRow.id)}">
+              <section fxFlex="100" fxLayout="column" class="py-4">
+                  <div 
+                      fxFlex="100"
+                      fxLayout="row"
+                      fxLayoutAlign="start top"
+                  >
+                      <div *ngIf="row.status === UtilsStatus.Shipped"
+                          class="w-3 h-3 rounded-full bg-green-500 cursor-pointer"
+                          [matTooltip]="row['statusName']"
+                          matTooltipPosition="above"
+                          ></div>
+                      <div *ngIf="row.status === UtilsStatus.New"
+                          class="w-3 h-3 rounded-full bg-orange-500 cursor-pointer"
+                          [matTooltip]="row['statusName']"
+                          matTooltipPosition="above"
+                          ></div>
+                      <div *ngIf="row.status === UtilsStatus.InProgress || row.status === UtilsStatus.ReadyForShipment"
+                          class="w-3 h-3 rounded-full bg-primary-500 cursor-pointer"
+                          [matTooltip]="row['statusName']"
+                          matTooltipPosition="above"
+                          ></div>
+                      <div *ngIf="row.status === 'cancelled'"
+                          class="w-3 h-3 rounded-full bg-red-500 cursor-pointer"
+                          [matTooltip]="row['statusName']"
+                          matTooltipPosition="above"
+                          ></div>
+                      <div class="ml-2">
+                          <h6 class="mt-0 lh-1" >{{ row["proformaInvoiceNo"] }} </h6>
+                          <p class="text-secondary">{{ row["customer"] }}</p>
+                          <p>{{row.shipmentDate | date }}</p>
+                      </div>
+                  </div>
+                  <div 
+                      fxFlex="100"
+                      fxLayout="row"
+                      fxLayoutAlign="start top"
+                      class="mt-1"
+                  >
+                      <mat-icon [icIcon]="icCalendar" size="16px" class="text-secondary"
+                      [matTooltip]="getStringFromHtml(row)"
+                      matTooltipPosition="above"
+                      ></mat-icon>
+                      <div fxFlex="100" fxLayout="row">
+                          <mat-progress-bar
+                              mode="determinate"
+                              [value]='row["packedPercentage"]'
+                              style="height: 7px;  "
+                              class="mt-1"
+                          ></mat-progress-bar>
+                          <div fxFlex="55px" class="text-right text-secondary" style="font-size: 12px;">{{ row["packedPercentage"] }}%</div>
+                      </div>
+                  </div>
+              </section>
+          </td>
+        </ng-container>
+
+        <!-- <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr> -->
+        <tr
+          *matRowDef="let row; columns: visibleColumns"
+          @fadeInUp
+          class="hover:bg-hover trans-ease-out cursor-pointer"
+          mat-row
+          (click)="suggestionWasClicked(row)"
+        ></tr>
+      </table>
+    </div>
+  </div>
+</vex-page-layout-content>
+
+<mat-menu #columnFilterMenu="matMenu">
+  <form class="date-block" [formGroup]="filterForm">
+    <div class="card w-100" fxFlex="350px">
+      <div class="px-4 py-4" fxLayout="column">
+        <div
+          fxLayout="row"
+          fxLayout.lt-sm="column"
+          fxLayoutGap="0"
+          fxLayoutGap.lt-sm="0"
+        >
+          <mat-form-field fxFlex="auto" appearance="outline" class="field-pb-0">
+            <mat-label>All Customers</mat-label>
+            <mat-select
+              formControlName="customerField"
+              (click)="$event.stopPropagation()"
+            >
+              <mat-option *ngFor="let c of customersList" [value]="c.id">{{
+                c.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div
+          fxLayout="row"
+          fxLayout.lt-sm="column"
+          fxLayoutGap="16px"
+          fxLayoutGap.lt-sm="0"
+        >
+          <mat-form-field fxFlex="auto" appearance="outline">
+            <mat-label>All Statuses</mat-label>
+            <mat-select
+              formControlName="statusField"
+              (click)="$event.stopPropagation()"
+            >
+              <mat-option *ngFor="let c of statusList" class="capitalize" [value]="c.id">{{
+                c.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="16px" fxLayoutGap.lt-sm="0">
+          <mat-form-field fxFlex="48" appearance="outline">
+            <input matInput 
+              [matDatepicker]="startShipmentDate" 
+              placeholder="Shipment Date" 
+              formControlName="startShipmentDate" 
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="startShipmentDate"></mat-datepicker-toggle>
+            <mat-datepicker #startShipmentDate></mat-datepicker>
+          </mat-form-field>
+      
+        
+          <mat-form-field fxFlex="48" appearance="outline">
+            <input matInput 
+              [matDatepicker]="endShipmentDate" 
+              placeholder="Shipment Date" 
+              formControlName="endShipmentDate"
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="endShipmentDate"></mat-datepicker-toggle>
+            <mat-datepicker #endShipmentDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="8px">
+          
+          <button
+            color="primary"
+            (click)="formFilter(filterForm.value)"
+            mat-raised-button
+            type="button"
+          >
+            Apply Filters
+          </button>
+          <a
+            (click)="$event.stopPropagation()"
+            (click)="clearFormValue()"
+            mat-button
+            href="javascript:"
+            type="button"
+          
+          >
+            Clear All
+        </a>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-menu>

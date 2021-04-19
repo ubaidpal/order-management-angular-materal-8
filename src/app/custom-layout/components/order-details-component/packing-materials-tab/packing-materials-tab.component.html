@@ -1,0 +1,151 @@
+<form (ngSubmit)="submit()" [formGroup]="form">
+  <div
+    style="background-color: #f2f4f6;"
+    class="border-b border-t border-dark px-6 py-3 mb-5"
+    fxLayout="row"
+  >
+    <h3
+      class="red float-left"
+      style="color: #1a202e; font-size: 20px;"
+      fxFlex="50"
+      fxLayoutAlign="start center"
+    >
+      Packing Materials
+    </h3>
+    <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50">
+      <!-- <mat-progress-spinner
+        mode="indeterminate"
+        diameter="35"
+      ></mat-progress-spinner> -->
+
+      <button class="btn-large" color="primary" mat-raised-button>
+        Update
+      </button>
+    </div>
+  </div>
+
+  <table class="w-full" mat-table matSort>
+    <thead>
+      <tr class="border-b border-dark">
+        <th class="px-6 py-4 weight-400 text-secondary font-13 text-left">
+          ITEM NAME
+        </th>
+        <th class="px-4 pr-4 py-4 weight-400 text-secondary font-13 text-left">
+          PACKING MATERIAL
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          SIZE
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          ORDER QTY
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+            RECEIVED QTY
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          BALANCE QTY
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          NEXT DELIVERY DATE
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="border-b border-dark">
+        <td class="pl-6 pr-4 py-6">
+          <b>Grand Total</b>
+        </td>
+        <td class="pl-4 pr-4 py-6">
+          <b>-</b>
+        </td>
+        <td class="pl-4 pr-4 py-6">
+          <b>-</b>
+        </td>
+        <td class="pl-4 pr-4 py-6">
+          <b>{{getGrandQty('quantity')}}</b>
+        </td>
+        <td class="pl-4 pr-4 py-6">
+          <b>{{getGrandQty('quantityReceived')}}</b>
+        </td>
+        <td class="pl-4 pr-4 py-6">
+            <b>{{getGrandQty('balanceQty')}}</b>
+        </td>
+        <td class="pl-4 pr-4 py-6">
+          <b>-</b>
+        </td>
+      </tr>
+
+      <tr
+        class="border-b border-dark field-pb-0 "
+        formArrayName="orderProducts"
+        *ngFor="
+          let product of orderProductsArray.controls;
+          let personIndex = index
+        "
+      >
+        <td class="pl-6 pr-4 py-2" [formGroupName]="personIndex">
+          <div>{{product.value.productName }}</div>
+          <span class="text-secondary" style="font-size: 11px;">
+            {{ product.value.productCode}}
+          </span>
+        </td>
+        <td class="px-4 py-2">
+            {{product.value.packingMaterialName}}
+        </td>
+        <td class="px-4 py-2" [formGroupName]="personIndex">
+          {{ getProductVariant(product) }}
+          <input type="hidden" formControlName="productVariationId" />
+        </td>
+        <td class="px-4 py-2" [formGroupName]="personIndex">
+            <mat-form-field
+            appearance="outline"
+            class="  field-mtr-5 "
+            style="width: 100px;"
+            >
+                <input matInput class=" " formControlName="quantity" 
+                    (input)="numberValidation($event, 'quantity', personIndex, product.value)"
+                />
+            </mat-form-field>
+        </td>
+        <td class=" px-4 py-2" [formGroupName]="personIndex">
+            <mat-form-field
+            appearance="outline"
+            class="  field-mtr-5 "
+            style="width: 100px;"
+            >
+                <input matInput class=" " formControlName="quantityReceived" 
+                    (input)="numberValidation($event, 'quantityReceived', personIndex, product.value)"
+                    (input)="getBalance($event, product, personIndex)"
+                />
+            </mat-form-field>
+        </td>
+        <td class=" px-4 py-2" [formGroupName]="personIndex">
+            <mat-form-field
+            appearance="outline"
+            class="  field-mtr-5 readonly-field"
+            style="width: 100px;"
+            >
+                <input matInput class=" " formControlName="balanceQty" 
+                    (input)="numberValidation($event, 'balanceQty', personIndex, product.value)"
+                    readonly
+                />
+            </mat-form-field>
+        </td>
+        <td class=" px-4 py-2" [formGroupName]="personIndex">
+            <mat-form-field appearance="outline" >
+                <input formControlName="nextDeliveryDate"
+                  matInput
+                  [matDatepicker]="nextDeliveryDate"
+                  (click)="$event.stopPropagation()"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="nextDeliveryDate"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #nextDeliveryDate></mat-datepicker>
+              </mat-form-field>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>

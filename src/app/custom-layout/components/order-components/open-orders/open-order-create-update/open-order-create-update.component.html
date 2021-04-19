@@ -1,0 +1,362 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+
+    <h2 *ngIf="form.get('piNumber').value" class="headline m-0" fxFlex="auto">{{ form.get('piNumber').value}}</h2>
+    <h2 *ngIf="!form.get('piNumber').value" class="headline m-0" fxFlex="auto">Create Invoice</h2>
+
+    <button [matMenuTriggerFor]="settingsMenu" class="text-secondary" mat-icon-button type="button">
+      <mat-icon [icIcon]="icMoreVert"></mat-icon>
+    </button>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="-mx-6 text-border"></mat-divider>
+
+  <mat-dialog-content fxLayout="column">
+    <div @fadeInUp class="" fxFlex="auto">
+
+      <div class="px-12 py-12" fxLayout="column">
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" fxLayoutGap.lt-sm="0">
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <mat-label>Customers *</mat-label>
+            <mat-select formControlName="customer" (click)="$event.stopPropagation();">
+              <mat-option value="Jamal">Jamal</mat-option>
+              <mat-option value="Dejesus">Dejesus</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <mat-label>From Port *</mat-label>
+            <mat-select formControlName="fromPort" (click)="$event.stopPropagation();">
+              <mat-option value="pending">Pending</mat-option>
+              <mat-option value="inProgress">In Progress</mat-option>
+              <mat-option value="completed">Completed</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <mat-label>PO Number *</mat-label>
+            <input cdkFocusInitial formControlName="poNumber" matInput>
+          </mat-form-field>
+
+        </div>
+
+
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" fxLayoutGap.lt-sm="0">
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <mat-label>Branch *</mat-label>
+            <mat-select formControlName="customer" (click)="$event.stopPropagation();">
+              <mat-option value="Jamal">Jamal</mat-option>
+              <mat-option value="Dejesus">Dejesus</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div fxFlex="33.333" style="overflow: hidden;">
+            <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="0px" >
+              <mat-form-field appearance="outline" fxFlex="25" style="padding-right: 10px;">
+                <mat-label>PI Number *</mat-label>
+                <mat-select formControlName="piNumber" (click)="$event.stopPropagation();">
+                  <mat-option value="pi-121212">Pi-121212</mat-option>
+                  <mat-option value="pi-121211">Pi-121211</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" fxFlex="25" style="padding-right: 10px;">
+                <input cdkFocusInitial formControlName="poNumber" matInput>
+              </mat-form-field>
+              <mat-form-field appearance="outline" fxFlex="25" style="padding-right: 10px;">
+                <input cdkFocusInitial formControlName="poNumber" matInput>
+              </mat-form-field>
+              <mat-form-field appearance="outline" fxFlex="25">
+                <input cdkFocusInitial formControlName="poNumber" matInput>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <input matInput [matDatepicker]="poDate" placeholder="PO Date" formControlName="poDate"
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="poDate"></mat-datepicker-toggle>
+            <mat-datepicker #poDate></mat-datepicker>
+          </mat-form-field>
+
+        </div>
+
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" fxLayoutGap.lt-sm="0">
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <mat-label>Ship To *</mat-label>
+            <mat-select formControlName="shipTo" (click)="$event.stopPropagation();">
+              <mat-option value="Jamal">Jamal</mat-option>
+              <mat-option value="Dejesus">Dejesus</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <input matInput [matDatepicker]="piDate" placeholder="PI Date" formControlName="piDate"
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="piDate"></mat-datepicker-toggle>
+            <mat-datepicker #piDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <mat-label>Currency *</mat-label>
+            <mat-select formControlName="currency" (click)="$event.stopPropagation();">
+              <mat-option value="usd">USD</mat-option>
+              <mat-option value="pkr">PKR</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" fxLayoutGap.lt-sm="0">
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <mat-label>Country *</mat-label>
+            <mat-select formControlName="country" (click)="$event.stopPropagation();">
+              <mat-option value="Jamal">Jamal</mat-option>
+              <mat-option value="Dejesus">Dejesus</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <input matInput [matDatepicker]="shipmentDate" placeholder="Shipment Date" formControlName="shipmentDate"
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="shipmentDate"></mat-datepicker-toggle>
+            <mat-datepicker #shipmentDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" fxFlex="33.333">
+            <mat-label>Ship By</mat-label>
+            <mat-select formControlName="shipBy" (click)="$event.stopPropagation();">
+              <mat-option value="Sea Fright">Sea Fright</mat-option>
+              <mat-option value="Sea Fright 2">Sea Fright 2</mat-option>
+              <mat-option value="Sea Fright 3">Sea Fright 3</mat-option>
+            </mat-select>
+            <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+          </mat-form-field>
+        </div>
+
+
+        <!-- <mat-divider class="-mx-6 text-border"></mat-divider> -->
+        <div>
+          <a (click)="toggleExtraField()" fxLayoutAlign="end" mat-a type="button" class="mb-4 text-primary float-right pointer">
+            {{buttonName}}
+            <mat-icon [icIcon]="expandLess" class=" rtl:ml-3" matPrefix *ngIf="show"></mat-icon>
+            <mat-icon [icIcon]="expandMore" class=" rtl:ml-3" matPrefix *ngIf="!show"></mat-icon>
+          </a>
+        </div>
+
+        <ng-container *ngIf="show" (click)="$event.stopPropagation();">
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" fxLayoutGap.lt-sm="0">
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Contact Person </mat-label>
+              <mat-select formControlName="contactPerson" (click)="$event.stopPropagation();">
+                <mat-option value="Ayesha">Ayesha</mat-option>
+                <mat-option value="Denial DeGeateno">Denial DeGeateno</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Delevery Terms</mat-label>
+              <mat-select formControlName="deleveryTerms" (click)="$event.stopPropagation();">
+                <mat-option value="F.O.B Port Klang">F.O.B Port Klang</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Transhipment</mat-label>
+              <mat-select formControlName="transhipment" (click)="$event.stopPropagation();">
+                <mat-option value="Allowed">Allowed</mat-option>
+                <mat-option value="notAllowed">Not Allowed</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" fxLayoutGap.lt-sm="0">
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Contact Details</mat-label>
+              <input cdkFocusInitial formControlName="contactDetails" matInput>
+            </mat-form-field>
+            
+
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Origin Of Goods</mat-label>
+              <mat-select formControlName="orginOFGoods" (click)="$event.stopPropagation();">
+                <mat-option value="Malyasia">Malyasia</mat-option>
+                <mat-option value="Pakistan">Pakistan</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="none">
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="type" (click)="$event.stopPropagation();">
+                <mat-option value="Import">Import</mat-option>
+                <mat-option value="Export">Export</mat-option>
+              </mat-select>
+              <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+            </mat-form-field>
+
+          </div>
+
+        </ng-container>
+
+
+        <mat-divider class="  text-border"></mat-divider>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" fxLayoutGap.lt-sm="0">
+
+          <table @stagger class="w-full" mat-table matSort>
+
+            <thead>
+              <tr class="border-b">
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left">#</th>
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left">ITEM NAME</th>
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left">SIZE</th>
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left">CARTONS</th>
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left">PRICES</th>
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left">CURRENCY</th>
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-right">PRICE/CARTON</th>
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-right" style="white-space: nowrap;">TOTAL Value</th>
+                <th class="w-1/4 px-4 py-4 weight-400 text-secondary font-13 text-left"></th>
+              </tr>
+            </thead>
+            <tbody class="field-pb-0 ">
+              <tr formArrayName="orderPrize" *ngFor="let orderPrize of serverData; let personIndex = index" class="border-b">
+                <td [formGroupName]="personIndex" class=" px-4 py-2">
+                  {{personIndex }}
+                </td>
+                <td [formGroupName]="personIndex" class=" px-4 py-2">
+                  <mat-form-field appearance="outline">
+                    <input cdkFocusInitial formControlName="itemName" matInput>
+                    <mat-icon [icIcon]="icSearch" class="ltr:mr-3 float-right" matSuffix></mat-icon>
+                  </mat-form-field>
+                </td>
+                <td [formGroupName]="personIndex" class=" px-4 py-2">
+
+                  <mat-form-field appearance="outline" fxFlex="auto" style="width: 120px;">
+                    <mat-label>Select </mat-label>
+                    <mat-select formControlName="size" (click)="$event.stopPropagation();">
+                      <mat-option value="large">Large</mat-option>
+                      <mat-option value="xLarge">xx Large</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td [formGroupName]="personIndex" class=" px-4 py-2">
+                  <mat-form-field appearance="outline" style="width: 100px;">
+                    <input cdkFocusInitial formControlName="cartons" matInput>
+                  </mat-form-field>
+                </td>
+                <td [formGroupName]="personIndex" class=" px-4 py-2">
+                  <mat-form-field appearance="outline">
+                    <input cdkFocusInitial formControlName="price" matInput>
+
+                  </mat-form-field>
+                </td>
+
+                <td [formGroupName]="personIndex" class=" px-4 py-2">
+
+                  <span>{{serverData[personIndex].currency }} USD</span>
+                </td>
+
+                <td [formGroupName]="personIndex" class=" px-4 py-2 text-right">
+                  <span>{{totalAmount(serverData[personIndex].cartons , serverData[personIndex].price)}}</span>
+                </td>
+
+                <td [formGroupName]="personIndex" class=" px-4 py-2 text-right">
+                  <span>0</span>
+                </td>
+
+                <td class=" px-4 py-2">
+                  <button color="primary" (click)="removeField(personIndex)" mat-button type="button">
+                    <mat-icon [icIcon]="icDelete" style="color: #b8bfca;"></mat-icon>
+                  </button>
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutGap.lt-sm="0" align="center">
+          <a class="text-primary" (click)="addMoreField()" mat-button type="button">
+            Add More Field
+          </a>
+        </div>
+
+
+
+        <mat-divider class="  text-border"></mat-divider>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" fxLayoutGap.lt-sm="10" class="mt-5">
+          <div fxFlex="70" fxLayout="column">
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Payment Terms</mat-label>
+              <input cdkFocusInitial formControlName="paymentTerms" matInput>
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="auto" >
+              <mat-label>Special Clause</mat-label>
+              <textarea formControlName="specialClause" matInput style="min-height: 106px;"></textarea>
+            </mat-form-field>
+          </div>
+          <div fxFlex="30">
+            <div class="w-100 p-5" style="background-color: #f8f9fa;" >
+              <table class="font-medium w-100">
+                <tbody>
+                  <tr>
+                    <td class="pb-4 text-secondary text-left">Total Cartons</td>
+                    <td class="pb-4 pl-12 text-right">{{getTotalCartan()}}</td>
+                  </tr>
+                  <tr>
+                    <td class="pb-4 text-secondary text-left">Total Pieces</td>
+                    <td class="pb-4 pl-12 text-right">0</td>
+                  </tr>
+                  <tr>
+                    <td class="pb-4 text-secondary text-left">Total Volume</td>
+                    <td class="pb-4 pl-12 text-right">0‬ m3</td>
+                  </tr>
+                  <tr>
+                    <td class="pb-4 text-secondary text-left">Gross Weight</td>
+                    <td class="pb-4 pl-12 text-right">0 Kgs</td>
+                  </tr>
+
+                  <tr>
+                    <td class=" headline text-left " style="font-size: 19px;">Grand Total</td>
+                    <td class=" headline pl-12  text-right" style="font-size: 19px;">{{getTotalAmount()}}‬</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="border-t -mx-6 px-6" >
+    <button mat-button mat-dialog-close type="button" class="btn-large border c-dark ">Cancel</button>
+    <button *ngIf="isCreateMode()" color="primary" mat-raised-button mat-button type="submit" class="btn-large">Create Order</button>
+    <button *ngIf="isUpdateMode()" color="primary" mat-raised-button type="submit" class="btn-large">Update Order</button>
+  </mat-dialog-actions>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icPrint"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDownload"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDelete"></mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

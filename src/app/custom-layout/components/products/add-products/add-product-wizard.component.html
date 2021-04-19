@@ -1,0 +1,2583 @@
+<!-- <vex-secondary-toolbar current="">
+  <button class="ml-2" (click)="returnBack()" color="primary" mat-icon-button type="button">
+    <mat-icon [icIcon]="icArrowBack"></mat-icon>
+  </button>
+  <vex-breadcrumbs [crumbs]="['Product', 'Add Product']" fxFlex="auto"></vex-breadcrumbs>
+  <button class="ml-2" color="primary" mat-icon-button type="button">
+    <mat-icon [icIcon]="icMoreVert"></mat-icon>
+  </button>
+</vex-secondary-toolbar> -->
+<alert></alert>
+
+<vex-page-layout>
+  <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <div class="w-full flex flex-col sm:flex-row justify-between">
+      
+      <div>
+        <h1 class="title mt-0 mb-1">Product Management</h1>
+        <vex-breadcrumbs [crumbs]="breadcrumbsParams"></vex-breadcrumbs>
+      </div>
+
+
+    </div>
+  </vex-page-layout-header>
+
+  <vex-page-layout-content [class.px-gutter]="layoutCtrl.value === 'boxed'"
+    [class.px-gutter]="layoutCtrl.value === 'fullwidth'" class="-mt-6">
+
+
+
+    <!-- <h2 class="title mb-4" fxLayout="row" fxLayoutAlign="start center">
+      <span @scaleIn [style.background-color]="theme.colors.primary['500'] | colorFade:0.9"
+        class="w-10 h-10 rounded-full text-primary-500 mr-3 flex items-center justify-center">
+        <ic-icon [icon]="icDescription" height="20px" width="20px"></ic-icon>
+      </span>
+      <span @fadeInRight class="block">Add New Product</span>
+    </h2> -->
+
+    <!-- UPDATE FORM -->
+    <div class="card overflow-auto -mt-16 1" *ngIf="isUpdateView">
+      <div @fadeInUp class="card overflow-hidden">
+        <mat-tab-group mat-align-tabs="start" [selectedIndex]="selectedTab.value" (selectedIndexChange)="selectTab($event)" class="product-mat-tab">
+          <mat-tab label="Product Details">
+            <form [formGroup]="accountFormGroup" class="px-6">
+
+              <ng-template matStepLabel >Product Details</ng-template>
+              <div  
+                *ngIf="isUpdateView"
+                style="background-color: #F2F4F6; " class="border-b border-t border-dark px-6 py-5 -mx-6 mb-5" fxLayout="row"
+              >
+                <h3 class=" red float-left" style="color: #1A202E; font-size: 20px;" fxFlex="50" fxLayoutAlign="start center">Product Overview </h3>
+                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+
+                  <mat-progress-spinner mode="indeterminate" diameter="35"
+                  *ngIf="showLoader"
+                  ></mat-progress-spinner>
+
+                  <button class="btn-large" [disabled]="disableEditButton" color="primary" mat-raised-button
+                  (click)="submit('update')"
+                  >Edit Details
+                  </button>
+                </div>
+              </div>
+              <div>
+                <h2 class="title mt-4 ">Product Details</h2>
+                <h2 class="mb-4 text-secondary" style="font-size: 15px;">{{customerTitle}}</h2>
+
+              </div>
+
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0">
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Customer</mat-label>
+                  
+                    <mat-select formControlName="customerId" (click)="$event.stopPropagation();" id="customer-field" required>
+                      <mat-option *ngFor="let customer of customerData"  [value]="customer.id"
+                      (click)="getBrandByCustomerById(customer.id)"                      
+                       >{{ customer.name}}</mat-option>
+                    </mat-select>
+                    <mat-hint>Customer field is required.</mat-hint>
+                </mat-form-field>
+
+              </div>
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="100">
+                    <mat-label>Product Name</mat-label>
+                    <input cdkFocusInitial formControlName="pName" matInput required>
+                    <mat-hint>Product name field is required.</mat-hint>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Brand</mat-label>
+                    <mat-select formControlName="brandName" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let b of brandData"  [value]="b.id"
+                        >{{ b.name}}</mat-option>
+                    </mat-select>
+                    <div class="field-spinner" *ngIf="showBrandLoader"><mat-progress-spinner mode="indeterminate" diameter="30"></mat-progress-spinner></div>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Material</mat-label>
+                    <mat-select formControlName="material" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'material')" >
+                      <mat-option *ngFor="let m of materialData"  [value]="m.id" >{{ m.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Category</mat-label>
+                  <mat-select formControlName="productCategoryId" (click)="$event.stopPropagation();">
+                    <mat-option 
+                      *ngFor="let data of productCategoriesData"  
+                      [value]="data.id"
+                    >{{data.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Type</mat-label>
+                  <mat-select formControlName="typeConfig" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'type')">
+                    <mat-option *ngFor="let m of typeConfigurationProperties"  [value]="m.id" >{{ m.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Coating (Grip)</mat-label>
+                  <mat-select formControlName="coatingGrip" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'grip')">
+                    <mat-option *ngFor="let g of gripData"  [value]="g.id" >{{ g.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Coating (Donning)</mat-label>
+                  <mat-select formControlName="coatingDonning" (click)="$event.stopPropagation();" >
+                    <mat-option *ngFor="let d of donningData"  [value]="d.id" >{{ d.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>                
+              </div>
+
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Total Length (mm)</mat-label>
+                    <input cdkFocusInitial formControlName="totalLength" matInput type="number" min="0">
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Powder Content</mat-label>
+                    <mat-select formControlName="staticPowderContent" (click)="$event.stopPropagation();">
+                      <mat-option value="Powdered" >Powdered</mat-option>
+                      <mat-option value="Powder Free">Powder Free</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Texture</mat-label>
+                    <mat-select formControlName="texture" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'texture')">
+                      <mat-option *ngFor="let t of textureData"  [value]="t.id" >{{ t.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Color</mat-label>
+                    <mat-select formControlName="color" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'color')">
+                      <mat-option *ngFor="let c of colorData"  [value]="c.id" >{{ c.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>                
+              </div>
+
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Price/Carton</mat-label>
+                    <input cdkFocusInitial formControlName="unitPrice" type="number" matInput  min="0" (blur)="formatCurrencyTaxableValue($event)" required>
+                    <mat-hint>Price/Carton is required.</mat-hint>
+                    <div *ngIf="submitted && f.unitPrice.errors" class="invalid-feedback">
+                      <div style="color: #f55c51;" *ngIf="f.unitPrice.errors.required">Unit Price is required</div>
+                    </div>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Brand Code</mat-label>
+                    <input cdkFocusInitial formControlName="brandCode" matInput>
+                  </mat-form-field>                  
+                </div>
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Former Type</mat-label>
+                    <mat-select formControlName="formerType" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let d of formerTypeProperties"  [value]="d.id" >{{ d.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Packing Material</mat-label>
+                    <mat-select formControlName="packingMaterialId" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let d of staticPackingMaterials"  [value]="d.id" >{{ d.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <div fxFlex="50"  style="position: relative;" class="multi-search-field mt-1" >
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Size'"
+                    [data]="sizesVariationsData"
+                    formControlName="sizes"
+                    [settings]="sizeDropdownSettings"
+                    (onSelect)="onItemSelect($event)"
+                    (onDeSelect)="onItemSelect($event)"
+                    (onSelectAll)="onItemSelect($event)"
+                    *ngIf="showMultiSelect"
+                    >
+                  </ng-multiselect-dropdown>
+                  <!-- <mat-select-autocomplete  appearance="outline" color="primary"
+                  class="mat-select-field"
+                  [placeholder]="'Size'"
+                  [options]="sizesVariationsData"
+                  [multiple]='true'
+                  name="optionsSelector"
+                  [labelCount]="20"
+                  ngDefaultControl
+                  [formControl]="accountFormGroup.controls['sizes']"
+                  (selectionChange)="setDynamicVariant()"
+                  required>
+                </mat-select-autocomplete> -->
+              
+                  <!-- <mat-form-field appearance="outline" color="primary" fxFlex="100">
+                    <mat-label>Sizes</mat-label>
+                    
+                    <input cdkFocusInitial formControlName="sizes" matInput>
+
+                  </mat-form-field> -->
+                </div>
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label>Product Code</mat-label>
+                    <input cdkFocusInitial formControlName="productCodeL"  matInput required maxlength="1">
+                    <mat-hint>Product code is required.</mat-hint>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeS"  matInput maxlength="1">
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeC"  matInput maxlength="1">
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeT"  matInput maxlength="1">
+
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeSize"  matInput maxlength="3">
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeWidth"  matInput maxlength="1">
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeCr" matInput>
+
+                  </mat-form-field>
+                </div>
+              </div>
+
+
+              <!---Multiple Customer--->
+
+              <h2 class="title m-0 margin-top-head" >Multiple Customer</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px"  >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasMultipleCustomer" (click)="multiCustomersField()" color="primary">
+                  {{multiCustomer}}
+                </mat-checkbox>
+              </div>
+              <ng-container *ngIf="showCustomer" (click)="$event.stopPropagation();">
+                
+                
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0"
+                class="margin-top-head" >
+                
+                <div fxFlex="100" fxFlex.lt-m="50" fxFlex.lt-s="100" class="multi-search-field">
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Customers'"
+                    [data]="customerData"
+                    formControlName="multipleCustomer"
+                    [settings]="dropdownSettings"
+                    (onSelect)="onItemSelect($event)">
+                  </ng-multiselect-dropdown>
+                </div>
+                <!-- <div fxFlex="100" fxFlex.lt-m="50" fxFlex.lt-s="100">
+                    <mat-select-autocomplete  appearance="outline" color="primary"
+                      class="mat-select-field"
+                      [placeholder]="'Customers'"
+                      [options]="customerData"
+                      [multiple]='true'
+                      [display]="'name'"
+                      [value]="'id'"
+                      name="optionsSelector"
+                      [labelCount]="5"
+                      ngDefaultControl
+                      [formControl]="accountFormGroup.controls['multipleCustomer']"
+                      matTooltip="Info about the action"
+                      >
+                    </mat-select-autocomplete>
+                  </div> -->
+
+                  <!-- <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                    <mat-label>Branch Name</mat-label>
+                    <mat-select formControlName="bName" (click)="$event.stopPropagation();">
+                      <mat-option value="kcGlobal1">
+                        kc Global Sales, LLC (Radlands), Kimberlary Clark (China) , Company
+                        Ltd
+                      </mat-option>
+                      <mat-option value="kcGlobal2">
+                        Zhong Mao Gong Yi Li Pin, You Xian Gong Si (China) , Company
+                        Ltd
+                      </mat-option>
+                      <mat-option value="kcGlobal3">
+                        Xing Hua Da Jie, Xing Tao  (China) , Company
+                        Ltd
+                      </mat-option>
+                    </mat-select>
+
+                  </mat-form-field> -->
+
+                </div>
+              </ng-container>
+
+
+
+              <!---Qualty Assurance--->
+              <h2 class="title m-0 margin-top-head">Quality Assurance Standard</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px"  >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasQualityAssuranceStandard"  (click)="multiQAField()" color="primary">
+                  {{qAName}}
+                </mat-checkbox>
+              </div>
+              <ng-container *ngIf="showQA" (click)="$event.stopPropagation();"  >
+                <div class="margin-top-head"></div>
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0"                  
+                  formArrayName="qualityAssuranceStandardFields"
+                  *ngFor="let data of qualityAssuranceStandardFields.controls; let qualityIndex=index"  
+                >
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" class="{{qualityIndex > 0 ? 'field-mtr-5' : ''}}"
+                    [formGroupName]="qualityIndex"  
+                  >
+                    <mat-label *ngIf="qualityIndex === 0">Characteristic</mat-label>
+                    <input cdkFocusInitial formControlName="disable_property" matInput>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex"  > 
+                    <mat-label>Inspection Level</mat-label>
+                    <mat-select formControlName="level" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let value of inspectionLevelValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex"  >
+                    <mat-label>AQL</mat-label>
+                    <mat-select formControlName="aql" (click)="$event.stopPropagation();" >
+                      <mat-option *ngFor="let value of aqlValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+                </div>
+
+              </ng-container>
+
+
+
+
+
+              <!---Protain & Power Content--->
+
+              <h2 class="title m-0 margin-top-head" >Protein & Powder Content</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px"  >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasProteinAndPowderCotent" (click)="multiPPField()" color="primary">
+                  {{ppName}}
+                </mat-checkbox>
+              </div>
+              <ng-container *ngIf="showPP" (click)="$event.stopPropagation();">
+                <div class="margin-top-head"></div>
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0"                  
+                  formArrayName="proteinPowderContentFields"
+                  *ngFor="let data of proteinPowderContentFields.controls; let qualityIndex=index"    
+                >                  
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" class="{{qualityIndex > 0 ? 'field-mtr-5' : ''}}" [formGroupName]="qualityIndex"  >
+                    <mat-label *ngIf="qualityIndex === 0">Characteristic</mat-label>
+                    <input cdkFocusInitial formControlName="disable_property" matInput>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex"  >
+                    <mat-label>Referenced Standard</mat-label>
+                    <mat-select formControlName="ref" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let value of referencedStandardValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex"  >
+                    <mat-label>Amount</mat-label>
+                    <input cdkFocusInitial formControlName="amount" matInput>
+                  </mat-form-field>
+                </div>
+
+
+
+                
+
+              </ng-container>
+
+
+
+              <!---Physical Propertise Content--->
+
+              <h2 class="title m-0 margin-top-head">Physical Properties</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px"  >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasPhysicalProperties" (click)="multiPhysicalField()" color="primary">
+                  {{pPhsicalName}}
+                </mat-checkbox>
+              </div>
+
+              <ng-container *ngIf="showPhysical" (click)="$event.stopPropagation();">
+                <div formArrayName="phsical_propertise" class="margin-top-head">
+                  <div 
+                  fxLayout="row"
+                   fxLayout.lt-sm="column" 
+                   fxLayoutGap="8px" 
+                   fxLayoutGap.lt-sm="0"
+                  
+                  *ngFor="let item of physicalPropertise.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="24">
+                    <mat-label>Referenced Standard</mat-label>
+                    <mat-select formControlName="ref" (click)="$event.stopPropagation();" (valueChange)="changephysical(pointIndex, $event)">
+                      <mat-option *ngFor="let value of referencedStandardValues"  [value]="value" >{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="24">
+                    <mat-label>Select Type</mat-label>
+                    <mat-select formControlName="agigingType" (click)="$event.stopPropagation();" (valueChange)="changephysical(pointIndex, $event)">
+                      <mat-option *ngFor="let value of ageingStateValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="24">
+                    <mat-label>Select Type</mat-label>
+                    <mat-select formControlName="tEtype" (click)="$event.stopPropagation();" (valueChange)="changephysical(pointIndex, $event)">
+                      <mat-option *ngFor="let e of eTypeOption;" value="{{e.value}}">{{e.text}} </mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="24" *ngIf="showForceAtBreak[pointIndex]">
+                    <mat-label>Force At Break</mat-label>
+                    <input cdkFocusInitial formControlName="forceAtBreak" matInput>
+                   
+                  </mat-form-field>
+
+                  <div fxFlex="24" *ngIf="showMinMaxTar[pointIndex]">
+                    <div fxLayout="row" fxLayoutGap="8px">
+                      <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                        <mat-label>Max</mat-label>
+      
+                        <input cdkFocusInitial formControlName="max" matInput>
+      
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                        <mat-label>Tar</mat-label>
+                        <input cdkFocusInitial formControlName="tar" matInput>
+      
+                      </mat-form-field>
+      
+                      <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                        <mat-label>Min</mat-label>
+                        <input cdkFocusInitial formControlName="min" matInput>
+      
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="btn-dflex" fxFlex="4">
+                    <button style="color: #B8BFCA;"  (click)="deletePhysicalPropertise(pointIndex)" mat-button type="button">
+                      <mat-icon [icIcon]="icTrash" size="20px"></mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0">
+
+                  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0" align="start" class="mb-5">
+                    <a href="javascript:" class="text-primary" 
+                      [style.color]="theme.colors.primary['500']"
+                      style="font-weight: 500;"
+                      (click)="addPhysicalPropertise()"
+                    >
+                      <ic-icon [icon]="icAdd" inline="true" size="13px"></ic-icon>
+                      {{ 'Add new line'}}
+                    </a>
+                  </div>
+              </div>
+
+              </div>
+              </ng-container>
+
+
+
+              <!---Colorimeter Reading Specifications--->
+
+              <h2 class="title m-0 margin-top-head" >Colorimeter Reading Specifications</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasColorimeterReadingSpecifications" (click)="colorMeterField()" color="primary">
+                  {{pColorMeterName}}
+                </mat-checkbox>
+              </div>
+              <div class="margin-top-head"></div>
+              <ng-container *ngIf="showColorMeter" (click)="$event.stopPropagation();">
+                
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0"                  
+                  formArrayName="colorimeterSpecificationsFields"
+                  *ngFor="let data of colorimeterSpecificationsFields.controls; let qualityIndex=index"  
+                >                  
+                  
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" class="{{qualityIndex > 0 ? 'field-mtr-5' : ''}}"
+                    [formGroupName]="qualityIndex">
+                    <mat-label>Characteristic</mat-label>
+                    <input cdkFocusInitial formControlName="disable_property" matInput>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex">
+                    <mat-label>Minimum</mat-label>
+                    <input cdkFocusInitial formControlName="min" matInput type="number" min="0">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex">
+                    <mat-label>Target</mat-label>
+                    <input cdkFocusInitial formControlName="tar" matInput type="number" min="0">
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex">
+                    <mat-label>Maximun</mat-label>
+                    <input cdkFocusInitial formControlName="max" matInput type="number" min="0">
+                  </mat-form-field>
+                </div>
+              </ng-container>
+
+              <!---Clean Room Specifications Specifications--->
+
+              <h2 class="title m-0 margin-top-head" >Clean Room Specifications</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasCleanroomSpecifications" (click)="cleanRoomField()" color="primary">
+                  {{pcleanRoomName}}
+                </mat-checkbox>
+              </div>
+              <div class="margin-top-head"></div>
+              <ng-container *ngIf="showCleanRoom" (click)="$event.stopPropagation();" 
+              >
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0" 
+                  formGroupName="cleanRoomSpecificationsFields"
+                >
+                  
+                  <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                    <mat-label>Class</mat-label>
+                    <mat-select formControlName="class" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let e of cleanroomClassValues;" value="{{e}}">{{e}} </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                    <mat-label>Non-Volatile Residue </mat-label>
+                    <input cdkFocusInitial formControlName="nonVolatile" matInput>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                    <mat-label>Silicon Oil Presence</mat-label>
+                    <input cdkFocusInitial formControlName="silicon" matInput>
+                  </mat-form-field>
+                </div>
+
+                <!--Ionic Burden-->
+                <div>
+
+                  <h2 class="title m-0">Ionic Burden</h2>
+                
+                <div formArrayName="ion_points" class="margin-top-head">
+                  <div 
+                  fxLayout="row"
+                   fxLayout.lt-sm="column" 
+                   fxLayoutGap="8px" 
+                   fxLayoutGap.lt-sm="0"
+                  
+                  *ngFor="let item of ionPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                    <mat-label>Anion </mat-label>
+
+                    <mat-select formControlName="anion" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let value of anionValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                    <mat-label>Count (ug/cm2) </mat-label>
+                    <input cdkFocusInitial formControlName="count" matInput type="number" min="0">
+                  </mat-form-field>
+                  <div class="btn-dflex">                        
+                    <button color="primary" (click)="deleteIonBuid(pointIndex)" mat-button type="button">
+                      <ic-icon [icon]="icTrash" inline="true" size="20px" style="color: #B8BFCA;"  ></ic-icon>
+                    </button>
+                    </div>
+                  </div>
+
+
+                </div>
+
+              </div>
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0">
+
+                  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0" align="start" class="mb-5">
+                    <a href="javascript:" class="text-primary" 
+                      [style.color]="theme.colors.primary['500']"
+                      style="font-weight: 500;"
+                      (click)="addIonPoint('')"
+                    >
+                      <ic-icon [icon]="icAdd" inline="true" size="13px"></ic-icon>
+                      {{ 'Add new line'}}
+                    </a>
+                  </div>
+              </div>
+
+
+
+                
+                  <div>
+
+                    <div formArrayName="ion_cartons">
+                      <div 
+                      fxLayout="row"
+                       fxLayout.lt-sm="column" 
+                       fxLayoutGap="8px" 
+                       fxLayoutGap.lt-sm="0"
+                      
+                      *ngFor="let item of ionCartons.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                        <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                          <mat-label>Cations</mat-label>
+                          <mat-select formControlName="cations" (click)="$event.stopPropagation();">
+                            <mat-option *ngFor="let value of cationValues"  [value]="value">{{value}}</mat-option>
+                          </mat-select>
+
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                          <mat-label>Count (ug/cm2)</mat-label>
+                          <input cdkFocusInitial formControlName="count" matInput type="number" min="0">
+                          <!-- <mat-select formControlName="countUgCm2" (click)="$event.stopPropagation();">
+                            <mat-option value="0"> 0</mat-option>
+                            <mat-option value="0.149"> 0.149</mat-option>
+                          </mat-select> -->
+
+                        </mat-form-field>
+                        <div class="btn-dflex">                        
+                          <button color="primary" (click)="deleteIonCartons(pointIndex)" mat-button type="button">
+                            <ic-icon [icon]="icTrash" inline="true" size="20px" style="color: #B8BFCA;" ></ic-icon>
+                          </button>
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                  </div>
+
+                  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0">
+
+                      <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0" align="start" class="mb-5">
+                        <a href="javascript:" class="text-primary" 
+                          [style.color]="theme.colors.primary['500']"
+                          style="font-weight: 500;"
+                          (click)="addIonCartons('')"
+                        >
+                          <ic-icon [icon]="icAdd" inline="true" size="13px"></ic-icon>
+                          {{ 'Add new line'}}
+                        </a>
+                      </div>
+                  </div>
+                
+              </ng-container>
+
+
+              <!-- <div class="mt-4" fxLayout="column" fxLayoutGap="8px">
+              <mat-form-field fxFlex="auto">
+                <mat-label>Account Username</mat-label>
+                <input formControlName="username" matInput required>
+                <mat-hint>This will be your unique login name.</mat-hint>
+              </mat-form-field>
+  
+              <mat-form-field fxFlex="auto">
+                <mat-label>Name</mat-label>
+                <input formControlName="name" matInput required>
+                <mat-hint>How may we call you?</mat-hint>
+              </mat-form-field>
+  
+              <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                <mat-form-field fxFlex="auto">
+                  <mat-label>E-Mail</mat-label>
+                  <input formControlName="email" matInput required>
+                  <mat-hint align="end">example@example.com</mat-hint>
+                </mat-form-field>
+  
+                <div fxFlex="auto" fxLayout="row" fxLayoutGap="8px">
+                  <mat-form-field class="vex-flex-form-field" fxFlex="none">
+                    <mat-label>Code</mat-label>
+                    <mat-select formControlName="phonePrefix">
+                      <mat-option *ngFor="let option of phonePrefixOptions" [value]="option">{{ option }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+  
+                  <mat-form-field class="vex-flex-form-field" fxFlex="auto">
+                    <mat-label>Phone Number</mat-label>
+                    <input formControlName="phone" matInput>
+                    <mat-hint align="end"></mat-hint>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div> -->
+
+            <div *ngIf="!isUpdateView">
+              <mat-divider class="-mx-6 text-border"></mat-divider>
+              <div class="actions mt-4" fxLayout="row" fxLayoutGap="8px">
+                <div style="flex: 1;">
+                </div>
+                <div style="flex: 1;" fxLayoutAlign="end " >
+                  <button [disabled]="accountFormGroup.invalid" class="btn-large" color="primary" mat-raised-button  (click)="selectTab(1)">Next
+                  </button>
+                </div>
+              </div>
+            </div>
+            </form>
+          </mat-tab>
+          <mat-tab label="Variant">
+            <!-- second tab -->
+            <form [formGroup]="variantsFormGroup" class="px-6">
+              <ng-template matStepLabel  ><button type="button">Variant</button></ng-template>
+              <!-- in case of UPDATE  -->
+              <div  
+                *ngIf="isUpdateView"
+                style="background-color: #F2F4F6; " class="border-b border-t border-dark px-6 py-5 -mx-6 mb-5" fxLayout="row"
+              >
+                <h3 class=" red float-left" style="color: #1A202E; font-size: 20px;" fxFlex="50" fxLayoutAlign="start center">Product Size Overview </h3>
+                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+                  <mat-progress-spinner mode="indeterminate" diameter="35" *ngIf="showLoader"></mat-progress-spinner>
+                  <button class="btn-large" [disabled]="disableEditButton" color="primary" mat-raised-button
+                  (click)="submit('update')"
+                  >Edit Details
+                  </button>
+                </div>
+              </div>
+              <!-- / -->
+
+              <h2 class="title mt-4">Size Specifications</h2>
+              <div class="mb-4 text-secondary" >Set up your product length, width and weight specifications.  </div>
+              
+              <table class="w-full table table-block mt-4"  >
+                <tr>
+                  <th style="width: 20%;">{{'Size' | uppercase}} </th>
+                  <th>{{'Total Length' | uppercase}} (mm)</th>
+                  <th>{{'Palm width' | uppercase}} (mm)</th>
+                  <th>{{'Weight' | uppercase}} (g)</th>
+                </tr>
+                <tbody formArrayName="specifications_sizes">
+                  <tr *ngFor="let variants of specificationsSizes.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100" 
+                        >
+                          <mat-label>Minimum</mat-label>
+                          <input cdkFocusInitial formControlName="lengthMin" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Target</mat-label>
+                          <input cdkFocusInitial formControlName="lengthTarget" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Maximun</mat-label>
+                          <input cdkFocusInitial formControlName="lengthMax" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Minimum</mat-label>
+                          <input cdkFocusInitial formControlName="widthMin" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Target</mat-label>
+                          <input cdkFocusInitial formControlName="widthTarget" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Maximun</mat-label>
+                          <input cdkFocusInitial formControlName="widthMax" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Minimum</mat-label>
+                          <input cdkFocusInitial formControlName="weightMin" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Target</mat-label>
+                          <input cdkFocusInitial formControlName="weightTarget" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Maximun</mat-label>
+                          <input cdkFocusInitial formControlName="weightMax" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody formArrayName="variants_thickness">
+                  <tr>
+                    <td colspan="4">
+                      <h2 class="title m-0">Thickness (mm)</h2>
+                      <div class="text-secondary">Set up your product cuff, palm and fingertip thickness specifications.  </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="1">
+                      <small class="text-secondary">{{'Characteristic' | uppercase}} </small>
+                    </td>
+                  </tr>
+
+                  <tr *ngFor="let variants of variantsThickness.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td colspan="3">
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Minimum</mat-label>
+                          <input cdkFocusInitial formControlName="min" value="" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Target</mat-label>
+                          <input cdkFocusInitial formControlName="target" value="" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Maximun</mat-label>
+                          <input cdkFocusInitial formControlName="max" value="" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                    
+                  </tr>
+                </tbody>
+                 
+              </table>
+              
+              <mat-divider class="-mx-6 text-border" ></mat-divider>
+
+              <div class="actions mt-4" fxLayout="row" fxLayoutGap="8px" *ngIf="!isUpdateView" >
+                <div style="flex: 1;">
+                  
+                </div>
+                <div style="flex: 1;" fxLayoutAlign="end " >
+                  <div fxLayout="row" fxLayoutGap="8px">
+                    <button class="btn-large border " color="primary" mat-button  type="button" (click)="selectTab(0)">Back
+                    </button>
+                    <button class="btn-large" [disabled]="variantsFormGroup.invalid" color="primary" mat-raised-button (click)="selectTab(2)">Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <!-- /second tab -->
+          </mat-tab>
+          <mat-tab label="Packing Details">
+            <!-- third tab -->
+            <form [formGroup]="packingDetailsFormGroup" class="px-6">
+              <ng-template matStepLabel ><button type="button" >Packing Details</button></ng-template>
+            
+              <!-- in case of UPDATE  -->
+              <div  
+                *ngIf="isUpdateView"
+                style="background-color: #F2F4F6; " class="border-b border-t border-dark px-6 py-5 -mx-6 mb-5" fxLayout="row"
+              >
+                <h3 class=" red float-left" style="color: #1A202E; font-size: 20px;" fxFlex="50" fxLayoutAlign="start center">Packing Overview </h3>
+                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+                  <mat-progress-spinner mode="indeterminate" diameter="35" *ngIf="showLoader"></mat-progress-spinner>
+                  <button class="btn-large" [disabled]="disableEditButton" color="primary" mat-raised-button
+                  (click)="submit('update')"
+                  >Edit Details
+                  </button>
+                </div>
+              </div>
+              <!-- / -->
+              <h2 class="title mt-4">Carton Specifications</h2>
+              <div class="mb-4 text-secondary" >Set up the carton specifications of your product for packing purposes.</div>
+
+              <table class="w-full table table-block mt-8" >
+                <tr>
+                  <th style="width: 20%;">{{'Size' | uppercase}} </th>
+                  <th>{{'Carton Dimensions' | uppercase}} (mm)</th>
+                </tr>
+                <tbody formArrayName="cartoon_specifications">
+                  <tr *ngFor="let variants of cartoonSpecifications.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Length (mm)</mat-label>
+                          <input cdkFocusInitial formControlName="length" type="number" matInput min="0" (input)="onCartonSpecChange(pointIndex)" required>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Width (mm)</mat-label>
+                          <input cdkFocusInitial formControlName="width" type="number" matInput min="0" (input)="onCartonSpecChange(pointIndex)" required>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Height (mm)</mat-label>
+                          <input cdkFocusInitial formControlName="height" type="number" matInput min="0" (input)="onCartonSpecChange(pointIndex)" required>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Volume (mm)</mat-label>
+                          <input cdkFocusInitial formControlName="volume" type="number" matInput min="0" readonly>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Weight (kg)</mat-label>
+                          <input cdkFocusInitial formControlName="weight" type="number" matInput min="0" required>
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="4">
+                    <h2 class="title m-0">Packing Specifications</h2>
+                    <div class="text-secondary" >Set up packing specifications of your product.</div>
+                  </td>
+                </tr>
+                <tbody formArrayName="packing_specifications">
+                  <tr *ngFor="let variants of packingSpecifications.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" fxFlex="10">
+                          <mat-label>Pcs/Box</mat-label>
+                          <input cdkFocusInitial formControlName="pcsBox"   type="number" matInput min="0" (input)="onPackingSpecChange(pointIndex)" required>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" color="primary" fxFlex="10" class="readonly-field pb-00">
+                          <mat-label>Piece Type</mat-label>
+                          <input cdkFocusInitial matInput formControlName="pieceType" type="text" readonly >
+                          <!-- <mat-select formControlName="pieceType" (click)="$event.stopPropagation();" required>
+                            <mat-option *ngFor="let d of pieceTypeValues"  [value]="d" >{{ d }}</mat-option>
+                          </mat-select> -->
+                        </mat-form-field>
+                        <div fxFlex="5" fxLayoutAlign="center" style="font-weight: 500; color: var(--text-secondary);">
+                          in a
+                        </div>
+                        <mat-form-field appearance="outline" color="primary" fxFlex="30">
+                          <mat-label>Box Type</mat-label>
+                          <mat-select formControlName="boxType" (click)="$event.stopPropagation();" required>
+                            <mat-option *ngFor="let d of boxTypeValues"  [value]="d" >{{ d }}</mat-option>
+                          </mat-select>
+                        
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" fxFlex="10">
+                          <mat-label>Box/Carton</mat-label>
+                          <input cdkFocusInitial formControlName="boxCarton" type="number" matInput min="0" (input)="onPackingSpecChange(pointIndex)" required>
+                        </mat-form-field>
+                        <div fxFlex="5" fxLayoutAlign="center" style="font-weight: 500; color: var(--text-secondary);">
+                          in a
+                        </div>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field readonly-field" fxFlex="20">
+                          <mat-label>Carton Type</mat-label>
+                          <input cdkFocusInitial formControlName="cartonType"  matInput readonly >
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field readonly-field" fxFlex="10">
+                          <mat-label>Pcs/Carton</mat-label>
+                          <input cdkFocusInitial formControlName="pcsCarton" matInput readonly>
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="4">
+                    <h2 class="title m-0">Packing Instructions</h2>
+                    <div class="text-secondary" >Create the packing instructions for this product.</div>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td colspan="4">
+                    <div fxLayout="row" class="text-secondary">
+                      <div fxLayout="row" fxFlex="5"><small>#</small></div>
+                      <div fxLayout="row" fxFlex="95"><small>{{'Description' | uppercase}}</small></div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tbody formArrayName="packing_instructions">
+                  <tr *ngFor="let inst of packingInstructions.controls; let packingInsIndex=index" [formGroupName]="packingInsIndex">
+                    <td colspan="4">
+                      <div fxLayout="row" fxLayoutAlign="center center">
+                        <div fxLayout="row" fxFlex="5">{{packingInsIndex + 1}}</div>
+                        <div fxLayout="row" fxFlex="90" class="field-pb-0">
+                          <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field field-mtr-5" fxFlex="100">
+                            <input cdkFocusInitial formControlName="description" matInput placeholder="Enter Description">
+                          </mat-form-field>                        
+                        </div>
+                        <div fxLayout="row" fxFlex="5" fxLayoutAlign="center center" class="pointer">
+                          <ic-icon [icon]="icTrash" inline="true" size="20px" style="color: #B8BFCA;" (click)="deletePackingInstructions(packingInsIndex)" ></ic-icon>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="4">
+                    <a href="javascript:" class="text-primary" 
+                      [style.color]="theme.colors.primary['500']"
+                      style="font-weight: 500;"
+                      (click)="addPackingInstructions()"
+                    >
+                      <ic-icon [icon]="icAdd" inline="true" size="13px"></ic-icon>
+                      {{ 'Add Item Line' | uppercase}}
+                    </a>
+                  </td>
+                </tr>
+                <tr *ngIf="!isUpdateView">
+                  <td colspan="4">
+                    <div class="actions mt-4" fxLayout="row"  fxLayoutGap="8px">
+                      <div style="flex: 1;">
+                      </div>
+                      <div style="flex: 1;" fxLayoutAlign="end " >
+                        <div fxLayout="row" fxLayoutGap="8px">
+                          <button class="btn-large border" color="primary" mat-button  type="button" (click)="selectTab(1)">Back
+                          </button>
+                          <button class="btn-large" [disabled]="packingDetailsFormGroup.invalid" color="primary" mat-raised-button (click)="selectTab(3)">Next
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </form>
+            <!-- /third tab -->
+          </mat-tab>
+          <mat-tab label="Load Plan">
+            <!-- forth tab -->
+            <form [formGroup]="loanPlanFormGroup" class="px-6">
+              <ng-template matStepLabel >Load Plan</ng-template>
+              <!-- in case of UPDATE  -->
+              <div  
+                *ngIf="isUpdateView"
+                style="background-color: #F2F4F6; " class="border-b border-t border-dark px-6 py-5 -mx-6  {{isUpdateView ? '' : 'mb-5'}}" fxLayout="row"
+              >
+                <h3 class=" red float-left" style="color: #1A202E; font-size: 20px;" fxFlex="50" fxLayoutAlign="start center">Load Plan Overview </h3>
+                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+                  <mat-progress-spinner mode="indeterminate" diameter="35" *ngIf="showLoader"></mat-progress-spinner>
+                  <button class="btn-large" [disabled]="disableEditButton" color="primary" mat-raised-button
+                  (click)="submit('update')"
+                  >Edit Details
+                  </button>
+                </div>
+              </div>
+              <!-- / -->
+
+              <div class="title mt-4" >Loan Plans</div>
+              <div class="text-secondary mb-4" >Configure the loading types and plans for your product.</div>
+
+              <table class="w-full table table-block" >
+                <tr >
+                  <td colspan="2">
+                    <mat-checkbox class="checkbox" color="primary" (click)="toglleBlock('big_slipsheet')" formControlName="bigSlipCheckbox" >
+                      <div class="title m-0"> Big Slipsheet</div>
+                    </mat-checkbox>
+                  </td>
+                </tr>
+                <tr *ngIf="showBigSlipsheet">
+                  <th style="width: 20%;">{{'Container Type' | uppercase}} </th>
+                  <th>{{'Load Plan' | uppercase}} (mm)</th>
+                </tr>
+                <tbody formArrayName="big_slipsheet" *ngIf="showBigSlipsheet">
+                  <tr *ngFor="let variants of bigSlipsheet.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Floor</mat-label>
+                          <input cdkFocusInitial formControlName="floor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Top</mat-label>
+                          <input cdkFocusInitial formControlName="top" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Floor)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowFloor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Top)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowTop" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="2">
+                    <mat-checkbox class="checkbox" color="primary" (click)="toglleBlock('small_slipsheet')" formControlName="smallSlipCheckbox">
+                      <div class="title m-0"> Small Slip Sheet</div>
+                    </mat-checkbox>
+                  </td>
+                </tr>
+                <tr *ngIf="this.showSmallSlipsheet">
+                  <th style="width: 20%;">{{'Container Type' | uppercase}} </th>
+                  <th>{{'Load Plan' | uppercase}} (mm)</th>
+                </tr>
+                <tbody formArrayName="small_slipsheet" *ngIf="this.showSmallSlipsheet"> 
+                  <tr *ngFor="let variants of smallSlipsheet.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Floor</mat-label>
+                          <input cdkFocusInitial formControlName="floor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Top</mat-label>
+                          <input cdkFocusInitial formControlName="top" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Floor)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowFloor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Top)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowTop" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="2">
+                    <mat-checkbox class="checkbox" color="primary" (click)="toglleBlock('fumigated_pallets')" formControlName="fumigatedCheckbox">
+                      <div class="title m-0"> Fumigated Pallets</div>
+                    </mat-checkbox>
+                  </td>
+                </tr>
+                <tr *ngIf="this.showFumigatedPallets">
+                  <th style="width: 20%;">{{'Container Type' | uppercase}} </th>
+                  <th>{{'Load Plan' | uppercase}} (mm)</th>
+                </tr>
+                <tbody formArrayName="fumigated_pallets" *ngIf="this.showFumigatedPallets">
+                  <tr *ngFor="let variants of fumigatedPallets.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Floor</mat-label>
+                          <input cdkFocusInitial formControlName="floor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Top</mat-label>
+                          <input cdkFocusInitial formControlName="top" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Floor)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowFloor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Top)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowTop" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr >
+                  <td colspan="2">
+                    <div class="actions mt-4" fxLayout="row"  fxLayoutGap="8px">
+                      <div style="flex: 1;">
+                        <!-- <button class="btn-large border c-dark" color="primary" mat-button  type="button">Cancel
+                        </button> -->
+                      </div>
+                      <div style="flex: 1;" fxLayoutAlign="end " >
+                        <div fxLayout="row" fxLayoutGap="8px">
+                          <button class="btn-large border c-dark" color="primary" mat-button  type="button" (click)="selectTab(2)" *ngIf="!isUpdateView">Back
+                          </button>
+                        
+                          <button class="btn-large" (click)="submit('create')" [disabled]="loanPlanFormGroup.invalid" color="primary" mat-raised-button
+                          
+                            *ngIf="!isUpdateView"
+                          >Create
+                          </button>
+                          <button class="btn-large" (click)="submit('update')" [disabled]="disableEditButton" color="primary" mat-raised-button
+                          
+                            *ngIf="isUpdateView"
+                          > Update
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </form>
+            <!-- /forth tab -->
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+
+    <!-- /UPDATE FORM -->
+
+    <!-- CREATE FORM -->
+    <div class="card overflow-auto -mt-16 2" *ngIf="!isUpdateView">
+      <div @fadeInUp class="card overflow-hidden">
+        <mat-horizontal-stepper #stepper="matHorizontalStepper" [linear]="true">
+          <ng-template matStepperIcon="edit">
+            <mat-icon [icIcon]="icDoneAll"></mat-icon>
+          </ng-template>
+
+          <ng-template matStepperIcon="done">
+            <mat-icon [icIcon]="icDoneAll"></mat-icon>
+          </ng-template>
+
+          <mat-step [stepControl]="accountFormGroup">
+            <form [formGroup]="accountFormGroup">
+
+              <ng-template matStepLabel >Product Details</ng-template>
+              <div  
+                *ngIf="isUpdateView"
+                style="background-color: #F2F4F6; " class="border-b border-t border-dark px-6 py-5 -mx-6 mb-5" fxLayout="row"
+              >
+                <h3 class=" red float-left" style="color: #1A202E; font-size: 20px;" fxFlex="50" fxLayoutAlign="start center">Product Overview </h3>
+                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+
+                  <mat-progress-spinner mode="indeterminate" diameter="35"
+                  *ngIf="showLoader"
+                  ></mat-progress-spinner>
+
+                  <button class="btn-large" [disabled]="disableEditButton" color="primary" mat-raised-button
+                  (click)="submit('update')"
+                  >Edit Details
+                  </button>
+                </div>
+              </div>
+              <div>
+                <h2 class="title m-0 ">Product Details</h2>
+                <h2 class="mb-4 text-secondary" style="font-size: 15px;">{{customerTitle}}</h2>
+
+              </div>
+
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0">
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Customer</mat-label>
+                  
+                    <mat-select formControlName="customerId" (click)="$event.stopPropagation();" id="customer-field" required>
+                      <mat-option *ngFor="let customer of customerData"  [value]="customer.id"
+                      (click)="getBrandByCustomerById(customer.id)"                      
+                       >{{ customer.name}}</mat-option>
+                    </mat-select>
+                    <mat-hint>Customer field is required.</mat-hint>
+                </mat-form-field>
+
+              </div>
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="100">
+                    <mat-label>Product Name</mat-label>
+                    <input cdkFocusInitial formControlName="pName" matInput required>
+                    <mat-hint>Product name field is required.</mat-hint>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Brand</mat-label>
+                    <mat-select formControlName="brandName" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let b of brandData"  [value]="b.id"
+                        >{{ b.name}}</mat-option>
+                    </mat-select>
+                    <div class="field-spinner" *ngIf="showBrandLoader"><mat-progress-spinner mode="indeterminate" diameter="30"></mat-progress-spinner></div>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Material</mat-label>
+                    <mat-select formControlName="material" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'material')" >
+                      <mat-option *ngFor="let m of materialData"  [value]="m.id" >{{ m.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Category</mat-label>
+                  <mat-select formControlName="productCategoryId" (click)="$event.stopPropagation();">
+                    <mat-option 
+                      *ngFor="let data of productCategoriesData"  
+                      [value]="data.id"
+                    >{{data.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Type</mat-label>
+                  <mat-select formControlName="typeConfig" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'type')">
+                    <mat-option *ngFor="let m of typeConfigurationProperties"  [value]="m.id" >{{ m.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Coating (Grip)</mat-label>
+                  <mat-select formControlName="coatingGrip" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'grip')">
+                    <mat-option *ngFor="let g of gripData"  [value]="g.id" >{{ g.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                  <mat-label>Coating (Donning)</mat-label>
+                  <mat-select formControlName="coatingDonning" (click)="$event.stopPropagation();" >
+                    <mat-option *ngFor="let d of donningData"  [value]="d.id" >{{ d.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>                
+              </div>
+
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Total Length (mm)</mat-label>
+                    <input cdkFocusInitial formControlName="totalLength" matInput type="number" min="0">
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Powder Content</mat-label>
+                    <mat-select formControlName="staticPowderContent" (click)="$event.stopPropagation();">
+                      <mat-option value="Powdered" >Powdered</mat-option>
+                      <mat-option value="Powder Free">Powder Free</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Texture</mat-label>
+                    <mat-select formControlName="texture" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'texture')">
+                      <mat-option *ngFor="let t of textureData"  [value]="t.id" >{{ t.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Color</mat-label>
+                    <mat-select formControlName="color" (click)="$event.stopPropagation();" (selectionChange)="selectProductCodeProperty($event.value, 'color')">
+                      <mat-option *ngFor="let c of colorData"  [value]="c.id" >{{ c.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>                
+              </div>
+
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Price/Carton</mat-label>
+                    <input cdkFocusInitial formControlName="unitPrice" type="number" matInput  min="0" (blur)="formatCurrencyTaxableValue($event)" required>
+                    <mat-hint>Price/Carton is required.</mat-hint>
+                    <div *ngIf="submitted && f.unitPrice.errors" class="invalid-feedback">
+                      <div style="color: #f55c51;" *ngIf="f.unitPrice.errors.required">Unit Price is required</div>
+                    </div>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Brand Code</mat-label>
+                    <input cdkFocusInitial formControlName="brandCode" matInput>
+                  </mat-form-field>                  
+                </div>
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Former Type</mat-label>
+                    <mat-select formControlName="formerType" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let d of formerTypeProperties"  [value]="d.id" >{{ d.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="50">
+                    <mat-label>Packing Material</mat-label>
+                    <mat-select formControlName="packingMaterialId" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let d of staticPackingMaterials"  [value]="d.id" >{{ d.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <div fxFlex="50"  style="position: relative;" class="multi-search-field mt-1" >
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Size'"
+                    [data]="sizesVariationsData"
+                    formControlName="sizes"
+                    [settings]="sizeDropdownSettings"
+                    (onSelect)="onItemSelect($event)"
+                    (onDeSelect)="onItemSelect($event)"
+                    (onSelectAll)="onItemSelect($event)"
+                    *ngIf="showMultiSelect"
+                    >
+                  </ng-multiselect-dropdown>
+                  <!-- <mat-select-autocomplete  appearance="outline" color="primary"
+                  class="mat-select-field"
+                  [placeholder]="'Size'"
+                  [options]="sizesVariationsData"
+                  [multiple]='true'
+                  name="optionsSelector"
+                  [labelCount]="20"
+                  ngDefaultControl
+                  [formControl]="accountFormGroup.controls['sizes']"
+                  (selectionChange)="setDynamicVariant()"
+                  required>
+                </mat-select-autocomplete> -->
+              
+                  <!-- <mat-form-field appearance="outline" color="primary" fxFlex="100">
+                    <mat-label>Sizes</mat-label>
+                    
+                    <input cdkFocusInitial formControlName="sizes" matInput>
+
+                  </mat-form-field> -->
+                </div>
+                <div fxFlex="50" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label>Product Code</mat-label>
+                    <input cdkFocusInitial formControlName="productCodeL"  matInput required maxlength="1">
+                    <mat-hint>Product code is required.</mat-hint>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeS"  matInput maxlength="1">
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeC"  matInput maxlength="1">
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeT"  matInput maxlength="1">
+
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeSize"  matInput maxlength="3">
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field r-dash" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeWidth"  matInput maxlength="1">
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="auto">
+                    <mat-label></mat-label>
+                    <input cdkFocusInitial formControlName="productCodeCr" matInput>
+
+                  </mat-form-field>
+                </div>
+              </div>
+
+
+              <!---Multiple Customer--->
+
+              <h2 class="title m-0 margin-top-head" >Multiple Customer</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px"  >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasMultipleCustomer" (click)="multiCustomersField()" color="primary">
+                  {{multiCustomer}}
+                </mat-checkbox>
+              </div>
+              <ng-container *ngIf="showCustomer" (click)="$event.stopPropagation();">
+                
+                
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0"
+                class="margin-top-head" >
+                
+                <div fxFlex="100" fxFlex.lt-m="50" fxFlex.lt-s="100" class="multi-search-field">
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Customers'"
+                    [data]="customerData"
+                    formControlName="multipleCustomer"
+                    [settings]="dropdownSettings"
+                    (onSelect)="onItemSelect($event)">
+                  </ng-multiselect-dropdown>
+                </div>
+                <!-- <div fxFlex="100" fxFlex.lt-m="50" fxFlex.lt-s="100">
+                    <mat-select-autocomplete  appearance="outline" color="primary"
+                      class="mat-select-field"
+                      [placeholder]="'Customers'"
+                      [options]="customerData"
+                      [multiple]='true'
+                      [display]="'name'"
+                      [value]="'id'"
+                      name="optionsSelector"
+                      [labelCount]="5"
+                      ngDefaultControl
+                      [formControl]="accountFormGroup.controls['multipleCustomer']"
+                      matTooltip="Info about the action"
+                      >
+                    </mat-select-autocomplete>
+                  </div> -->
+
+                  <!-- <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                    <mat-label>Branch Name</mat-label>
+                    <mat-select formControlName="bName" (click)="$event.stopPropagation();">
+                      <mat-option value="kcGlobal1">
+                        kc Global Sales, LLC (Radlands), Kimberlary Clark (China) , Company
+                        Ltd
+                      </mat-option>
+                      <mat-option value="kcGlobal2">
+                        Zhong Mao Gong Yi Li Pin, You Xian Gong Si (China) , Company
+                        Ltd
+                      </mat-option>
+                      <mat-option value="kcGlobal3">
+                        Xing Hua Da Jie, Xing Tao  (China) , Company
+                        Ltd
+                      </mat-option>
+                    </mat-select>
+
+                  </mat-form-field> -->
+
+                </div>
+              </ng-container>
+
+
+
+              <!---Qualty Assurance--->
+              <h2 class="title m-0 margin-top-head">Quality Assurance Standard</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px"  >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasQualityAssuranceStandard"  (click)="multiQAField()" color="primary">
+                  {{qAName}}
+                </mat-checkbox>
+              </div>
+              <ng-container *ngIf="showQA" (click)="$event.stopPropagation();"  >
+                <div class="margin-top-head"></div>
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0"                  
+                  formArrayName="qualityAssuranceStandardFields"
+                  *ngFor="let data of qualityAssuranceStandardFields.controls; let qualityIndex=index"  
+                >
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" class="{{qualityIndex > 0 ? 'field-mtr-5' : ''}}"
+                    [formGroupName]="qualityIndex"  
+                  >
+                    <mat-label *ngIf="qualityIndex === 0">Characteristic</mat-label>
+                    <input cdkFocusInitial formControlName="disable_property" matInput>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex"  > 
+                    <mat-label>Inspection Level</mat-label>
+                    <mat-select formControlName="level" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let value of inspectionLevelValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex"  >
+                    <mat-label>AQL</mat-label>
+                    <mat-select formControlName="aql" (click)="$event.stopPropagation();" >
+                      <mat-option *ngFor="let value of aqlValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+                </div>
+
+              </ng-container>
+
+
+
+
+
+              <!---Protain & Power Content--->
+
+              <h2 class="title m-0 margin-top-head" >Protein & Powder Content</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px"  >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasProteinAndPowderCotent" (click)="multiPPField()" color="primary">
+                  {{ppName}}
+                </mat-checkbox>
+              </div>
+              <ng-container *ngIf="showPP" (click)="$event.stopPropagation();">
+                <div class="margin-top-head"></div>
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0"                  
+                  formArrayName="proteinPowderContentFields"
+                  *ngFor="let data of proteinPowderContentFields.controls; let qualityIndex=index"    
+                >                  
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" class="{{qualityIndex > 0 ? 'field-mtr-5' : ''}}" [formGroupName]="qualityIndex"  >
+                    <mat-label *ngIf="qualityIndex === 0">Characteristic</mat-label>
+                    <input cdkFocusInitial formControlName="disable_property" matInput>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex"  >
+                    <mat-label>Referenced Standard</mat-label>
+                    <mat-select formControlName="ref" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let value of referencedStandardValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex"  >
+                    <mat-label>Amount</mat-label>
+                    <input cdkFocusInitial formControlName="amount" matInput>
+                  </mat-form-field>
+                </div>
+
+
+
+                
+
+              </ng-container>
+
+
+
+              <!---Physical Propertise Content--->
+
+              <h2 class="title m-0 margin-top-head">Physical Properties</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px"  >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasPhysicalProperties" (click)="multiPhysicalField()" color="primary">
+                  {{pPhsicalName}}
+                </mat-checkbox>
+              </div>
+
+              <ng-container *ngIf="showPhysical" (click)="$event.stopPropagation();">
+                <div formArrayName="phsical_propertise" class="margin-top-head">
+                  <div 
+                  fxLayout="row"
+                   fxLayout.lt-sm="column" 
+                   fxLayoutGap="8px" 
+                   fxLayoutGap.lt-sm="0"
+                  
+                  *ngFor="let item of physicalPropertise.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="24">
+                    <mat-label>Referenced Standard</mat-label>
+                    <mat-select formControlName="ref" (click)="$event.stopPropagation();" (valueChange)="changephysical(pointIndex, $event)">
+                      <mat-option *ngFor="let value of referencedStandardValues"  [value]="value" >{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="24">
+                    <mat-label>Select Type</mat-label>
+                    <mat-select formControlName="agigingType" (click)="$event.stopPropagation();" (valueChange)="changephysical(pointIndex, $event)">
+                      <mat-option *ngFor="let value of ageingStateValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="24">
+                    <mat-label>Select Type</mat-label>
+                    <mat-select formControlName="tEtype" (click)="$event.stopPropagation();" (valueChange)="changephysical(pointIndex, $event)">
+                      <mat-option *ngFor="let e of eTypeOption;" value="{{e.value}}">{{e.text}} </mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="24" *ngIf="showForceAtBreak[pointIndex]">
+                    <mat-label>Force At Break</mat-label>
+                    <input cdkFocusInitial formControlName="forceAtBreak" matInput>
+                   
+                  </mat-form-field>
+
+                  <div fxFlex="24" *ngIf="showMinMaxTar[pointIndex]">
+                    <div fxLayout="row" fxLayoutGap="8px">
+                      <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                        <mat-label>Max</mat-label>
+      
+                        <input cdkFocusInitial formControlName="max" matInput>
+      
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                        <mat-label>Tar</mat-label>
+                        <input cdkFocusInitial formControlName="tar" matInput>
+      
+                      </mat-form-field>
+      
+                      <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                        <mat-label>Min</mat-label>
+                        <input cdkFocusInitial formControlName="min" matInput>
+      
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="btn-dflex" fxFlex="4">
+                    <button style="color: #B8BFCA;"  (click)="deletePhysicalPropertise(pointIndex)" mat-button type="button">
+                      <mat-icon [icIcon]="icTrash" size="20px"></mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0">
+
+                  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0" align="start" class="mb-5">
+                    <a href="javascript:" class="text-primary" 
+                      [style.color]="theme.colors.primary['500']"
+                      style="font-weight: 500;"
+                      (click)="addPhysicalPropertise()"
+                    >
+                      <ic-icon [icon]="icAdd" inline="true" size="13px"></ic-icon>
+                      {{ 'Add new line'}}
+                    </a>
+                  </div>
+              </div>
+
+              </div>
+              </ng-container>
+
+
+
+              <!---Colorimeter Reading Specifications--->
+
+              <h2 class="title m-0 margin-top-head" >Colorimeter Reading Specifications</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px">
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasColorimeterReadingSpecifications" (click)="colorMeterField()" color="primary">
+                  {{pColorMeterName}}
+                </mat-checkbox>
+              </div>
+              <div class="margin-top-head"></div>
+              <ng-container *ngIf="showColorMeter" (click)="$event.stopPropagation();">
+                
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0"                  
+                  formArrayName="colorimeterSpecificationsFields"
+                  *ngFor="let data of colorimeterSpecificationsFields.controls; let qualityIndex=index"  
+                >                  
+                  
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" class="{{qualityIndex > 0 ? 'field-mtr-5' : ''}}"
+                    [formGroupName]="qualityIndex">
+                    <mat-label>Characteristic</mat-label>
+                    <input cdkFocusInitial formControlName="disable_property" matInput>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex">
+                    <mat-label>Minimum</mat-label>
+                    <input cdkFocusInitial formControlName="min" matInput type="number" min="0">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex">
+                    <mat-label>Target</mat-label>
+                    <input cdkFocusInitial formControlName="tar" matInput type="number" min="0">
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto" [formGroupName]="qualityIndex">
+                    <mat-label>Maximun</mat-label>
+                    <input cdkFocusInitial formControlName="max" matInput type="number" min="0">
+                  </mat-form-field>
+                </div>
+              </ng-container>
+
+              <!---Clean Room Specifications Specifications--->
+
+              <h2 class="title m-0 margin-top-head" >Clean Room Specifications</h2>
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" >
+                <mat-checkbox class="checkbox" [checked]="true" formControlName="hasCleanroomSpecifications" (click)="cleanRoomField()" color="primary">
+                  {{pcleanRoomName}}
+                </mat-checkbox>
+              </div>
+              <div class="margin-top-head"></div>
+              <ng-container *ngIf="showCleanRoom" (click)="$event.stopPropagation();" 
+              >
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0" 
+                  formGroupName="cleanRoomSpecificationsFields"
+                >
+                  
+                  <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                    <mat-label>Class</mat-label>
+                    <mat-select formControlName="class" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let e of cleanroomClassValues;" value="{{e}}">{{e}} </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                    <mat-label>Non-Volatile Residue </mat-label>
+                    <input cdkFocusInitial formControlName="nonVolatile" matInput>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="25">
+                    <mat-label>Silicon Oil Presence</mat-label>
+                    <input cdkFocusInitial formControlName="silicon" matInput>
+                  </mat-form-field>
+                </div>
+
+                <!--Ionic Burden-->
+                <div>
+
+                  <h2 class="title m-0">Ionic Burden</h2>
+                
+                <div formArrayName="ion_points" class="margin-top-head">
+                  <div 
+                  fxLayout="row"
+                   fxLayout.lt-sm="column" 
+                   fxLayoutGap="8px" 
+                   fxLayoutGap.lt-sm="0"
+                  
+                  *ngFor="let item of ionPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                    <mat-label>Anion </mat-label>
+
+                    <mat-select formControlName="anion" (click)="$event.stopPropagation();">
+                      <mat-option *ngFor="let value of anionValues"  [value]="value">{{value}}</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                    <mat-label>Count (ug/cm2) </mat-label>
+                    <input cdkFocusInitial formControlName="count" matInput type="number" min="0">
+                  </mat-form-field>
+                  <div class="btn-dflex">                        
+                    <button color="primary" (click)="deleteIonBuid(pointIndex)" mat-button type="button">
+                      <ic-icon [icon]="icTrash" inline="true" size="20px" style="color: #B8BFCA;"  ></ic-icon>
+                    </button>
+                    </div>
+                  </div>
+
+
+                </div>
+
+              </div>
+
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0">
+
+                  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0" align="start" class="mb-5">
+                    <a href="javascript:" class="text-primary" 
+                      [style.color]="theme.colors.primary['500']"
+                      style="font-weight: 500;"
+                      (click)="addIonPoint('')"
+                    >
+                      <ic-icon [icon]="icAdd" inline="true" size="13px"></ic-icon>
+                      {{ 'Add new line'}}
+                    </a>
+                  </div>
+              </div>
+
+
+
+                
+                  <div>
+
+                    <div formArrayName="ion_cartons">
+                      <div 
+                      fxLayout="row"
+                       fxLayout.lt-sm="column" 
+                       fxLayoutGap="8px" 
+                       fxLayoutGap.lt-sm="0"
+                      
+                      *ngFor="let item of ionCartons.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                        <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                          <mat-label>Cations</mat-label>
+                          <mat-select formControlName="cations" (click)="$event.stopPropagation();">
+                            <mat-option *ngFor="let value of cationValues"  [value]="value">{{value}}</mat-option>
+                          </mat-select>
+
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" color="primary" fxFlex="auto">
+                          <mat-label>Count (ug/cm2)</mat-label>
+                          <input cdkFocusInitial formControlName="count" matInput type="number" min="0">
+                          <!-- <mat-select formControlName="countUgCm2" (click)="$event.stopPropagation();">
+                            <mat-option value="0"> 0</mat-option>
+                            <mat-option value="0.149"> 0.149</mat-option>
+                          </mat-select> -->
+
+                        </mat-form-field>
+                        <div class="btn-dflex">                        
+                          <button color="primary" (click)="deleteIonCartons(pointIndex)" mat-button type="button">
+                            <ic-icon [icon]="icTrash" inline="true" size="20px" style="color: #B8BFCA;" ></ic-icon>
+                          </button>
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                  </div>
+
+                  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0">
+
+                      <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="8px" fxLayoutGap.lt-sm="0" align="start" class="mb-5">
+                        <a href="javascript:" class="text-primary" 
+                          [style.color]="theme.colors.primary['500']"
+                          style="font-weight: 500;"
+                          (click)="addIonCartons('')"
+                        >
+                          <ic-icon [icon]="icAdd" inline="true" size="13px"></ic-icon>
+                          {{ 'Add new line'}}
+                        </a>
+                      </div>
+                  </div>
+                
+              </ng-container>
+
+
+              <!-- <div class="mt-4" fxLayout="column" fxLayoutGap="8px">
+              <mat-form-field fxFlex="auto">
+                <mat-label>Account Username</mat-label>
+                <input formControlName="username" matInput required>
+                <mat-hint>This will be your unique login name.</mat-hint>
+              </mat-form-field>
+  
+              <mat-form-field fxFlex="auto">
+                <mat-label>Name</mat-label>
+                <input formControlName="name" matInput required>
+                <mat-hint>How may we call you?</mat-hint>
+              </mat-form-field>
+  
+              <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                <mat-form-field fxFlex="auto">
+                  <mat-label>E-Mail</mat-label>
+                  <input formControlName="email" matInput required>
+                  <mat-hint align="end">example@example.com</mat-hint>
+                </mat-form-field>
+  
+                <div fxFlex="auto" fxLayout="row" fxLayoutGap="8px">
+                  <mat-form-field class="vex-flex-form-field" fxFlex="none">
+                    <mat-label>Code</mat-label>
+                    <mat-select formControlName="phonePrefix">
+                      <mat-option *ngFor="let option of phonePrefixOptions" [value]="option">{{ option }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+  
+                  <mat-form-field class="vex-flex-form-field" fxFlex="auto">
+                    <mat-label>Phone Number</mat-label>
+                    <input formControlName="phone" matInput>
+                    <mat-hint align="end"></mat-hint>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div> -->
+
+            <div *ngIf="!isUpdateView">
+              <mat-divider class="-mx-6 text-border"></mat-divider>
+              <div class="actions mt-4" fxLayout="row" fxLayoutGap="8px">
+                <div style="flex: 1;">
+                </div>
+                <div style="flex: 1;" fxLayoutAlign="end " >
+                  <button [disabled]="accountFormGroup.invalid" class="btn-large" color="primary" mat-raised-button matStepperNext >Next
+                  </button>
+                </div>
+              </div>
+            </div>
+            </form>
+          </mat-step>
+
+          <mat-step [stepControl]="variantsFormGroup" >
+            <form [formGroup]="variantsFormGroup">
+              <ng-template matStepLabel  ><button type="button">Variant</button></ng-template>
+              <!-- in case of UPDATE  -->
+              <div  
+                *ngIf="isUpdateView"
+                style="background-color: #F2F4F6; " class="border-b border-t border-dark px-6 py-5 -mx-6 mb-5" fxLayout="row"
+              >
+                <h3 class=" red float-left" style="color: #1A202E; font-size: 20px;" fxFlex="50" fxLayoutAlign="start center">Product Size Overview </h3>
+                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+                  <mat-progress-spinner mode="indeterminate" diameter="35" *ngIf="showLoader"></mat-progress-spinner>
+                  <button class="btn-large" [disabled]="disableEditButton" color="primary" mat-raised-button
+                  (click)="submit('update')"
+                  >Edit Details
+                  </button>
+                </div>
+              </div>
+              <!-- / -->
+
+              <h2 class="title m-0">Size Specifications</h2>
+              <div class="mb-4 text-secondary" >Set up your product length, width and weight specifications.  </div>
+              
+              <table class="w-full table table-block mt-4"  >
+                <tr>
+                  <th style="width: 20%;">{{'Size' | uppercase}} </th>
+                  <th>{{'Total Length' | uppercase}} (mm)</th>
+                  <th>{{'Palm width' | uppercase}} (mm)</th>
+                  <th>{{'Weight' | uppercase}} (g)</th>
+                </tr>
+                <tbody formArrayName="specifications_sizes">
+                  <tr *ngFor="let variants of specificationsSizes.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100" 
+                        >
+                          <mat-label>Minimum</mat-label>
+                          <input cdkFocusInitial formControlName="lengthMin" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Target</mat-label>
+                          <input cdkFocusInitial formControlName="lengthTarget" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Maximun</mat-label>
+                          <input cdkFocusInitial formControlName="lengthMax" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Minimum</mat-label>
+                          <input cdkFocusInitial formControlName="widthMin" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Target</mat-label>
+                          <input cdkFocusInitial formControlName="widthTarget" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Maximun</mat-label>
+                          <input cdkFocusInitial formControlName="widthMax" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Minimum</mat-label>
+                          <input cdkFocusInitial formControlName="weightMin" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Target</mat-label>
+                          <input cdkFocusInitial formControlName="weightTarget" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Maximun</mat-label>
+                          <input cdkFocusInitial formControlName="weightMax" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody formArrayName="variants_thickness">
+                  <tr>
+                    <td colspan="4">
+                      <h2 class="title m-0">Thickness (mm)</h2>
+                      <div class="text-secondary">Set up your product cuff, palm and fingertip thickness specifications.  </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="1">
+                      <small class="text-secondary">{{'Characteristic' | uppercase}} </small>
+                    </td>
+                  </tr>
+
+                  <tr *ngFor="let variants of variantsThickness.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td colspan="3">
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Minimum</mat-label>
+                          <input cdkFocusInitial formControlName="min" value="" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Target</mat-label>
+                          <input cdkFocusInitial formControlName="target" value="" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Maximun</mat-label>
+                          <input cdkFocusInitial formControlName="max" value="" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                    
+                  </tr>
+                </tbody>
+                 
+              </table>
+              
+              <mat-divider class="-mx-6 text-border" ></mat-divider>
+
+              <div class="actions mt-4" fxLayout="row" fxLayoutGap="8px" *ngIf="!isUpdateView" >
+                <div style="flex: 1;">
+                  
+                </div>
+                <div style="flex: 1;" fxLayoutAlign="end " >
+                  <div fxLayout="row" fxLayoutGap="8px">
+                    <button class="btn-large border " color="primary" mat-button matStepperPrevious type="button">Back
+                    </button>
+                    <button class="btn-large" [disabled]="variantsFormGroup.invalid" color="primary" mat-raised-button matStepperNext>Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </mat-step>
+
+          <mat-step [stepControl]="packingDetailsFormGroup">
+            <form [formGroup]="packingDetailsFormGroup">
+              <ng-template matStepLabel ><button type="button" >Packing Details</button></ng-template>
+            
+              <!-- in case of UPDATE  -->
+              <div  
+                *ngIf="isUpdateView"
+                style="background-color: #F2F4F6; " class="border-b border-t border-dark px-6 py-5 -mx-6 mb-5" fxLayout="row"
+              >
+                <h3 class=" red float-left" style="color: #1A202E; font-size: 20px;" fxFlex="50" fxLayoutAlign="start center">Packing Overview </h3>
+                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+                  <mat-progress-spinner mode="indeterminate" diameter="35" *ngIf="showLoader"></mat-progress-spinner>
+                  <button class="btn-large" [disabled]="disableEditButton" color="primary" mat-raised-button
+                  (click)="submit('update')"
+                  >Edit Details
+                  </button>
+                </div>
+              </div>
+              <!-- / -->
+              <h2 class="title m-0">Carton Specifications</h2>
+              <div class="mb-4 text-secondary" >Set up the carton specifications of your product for packing purposes.</div>
+
+              <table class="w-full table table-block mt-8" >
+                <tr>
+                  <th style="width: 20%;">{{'Size' | uppercase}} </th>
+                  <th>{{'Carton Dimensions' | uppercase}} (mm)</th>
+                </tr>
+                <tbody formArrayName="cartoon_specifications">
+                  <tr *ngFor="let variants of cartoonSpecifications.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Length (mm)</mat-label>
+                          <input cdkFocusInitial formControlName="length" type="number" matInput min="0" (input)="onCartonSpecChange(pointIndex)" required>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Width (mm)</mat-label>
+                          <input cdkFocusInitial formControlName="width" type="number" matInput min="0" (input)="onCartonSpecChange(pointIndex)" required>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Height (mm)</mat-label>
+                          <input cdkFocusInitial formControlName="height" type="number" matInput min="0" (input)="onCartonSpecChange(pointIndex)" required>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Volume (mm)</mat-label>
+                          <input cdkFocusInitial formControlName="volume" type="number" matInput min="0" readonly>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Weight (kg)</mat-label>
+                          <input cdkFocusInitial formControlName="weight" type="number" matInput min="0" required>
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="4">
+                    <h2 class="title m-0">Packing Specifications</h2>
+                    <div class="text-secondary" >Set up packing specifications of your product.</div>
+                  </td>
+                </tr>
+                <tbody formArrayName="packing_specifications">
+                  <tr *ngFor="let variants of packingSpecifications.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" fxFlex="10">
+                          <mat-label>Pcs/Box</mat-label>
+                          <input cdkFocusInitial formControlName="pcsBox"   type="number" matInput min="0" (input)="onPackingSpecChange(pointIndex)" required>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" color="primary" fxFlex="10" class="readonly-field pb-00">
+                          <mat-label>Piece Type</mat-label>
+                          <input cdkFocusInitial matInput formControlName="pieceType" type="text" readonly >
+                          <!-- <mat-select formControlName="pieceType" (click)="$event.stopPropagation();" required>
+                            <mat-option *ngFor="let d of pieceTypeValues"  [value]="d" >{{ d }}</mat-option>
+                          </mat-select> -->
+                        </mat-form-field>
+                        <div fxFlex="5" fxLayoutAlign="center" style="font-weight: 500; color: var(--text-secondary);">
+                          in a
+                        </div>
+                        <mat-form-field appearance="outline" color="primary" fxFlex="30">
+                          <mat-label>Box Type</mat-label>
+                          <mat-select formControlName="boxType" (click)="$event.stopPropagation();" required>
+                            <mat-option *ngFor="let d of boxTypeValues"  [value]="d" >{{ d }}</mat-option>
+                          </mat-select>
+                        
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" fxFlex="10">
+                          <mat-label>Box/Carton</mat-label>
+                          <input cdkFocusInitial formControlName="boxCarton" type="number" matInput min="0" (input)="onPackingSpecChange(pointIndex)" required>
+                        </mat-form-field>
+                        <div fxFlex="5" fxLayoutAlign="center" style="font-weight: 500; color: var(--text-secondary);">
+                          in a
+                        </div>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field readonly-field" fxFlex="20">
+                          <mat-label>Carton Type</mat-label>
+                          <input cdkFocusInitial formControlName="cartonType"  matInput readonly >
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field readonly-field" fxFlex="10">
+                          <mat-label>Pcs/Carton</mat-label>
+                          <input cdkFocusInitial formControlName="pcsCarton" matInput readonly>
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="4">
+                    <h2 class="title m-0">Packing Instructions</h2>
+                    <div class="text-secondary" >Create the packing instructions for this product.</div>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td colspan="4">
+                    <div fxLayout="row" class="text-secondary">
+                      <div fxLayout="row" fxFlex="5"><small>#</small></div>
+                      <div fxLayout="row" fxFlex="95"><small>{{'Description' | uppercase}}</small></div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tbody formArrayName="packing_instructions">
+                  <tr *ngFor="let inst of packingInstructions.controls; let packingInsIndex=index" [formGroupName]="packingInsIndex">
+                    <td colspan="4">
+                      <div fxLayout="row" fxLayoutAlign="center center">
+                        <div fxLayout="row" fxFlex="5">{{packingInsIndex + 1}}</div>
+                        <div fxLayout="row" fxFlex="90" class="field-pb-0">
+                          <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field field-mtr-5" fxFlex="100">
+                            <input cdkFocusInitial formControlName="description" matInput placeholder="Enter Description">
+                          </mat-form-field>                        
+                        </div>
+                        <div fxLayout="row" fxFlex="5" fxLayoutAlign="center center" class="pointer">
+                          <ic-icon [icon]="icTrash" inline="true" size="20px" style="color: #B8BFCA;" (click)="deletePackingInstructions(packingInsIndex)" ></ic-icon>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="4">
+                    <a href="javascript:" class="text-primary" 
+                      [style.color]="theme.colors.primary['500']"
+                      style="font-weight: 500;"
+                      (click)="addPackingInstructions()"
+                    >
+                      <ic-icon [icon]="icAdd" inline="true" size="13px"></ic-icon>
+                      {{ 'Add Item Line' | uppercase}}
+                    </a>
+                  </td>
+                </tr>
+                <tr *ngIf="!isUpdateView">
+                  <td colspan="4">
+                    <div class="actions mt-4" fxLayout="row"  fxLayoutGap="8px">
+                      <div style="flex: 1;">
+                      </div>
+                      <div style="flex: 1;" fxLayoutAlign="end " >
+                        <div fxLayout="row" fxLayoutGap="8px">
+                          <button class="btn-large border" color="primary" mat-button matStepperPrevious type="button">Back
+                          </button>
+                          <button class="btn-large" [disabled]="packingDetailsFormGroup.invalid" color="primary" mat-raised-button matStepperNext>Next
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </form>
+          </mat-step>
+
+          <mat-step [stepControl]="loanPlanFormGroup">
+            <form [formGroup]="loanPlanFormGroup">
+              <ng-template matStepLabel >Load Plan</ng-template>
+              <!-- in case of UPDATE  -->
+              <div  
+                *ngIf="isUpdateView"
+                style="background-color: #F2F4F6; " class="border-b border-t border-dark px-6 py-5 -mx-6  {{isUpdateView ? '' : 'mb-5'}}" fxLayout="row"
+              >
+                <h3 class=" red float-left" style="color: #1A202E; font-size: 20px;" fxFlex="50" fxLayoutAlign="start center">Load Plan Overview </h3>
+                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" fxFlex="50" >
+                  <mat-progress-spinner mode="indeterminate" diameter="35" *ngIf="showLoader"></mat-progress-spinner>
+                  <button class="btn-large" [disabled]="disableEditButton" color="primary" mat-raised-button
+                  (click)="submit('update')"
+                  >Edit Details
+                  </button>
+                </div>
+              </div>
+              <!-- / -->
+
+              <div class="title mt-5" >Loan Plans</div>
+              <div class="text-secondary" >Configure the loading types and plans for your product.</div>
+
+              <table class="w-full table table-block" >
+                <tr >
+                  <td colspan="2">
+                    <mat-checkbox class="checkbox" color="primary" (click)="toglleBlock('big_slipsheet')" formControlName="bigSlipCheckbox" >
+                      <div class="title m-0"> Big Slipsheet</div>
+                    </mat-checkbox>
+                  </td>
+                </tr>
+                <tr *ngIf="showBigSlipsheet">
+                  <th style="width: 20%;">{{'Container Type' | uppercase}} </th>
+                  <th>{{'Load Plan' | uppercase}} (mm)</th>
+                </tr>
+                <tbody formArrayName="big_slipsheet" *ngIf="showBigSlipsheet">
+                  <tr *ngFor="let variants of bigSlipsheet.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Floor</mat-label>
+                          <input cdkFocusInitial formControlName="floor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Top</mat-label>
+                          <input cdkFocusInitial formControlName="top" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Floor)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowFloor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Top)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowTop" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="2">
+                    <mat-checkbox class="checkbox" color="primary" (click)="toglleBlock('small_slipsheet')" formControlName="smallSlipCheckbox">
+                      <div class="title m-0"> Small Slip Sheet</div>
+                    </mat-checkbox>
+                  </td>
+                </tr>
+                <tr *ngIf="this.showSmallSlipsheet">
+                  <th style="width: 20%;">{{'Container Type' | uppercase}} </th>
+                  <th>{{'Load Plan' | uppercase}} (mm)</th>
+                </tr>
+                <tbody formArrayName="small_slipsheet" *ngIf="this.showSmallSlipsheet"> 
+                  <tr *ngFor="let variants of smallSlipsheet.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Floor</mat-label>
+                          <input cdkFocusInitial formControlName="floor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Top</mat-label>
+                          <input cdkFocusInitial formControlName="top" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Floor)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowFloor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Top)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowTop" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr>
+                  <td colspan="2">
+                    <mat-checkbox class="checkbox" color="primary" (click)="toglleBlock('fumigated_pallets')" formControlName="fumigatedCheckbox">
+                      <div class="title m-0"> Fumigated Pallets</div>
+                    </mat-checkbox>
+                  </td>
+                </tr>
+                <tr *ngIf="this.showFumigatedPallets">
+                  <th style="width: 20%;">{{'Container Type' | uppercase}} </th>
+                  <th>{{'Load Plan' | uppercase}} (mm)</th>
+                </tr>
+                <tbody formArrayName="fumigated_pallets" *ngIf="this.showFumigatedPallets">
+                  <tr *ngFor="let variants of fumigatedPallets.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+                        <div
+                          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+                          class="rounded-full w-12 h-12 flex items-center justify-center">
+                            <ic-icon [icon]="icFile" inline="true" size="18px"></ic-icon>
+                        </div>
+                        <span style="font-weight: 500;">{{ variants.value.title }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center" class="pr-10 field-pb-0">
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Floor</mat-label>
+                          <input cdkFocusInitial formControlName="floor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Top</mat-label>
+                          <input cdkFocusInitial formControlName="top" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Floor)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowFloor" type="number" matInput min="0">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" color="primary" class="vex-flex-form-field" fxFlex="100">
+                          <mat-label>Last Row (Top)</mat-label>
+                          <input cdkFocusInitial formControlName="lastRowTop" type="number" matInput min="0">
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tr >
+                  <td colspan="2">
+                    <div class="actions mt-4" fxLayout="row"  fxLayoutGap="8px">
+                      <div style="flex: 1;">
+                        <!-- <button class="btn-large border c-dark" color="primary" mat-button matStepperPrevious type="button">Cancel
+                        </button> -->
+                      </div>
+                      <div style="flex: 1;" fxLayoutAlign="end " >
+                        <div fxLayout="row" fxLayoutGap="8px">
+                          <button class="btn-large border c-dark" color="primary" mat-button matStepperPrevious type="button" *ngIf="!isUpdateView">Back
+                          </button>
+                        
+                          <button class="btn-large" (click)="submit('create')" [disabled]="loanPlanFormGroup.invalid" color="primary" mat-raised-button
+                          matStepperNext
+                            *ngIf="!isUpdateView"
+                          >Create
+                          </button>
+                          <button class="btn-large" (click)="submit('update')" [disabled]="disableEditButton" color="primary" mat-raised-button
+                          matStepperNext
+                            *ngIf="isUpdateView"
+                          > Update
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </form>
+
+          </mat-step>
+        </mat-horizontal-stepper>
+      </div>
+    </div>
+    <!-- /CREATE FORM -->
+
+  </vex-page-layout-content>
+
+</vex-page-layout>

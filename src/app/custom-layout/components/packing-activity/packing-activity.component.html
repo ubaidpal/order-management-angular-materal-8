@@ -1,0 +1,125 @@
+<div class="float-left  border-t border-dark w-100">
+  <vex-secondary-toolbar current="Packing Activity">
+    <vex-breadcrumbs
+      [crumbs]="breadcrumbsParams"
+      class="flex-auto"
+    ></vex-breadcrumbs>
+  </vex-secondary-toolbar>
+</div>
+
+<div class="w-100 float-left mt-4"></div>
+<div class="pt-0 overflow-hidden flex w-100" vexContainer>
+  <mat-drawer-container class="bg-transparent flex-auto flex">     
+    <mat-drawer-content class="p-gutter pt-0 flex-auto flex items-start w-100">
+      <vex-sidebar-list
+        class="hidden sm:block mr-3"
+        [ordersList]="ordersList"
+        [customersList]="customersList"
+        (selectOrder)="selectOrder($event)"
+        *ngIf="ordersList"
+      ></vex-sidebar-list>
+
+      <div class="card overflow-hidden packing-right-block p-rel" fxFlex="100" fxLayout="column">
+        <div class="placeholder-img" *ngIf="!selectedOrder">
+          <img src="assets/img/packing-empty-state_x4dc.svg" />
+          <h2 class="mt-4">Select a packing order to view</h2>
+          <p class="text-secondary">Looks like you don’t have packing orders selected yet.</p>
+          <p class="text-secondary">Click on a packing order to view more information.</p>
+        </div>
+        <div
+          class="px-4 pt-4"
+          *ngIf="selectedOrder"
+        >
+          <div class="float-left">
+            <h2>{{selectedOrder ? selectedOrder.proformaInvoiceNo : ''}}</h2>
+            <p class="text-secondary">Last updated by {{selectedOrder.customer ? selectedOrder.customer.name : ''}} {{selectedOrder?.proformaInvoiceDate | date: 'd MMM, y'}} at {{selectedOrder?.proformaInvoiceDate | date: 'shortTime' : '-0'}}</p>
+          </div>
+          <div class="float-right">
+            <button
+              color="primary" 
+              mat-raised-button type="button"
+              (click)="openUpdatePackingModalComponent()"
+            >
+              Update Packing
+            </button>
+          </div>
+        </div>
+        <div class="px-4 pt-4" *ngIf="selectedOrder">
+          <div class="bg-light-gray p-4 table-box" *ngIf="selectedOrder">
+            <div
+              fxFlex="33.33"
+            >
+              <table>
+                <tr>
+                  <td>PI Number: </td>
+                  <td> {{selectedOrder.proformaInvoiceNo}}</td>
+                </tr>
+                <tr>
+                  <td>Customer: </td>
+                  <td> {{selectedOrder.customer ? selectedOrder.customer.name : ''}}</td>
+                </tr>
+              </table>
+            </div>
+            <div
+              fxFlex="33.33"
+            >
+              <table>
+                <tr>
+                  <td>Ship To: </td>
+                  <td> {{selectedOrder.shippingLocation && selectedOrder.shippingLocation.name ? selectedOrder.shippingLocation.name : ''}}, {{getCountry(selectedOrder?.countryId)}}</td>
+                </tr>
+                <tr>
+                  <td>From Port: </td>
+                  <td> {{selectedOrder?.fromPort}}</td>
+                </tr>
+              </table>
+            </div>
+            <div
+              fxFlex="33.33"
+            >
+              <table>
+                <tr>
+                  <td>Shipment Date: </td>
+                  <td>
+                    <div *ngIf="selectedOrder?.shipmentDates && selectedOrder?.shipmentDates.length > 0;else defultShipmentDate" >
+                      <div *ngFor="let n of selectedOrder.shipmentDates;let last = last;">
+                        <div *ngIf="last">
+                          <span style="color: #5c77ff;">{{n?.newShipmentDate | date: 'd MMM, y'}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <ng-template #defultShipmentDate>
+                      <div>
+                        <a href="javascript:">
+                          <span>{{selectedOrder?.shipmentDate | date: 'd MMM, y'}}</span>
+                        </a>
+                      </div>
+                    </ng-template>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Remaining Days: </td>
+                  <td> {{ getRemaingDays(selectedOrder["proformaInvoiceDate"] , selectedOrder["shipmentDate"]) }} left</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- tabs -->
+        <div class="w-100 bg-white border-t mt-4 float-left border-dark" *ngIf="selectedOrder">
+          <mat-tab-group class="w-100" (selectedTabChange)="checkTabtype($event)">
+            <mat-tab label="Order Details">
+              <vex-order-details [orderData]="selectedOrder" [productsArray]="productsArray" [variationsArray]="variationsArray" ></vex-order-details>
+            </mat-tab>
+            <mat-tab label="Packing Output">
+              <vex-packing-output [orderData]="selectedOrder" [orderPackingData]="orderPackingData" [productsArray]="productsArray" [variationsArray]="variationsArray"></vex-packing-output>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+        <!-- /tabs -->
+      </div>
+      
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

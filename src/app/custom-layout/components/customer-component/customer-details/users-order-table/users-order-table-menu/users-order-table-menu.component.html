@@ -1,0 +1,31 @@
+<div @stagger class="max-w-xxxs w-full">
+  <div class="h-14 mb-6 flex bg-primary-500 px-gutter sm:px-0" fxLayout="row" fxLayoutAlign="start center">
+  
+  </div>
+
+  <div class="px-gutter sm:px-0">
+    <ng-container *ngFor="let item of items">
+      <a (click)="setFilter(item.id)"
+         *ngIf="item.type === 'link'"
+         @fadeInRight
+         [class.bg-hover]="isActive(item.id)"
+         [class.text-primary-500]="isActive(item.id)"
+         class="list-item mt-2 no-underline flex items-center"
+         matRipple>
+      
+        <span>{{ item.label  }} <span *ngIf="item.id === 'newOrders'">{{getNewOrders}}</span> 
+        <span *ngIf="item.id === 'inProgress'">{{getInProgress}}</span> 
+        <span *ngIf="item.id === 'complete'">{{getIsCompleted}}</span> 
+        <span *ngIf="item.id === 'shipped'">{{getIsShipped}}</span> 
+        <span *ngIf="item.id === 'outStanding'">{{getOutStanding}}</span> 
+      
+      
+      </span>
+      </a>
+
+      <h3 *ngIf="item.type === 'subheading'"
+          @fadeInRight
+          class="caption text-secondary uppercase font-medium mb-0 mt-6">{{ item.label }}</h3>
+    </ng-container>
+  </div>
+</div>

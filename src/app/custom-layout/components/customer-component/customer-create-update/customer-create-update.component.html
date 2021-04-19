@@ -1,0 +1,223 @@
+<form (ngSubmit)="save()" [formGroup]="form" style="width:800px">
+  <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title style="margin-top: -15px; margin-bottom: 10px;">
+    <!-- <img *ngIf="form.get('imageSrc').value" [src]="form.get('imageSrc').value" class="avatar mr-5"> -->
+
+    <h3 *ngIf="form.get('name').value" class=" m-0" fxFlex="auto">{{ form.get('name').value }}</h3>
+    <h3 *ngIf="!form.get('name').value" class=" m-0" fxFlex="auto">Create Customer</h3>
+
+    <!-- <button [matMenuTriggerFor]="settingsMenu" class="text-secondary" mat-icon-button type="button">
+      <mat-icon [icIcon]="icMoreVert"></mat-icon>
+    </button> -->
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="-mx-6 text-border"></mat-divider>
+
+  <mat-dialog-content fxLayout="column" class="mt-5">
+
+    <mat-form-field class="flex-auto" appearance="outline" class="vex-flex-form-field" color="primary">
+      <mat-label>Company Name</mat-label>
+      <input formControlName="name" matInput>
+      <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+        <div style="color: #f55c51;" *ngIf="f.name.errors.required">Company name is required</div>
+      </div>
+    </mat-form-field>
+
+
+    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+      <mat-form-field class="flex-auto" appearance="outline" color="primary">
+        <mat-label>Registration Number</mat-label>
+        <input cdkFocusInitial formControlName="registrationNumber" matInput>
+
+
+      </mat-form-field>
+
+
+      <mat-form-field class="flex-auto" appearance="outline" color="primary">
+        <mat-label>Country</mat-label>
+        <mat-select formControlName="country" (selectionChange)="getStateByCountryId($event.value)">
+          <mat-option *ngFor="let country of countries" [value]="country.id">{{ country.name}}</mat-option>
+        </mat-select>
+
+      </mat-form-field>
+
+
+    </div>
+
+    <mat-form-field class="flex-auto" appearance="outline" class="vex-flex-form-field" color="primary">
+      <mat-label>Address Line 1</mat-label>
+      <input cdkFocusInitial formControlName="addressLine1" matInput>
+
+
+    </mat-form-field>
+
+
+    <mat-form-field class="flex-auto" appearance="outline" class="vex-flex-form-field" color="primary">
+      <mat-label>Address Line 2 </mat-label>
+      <input cdkFocusInitial formControlName="addressLine2" matInput>
+
+
+    </mat-form-field>
+
+    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+      <mat-form-field class="flex-auto" appearance="outline" color="primary">
+        <mat-label>City</mat-label>
+        <input cdkFocusInitial formControlName="city" matInput>
+
+      </mat-form-field>
+
+
+      <mat-form-field class="flex-auto" appearance="outline" color="primary">
+        <mat-label>State</mat-label>
+        <input cdkFocusInitial formControlName="state" matInput>
+
+      </mat-form-field>
+
+
+    </div>
+
+    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+      <mat-form-field class="flex-auto" appearance="outline" color="primary" fxFlex="50">
+        <mat-label>PostCode</mat-label>
+        <input cdkFocusInitial formControlName="postcode" matInput>
+      </mat-form-field>
+      <div fxFlex="50">
+        <div fxFlex="auto" fxLayout="row" fxLayoutGap="8px" class="phone-number-block">
+          <mat-form-field fxFlex="none" class="vex-flex-form-field" appearance="outline" color="primary"
+            class="phone-number">
+            <mat-label>Phone Number</mat-label>
+            <mat-select formControlName="phonePrefix">
+              <mat-option *ngFor="let ph of phonePrefixOptions" [value]="ph">{{ ph }}</mat-option>
+            </mat-select>
+            
+          </mat-form-field>
+
+          <mat-form-field fxFlex="auto" appearance="outline" color="primary" class="field-top-5">
+            <mat-label></mat-label>
+            <input formControlName="phoneNumber" matInput (input)="phoneNumberValidation($event, 'phoneNumber')">
+            <mat-hint align="end"></mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+
+    </div>
+
+    <mat-divider class="-mx-6 text-border"></mat-divider>
+
+    <div class="mt-5" fxLayout="column" fxLayout.lt-md="column" fxLayoutGap="20px">
+      <div fxLayout="column" fxLayoutAlign="start start">
+        <h2 class="title m-0">Branch Settings</h2>
+        <p class="mt-0 mb-0 text-secondary">
+          For customer with multiple branches, configure the branch settings.
+        </p>
+      </div>
+      <div fxLayout="column">
+        <div fxLayoutGap="8px">
+          <mat-radio-group formControlName="hasBranch">
+            <mat-radio-button [value]=false color="primary" class="example-radio-button mr-4">No Branches
+            </mat-radio-button>
+            <mat-radio-button [value]=true color="primary" class="example-radio-button mr-4">Multiple Branches
+            </mat-radio-button>
+          </mat-radio-group>
+          <!-- <mat-radio-group formControlName="branch">
+             <mat-radio-button   value=""  color="primary" class="example-radio-button mr-4">No Branches</mat-radio-button>
+            
+            </mat-radio-group>
+            <mat-radio-group formControlName="allbranch">
+            <mat-radio-button   value=""  color="primary" class="example-radio-button mr-4">Multiple Branches</mat-radio-button>
+          </mat-radio-group> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5" fxLayout="column" fxLayout.lt-md="column">
+      <mat-divider class="-mx-6 text-border"></mat-divider>
+      <div fxLayout="column" fxLayoutAlign="start start">
+        <h2 class="title mt-4 mb-4">Primary Contact</h2>
+      </div>
+      <mat-divider class="-mx-6 text-border"></mat-divider>
+
+      <div class="flex flex-col sm:flex-row">
+        <mat-form-field class="mt-5 flex-auto" appearance="outline" color="primary" fxFlex="50">
+          <mat-label>Representative</mat-label>
+          <input cdkFocusInitial formControlName="representative" matInput>
+        </mat-form-field>
+
+
+        <mat-form-field class="sm:mt-5 sm:ml-5 flex-auto" appearance="outline" color="primary" fxFlex="50">
+          <mat-label>Role</mat-label>
+          <input cdkFocusInitial formControlName="role" matInput>
+          <!-- <mat-select formControlName="role">
+                <mat-option *ngFor="let Role of roles" value="role.id">{{ role.name}}</mat-option>
+              </mat-select> -->
+
+        </mat-form-field>
+
+
+      </div>
+
+      <!-- <div class="px-2 py-2" fxLayout="column">
+            <p class="mt-0 mb-2 text-secondary">
+             For customer with multiple branches ,configure the branch setting.
+            </p>
+          </div> -->
+
+
+      <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+        <mat-form-field class="flex-auto" appearance="outline" color="primary" fxFlex="50">
+          <mat-label>Email</mat-label>
+          <input cdkFocusInitial formControlName="email" matInput>
+
+        </mat-form-field>
+
+        <div fxFlex="50">
+          <div fxFlex="auto" fxLayout="row" fxLayoutGap="8px" class="phone-number-block">
+            <mat-form-field fxFlex="none" class="vex-flex-form-field" appearance="outline" color="primary"
+              class="phone-number">
+              <mat-label>Phone Number</mat-label>
+              <mat-select formControlName="phonePrefix2">
+                <mat-option *ngFor="let p of phonePrefixOptions" [value]="p">{{ p }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="auto" appearance="outline" color="primary" class="field-top-5">
+              <mat-label></mat-label>
+              <input formControlName="phoneNumber2" matInput (input)="phoneNumberValidation($event, 'phoneNumber2')">
+              <mat-hint align="end"></mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close type="button" class="btn-large border c-dark">Cancel</button>
+    <button color="primary" *ngIf="isCreateMode()" mat-raised-button type="submit"> Create Customer</button>
+    <button color="primary" *ngIf="isUpdateMode()" mat-raised-button type="submit"> Update Customer</button>
+
+  </mat-dialog-actions>
+</form>
+<!-- 
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icPrint"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDownload"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDelete"></mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu> -->

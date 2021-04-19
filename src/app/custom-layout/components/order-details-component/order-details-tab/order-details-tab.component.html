@@ -1,0 +1,61 @@
+<div class=" ">
+  <!-- <h3
+    class="border-b border-t border-dark px-6 py-4"
+    style="background-color: #f3f4f6;"
+  >
+  {{dashReplace(ordersArray?.proformaInvoiceNo ,ordersArray?.orderNo)}}
+  </h3> -->
+  <table class="w-full" mat-table matSort>
+    <thead>
+      <tr class="border-b">
+        <th class="pl-6 pr-4 py-4 weight-400 text-secondary font-13 text-left">
+          ITEM NAME
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          SIZE
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          ORDER QTY
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          PACKED QTY
+        </th>
+        <th
+          class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+          style="width: 180px;"
+        >
+          SHIPPED QTY
+        </th>
+        <th
+          class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+          style="width: 180px;"
+        >
+          BALANCE
+        </th>
+      </tr>
+    </thead>
+    <tbody class="field-pb-0 ">
+      <tr class="border-b" *ngFor="let product of orderProducts;">
+        <td class=" pl-6 pr-4 py-2">
+          <div>{{getProductById(product.productId, 'name')}}</div>
+          <span class="text-secondary" style="font-size: 11px;">{{getProductById(product.productId, 'code')}}</span>
+        </td>
+        <td class=" px-4 py-2">
+          {{getProductVariant(product.productId, product.productVariationId)}}
+        </td>
+        <td class=" px-4 py-2">
+          {{product.quantity}}
+        </td>
+        <td class=" px-4 py-2">
+          {{product.quantityPacked ? product.quantityPacked : '0'}}
+        </td>
+        <td class=" px-4 py-2">
+          0
+        </td>
+        <td class=" px-4 py-2">
+          {{product.quantity - (product.quantityPacked ? product.quantityPacked : '0')}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

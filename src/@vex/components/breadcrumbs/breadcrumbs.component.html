@@ -1,0 +1,49 @@
+<div class="flex items-center">
+    <vex-breadcrumb>
+      <a [routerLink]="['/']">
+        <ic-icon [icon]="icHome" inline="true" size="20px"></ic-icon>
+      </a>
+    </vex-breadcrumb>
+    <ng-container *ngFor="let crumb of crumbs; trackBy: trackByValue" >
+      <div class="w-1 h-1 bg-gray-300 rounded-full ltr:mr-2 rtl:ml-2"></div>
+      <vex-breadcrumb [ngClass]="crumb?.isActive ? 'active' : ''">
+      
+        <div *ngIf="crumb && crumb.paramsUrl;">
+            <a (click)="goToPage(crumb)"  style="cursor: pointer;"          
+            >{{ crumb && crumb?.title ? crumb?.title : "" }}</a>
+        </div>
+        
+
+        <div *ngIf="crumb.url2; else anotherUrl">
+            <a *ngIf="crumb && crumb?.url2"  (click)="backToBranch(crumb.url2)"  style="cursor: default;"          
+            >{{ crumb && crumb?.title ? crumb?.title : "" }}</a>
+        </div>
+        <ng-template #anotherUrl>
+
+        <div *ngIf="crumb.url3; else third">
+         <a *ngIf="crumb && crumb?.url3"  (click)="backToOrderDetail(crumb.url3)"  style="cursor: default;"          
+            >{{ crumb && crumb?.title ? crumb?.title : "" }}</a>
+        </div>
+        
+        </ng-template>
+       
+        <ng-template #third>
+        <div *ngIf="!crumb.paramsUrl">
+            <a
+                [routerLink]="crumb && crumb?.url ? crumb.url : ''"
+                *ngIf="crumb && crumb?.url"            
+                >{{ crumb && crumb?.title ? crumb?.title : "" }}</a>
+
+                <a
+                *ngIf="crumb && !crumb?.url"
+                style="cursor: default;"
+                >{{ crumb && crumb?.title ? crumb?.title : "" }}
+            </a>
+        </div>
+        </ng-template>
+       
+      </vex-breadcrumb>
+    </ng-container>
+
+   
+  </div>

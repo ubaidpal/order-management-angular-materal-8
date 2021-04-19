@@ -1,0 +1,179 @@
+<vex-page-layout-content
+    class="px-0"
+>
+  <div class="overflow-auto">
+    <table @stagger [dataSource]="dataSource" class="w-full bg-transparent" mat-table matSort>
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ "Item Name" | uppercase }}
+        </th>
+        <td *matCellDef="let row" mat-cell class="border-b-0">          
+            {{row["name"]}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="pl-3"> <b>Total</b> </td>
+      </ng-container>
+      <ng-container matColumnDef="code">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ "Item code" | uppercase }}
+        </th>
+        <td *matCellDef="let row" mat-cell class="border-b-0">          
+            {{row["code"]}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef>  </td>
+      </ng-container>
+      <ng-container matColumnDef="size">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ "size" | uppercase }}
+        </th>
+        <td *matCellDef="let row" mat-cell class="border-b-0">          
+            {{row["size"]}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef>  </td>
+      </ng-container>
+      <ng-container matColumnDef="orderQty">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ "order Qty" | uppercase }}
+        </th>
+        <td *matCellDef="let row" mat-cell class="border-b-0">          
+            {{row["orderQty"] | number:'1.0-2'}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="pl-3"> <b>{{totalQuantity | number:'1.0-2'}}</b> </td>
+      </ng-container>
+      <ng-container matColumnDef="packedQty">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ "packed Qty" | uppercase }}
+        </th>
+        <td *matCellDef="let row" mat-cell class="border-b-0">          
+            {{row["packedQty"] | number:'1.0-2'}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="pl-3"> <b>{{totalPacked | number:'1.0-2'}}</b> </td>
+      </ng-container>
+      <ng-container matColumnDef="balance">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ "balance" | uppercase }}
+        </th>
+        <td *matCellDef="let row" mat-cell class="border-b-0">          
+            {{row["balance"] | number:'1.0-2'}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="pl-3"> <b>{{totalBalance | number:'1.0-2'}}</b> </td>
+      </ng-container>
+      <ng-container matColumnDef="progress">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ "packing progress" | uppercase }}
+        </th>
+        <td *matCellDef="let row" mat-cell class="border-b-0">          
+            <div class="mt-2">
+                <mat-progress-bar
+                    mode="determinate"
+                    [value]='row.progress'
+                    style="height: 7px;  "
+                ></mat-progress-bar>
+                <p class="text-secondary mt-1" style="font-size: 11px;">
+                  {{(row.packedQty ? row.packedQty : 0) | number:'1.0-2'}} of {{(row.orderQty ? row.orderQty : 0) | number:'1.0-2'}}
+                  <span class="float-right"> {{row.progress | number:'1.2-2'}} %</span>
+                </p>
+            </div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef> </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: visibleColumns"
+        @fadeInUp
+        class="hover:bg-hover trans-ease-out cursor-pointer"
+        mat-row
+      ></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedFooterColumns" class="bg-light-gray"></tr>
+    </table>
+  </div>
+</vex-page-layout-content>
+
+<mat-menu #columnFilterMenu="matMenu">
+  <form class="date-block" [formGroup]="filterForm">
+    <div class="card w-100" fxFlex="350px">
+      <div class="px-4 py-4" fxLayout="column">
+        <div
+          fxLayout="row"
+          fxLayout.lt-sm="column"
+          fxLayoutGap="0"
+          fxLayoutGap.lt-sm="0"
+        >
+          <mat-form-field fxFlex="auto" appearance="outline" class="field-pb-0">
+            <mat-label>All Customers</mat-label>
+            <mat-select
+              formControlName="storesField"
+              (click)="$event.stopPropagation()"
+            >
+              <mat-option *ngFor="let c of storesList" [value]="c.name">{{
+                c.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div
+          fxLayout="row"
+          fxLayout.lt-sm="column"
+          fxLayoutGap="16px"
+          fxLayoutGap.lt-sm="0"
+        >
+          <mat-form-field fxFlex="auto" appearance="outline">
+            <mat-label>All Statuses</mat-label>
+            <mat-select
+              formControlName="unitsField"
+              (click)="$event.stopPropagation()"
+            >
+              <mat-option *ngFor="let c of unitsList" [value]="c.id">{{
+                c.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="16px" fxLayoutGap.lt-sm="0">
+          <mat-form-field fxFlex="48" appearance="outline">
+            <input matInput 
+              [matDatepicker]="fromOrderDate" 
+              placeholder="Shipment Date" 
+              formControlName="fromOrderDate" 
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="fromOrderDate"></mat-datepicker-toggle>
+            <mat-datepicker #fromOrderDate></mat-datepicker>
+          </mat-form-field>
+      
+        
+          <mat-form-field fxFlex="48" appearance="outline">
+            <input matInput 
+              [matDatepicker]="toOrderDate" 
+              placeholder="Shipment Date" 
+              formControlName="toOrderDate"
+              (click)="$event.stopPropagation();">
+            <mat-datepicker-toggle matSuffix [for]="toOrderDate"></mat-datepicker-toggle>
+            <mat-datepicker #toOrderDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="8px">
+          
+          <button
+            color="primary"
+            (click)="formFilter(filterForm.value)"
+            mat-raised-button
+            type="button"
+          >
+            Apply Filters
+          </button>
+          <a
+            (click)="$event.stopPropagation()"
+            (click)="clearFormValue()"
+            mat-button
+            href="javascript:"
+            type="button"
+          
+          >
+            Clear All
+        </a>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-menu>

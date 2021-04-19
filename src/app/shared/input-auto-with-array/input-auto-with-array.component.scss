@@ -1,0 +1,16 @@
+.mat-form-field {
+  width: 100%;
+}
+.mat-option.provided {
+  height: auto;
+}
+.btn-clear {
+  color: #ffffff;
+  cursor: pointer;
+}
+mat-form-field:hover .btn-clear {
+  color: #222222;
+}
+mat-form-field:hover .btn-clear.disabled {
+  color: #ffffff;
+}

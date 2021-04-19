@@ -1,0 +1,101 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <img *ngIf="user?.imageSrc" [src]="user?.imageSrc" class="avatar ltr:mr-5 rtl:ml-5">
+    <h2 class="headline m-0" fxFlex="auto">{{ form.get('name').value || 'New User' }}</h2>
+
+   
+    <button [matMenuTriggerFor]="settingsMenu" class="text-secondary" mat-icon-button type="button">
+      <mat-icon [icIcon]="icMoreVert"></mat-icon>
+    </button>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="-mx-6 text-border"></mat-divider>
+
+  <mat-dialog-content fxLayout="column">
+    <mat-form-field class="mt-6">
+      <mat-label>Name</mat-label>
+      <input cdkFocusInitial formControlName="name" matInput>
+
+      <mat-icon [icIcon]="icPerson" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+    </mat-form-field>
+
+    <mat-form-field class="mt-6">
+      <mat-label>E-Mail</mat-label>
+      <input formControlName="email" matInput>
+
+      <mat-icon [icIcon]="icEmail" class="ltr:mr-3 rtl:ml-3" matPrefix></mat-icon>
+    </mat-form-field>
+
+    <mat-form-field  class="sm:mt-6">
+      <mat-label>Select Agency Role *</mat-label>
+      <mat-select formControlName="agencyRole">
+        <mat-option  [value]="0">Agency 1</mat-option>
+        <mat-option  [value]="1">Agency 2</mat-option>
+      </mat-select>
+      <mat-icon [icIcon]="icPerson" class="mr-3" matPrefix></mat-icon>
+    </mat-form-field>
+
+    <mat-form-field  class="sm:mt-6">
+      <mat-label>Select Privillage *</mat-label>
+      <mat-select formControlName="privillage">
+        <mat-option  [value]="0">Privillage 1</mat-option>
+        <mat-option  [value]="1">Privillage 2</mat-option>
+      </mat-select>
+      <mat-icon [icIcon]="icPerson" class="mr-3" matPrefix></mat-icon>
+    </mat-form-field>
+
+    <mat-form-field  class="sm:mt-6">
+      <mat-label>Select Agency *</mat-label>
+      <mat-select formControlName="agency">
+        <mat-option  [value]="0">Agency 1</mat-option>
+        <mat-option  [value]="1">Agency 2</mat-option>
+      </mat-select>
+      <mat-icon [icIcon]="icPerson" class="mr-3" matPrefix></mat-icon>
+    </mat-form-field>
+
+    <mat-form-field  class="sm:mt-6">
+      <mat-label>Select Office *</mat-label>
+      <mat-select formControlName="office">
+        <mat-option  [value]="0">Office 1</mat-option>
+        <mat-option  [value]="1">Office 2</mat-option>
+      </mat-select>
+      <mat-icon [icIcon]="icPerson" class="mr-3" matPrefix></mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input formControlName="password" [type]="inputType" matInput required value="">
+      <button (click)="togglePassword()" mat-icon-button matSuffix type="button">
+        <mat-icon *ngIf="visible" [icIcon]="icVisibility"></mat-icon>
+        <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
+      </button>
+      <mat-hint>Try clicking the eye to toggle the visibility.</mat-hint>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">CANCEL</button>
+    <button *ngIf="isCreateMode()" color="primary"  mat-button type="submit">SAVE CHANGES</button>
+  </mat-dialog-actions>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icPrint"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDownload"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDelete"></mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

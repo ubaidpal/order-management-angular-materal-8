@@ -1,0 +1,107 @@
+<alert></alert>
+<div class="h-full" fxLayout="column">
+<vex-page-layout mode="card">
+
+  <vex-page-layout-header fxLayout="column" fxLayoutAlign="center start">
+    <div vexContainer>
+      <h2 class="title m-0">{{branch?.name | titlecase}}</h2>
+      <vex-breadcrumbs [crumbs]="breadcrumbsParams"></vex-breadcrumbs>
+    </div>
+  </vex-page-layout-header>
+
+ 
+  <vex-page-layout-content vexContainer>
+   
+    
+    </vex-page-layout-content>  
+
+
+
+    <div class="h-full" fxLayout="column" class="overflow-y-auto" style="background-color: transparent; margin-top: 15px;">
+      <div class="p-6 pb-0 bg-card shadow-b" fxFlex="none" class="bgColor">
+        <div vexContainer >
+          
+    
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <nav class="vex-tabs border-0" fxFlex="auto" mat-tab-nav-bar>
+              <a style="color:#fff" *ngFor="let link of links; let i = index" [active]="activeCategory == link.category"
+                [disabled]="link.disabled" [class.branchActive]="selectedIndex === i"
+                (click)="changeCategory(link.category , i)" mat-tab-link>
+                {{ link.label }}
+              </a>
+            </nav>
+          
+    
+            
+          </div>
+        </div>
+      </div>
+    
+      <div *ngIf="(filteredOrders$).length > 0" 
+        @stagger class="overflow-y-auto" 
+        fxFlex="auto">
+      
+        <div  vexContainer style="padding: 20px;">
+         
+         <vex-branch-order-grid></vex-branch-order-grid>
+      
+        </div>
+    </div>
+
+    
+      <div *ngIf="(filteredShippingLocation$).length > 0" @stagger class="overflow-y-auto" fxFlex="auto">
+      
+          <div style="margin-top: 80px!important;margin-left: 15px!important;margin-right: 15px!important;padding: 20px;">
+        
+            <shipping-vex-aio-table></shipping-vex-aio-table>
+        </div>
+      </div>
+
+
+      <div *ngIf="(filteredShippingContact$).length > 0" @stagger class="overflow-y-auto" fxFlex="auto">
+      
+        <div style="margin-top: 80px!important;margin-left: 15px!important;margin-right: 15px!important;padding: 20px;">
+      
+          <vex-contact-aio-table></vex-contact-aio-table>
+      </div>
+    </div>
+
+      <div *ngIf="(filteredCatelogue$).length > 0" @stagger class="overflow-y-auto" fxFlex="auto">
+      
+        <div style="margin-top: 80px!important;margin-left: 15px!important;margin-right: 15px!important;padding: 20px;">
+      
+          <vex-catelouge-aio-table></vex-catelouge-aio-table>
+      </div>
+    </div>
+
+    <div *ngIf="(filteredBranchDetails$).length > 0" @stagger class="overflow-y-auto" fxFlex="auto">
+      
+      <div style="margin-top: 0px!important;margin-left: 15px!important;margin-right: 15px!important;padding: 20px;">
+    
+        <branch-form-elements></branch-form-elements>
+    </div>
+  </div>
+
+        <!-- <div *ngIf="(filteredCompanyDetail$).length > 0" @stagger class="overflow-y-auto" fxFlex="auto">
+      
+          <div style="margin-top: 40px!important;margin-left: 15px!important;margin-right: 15px!important">
+          
+         
+        </div>
+      </div> -->
+
+    
+    
+      <!-- <div *ngIf="(filteredOrders$).length === 0" @scaleFadeIn fxFlex="auto" fxLayout="column"
+        fxLayoutAlign="center center">
+        <img class="m-12 h-64" src="assets/img/illustrations/idea.svg">
+        <h2 class="headline m-0 text-center">No data found..</h2>
+      </div> -->
+
+
+
+    </div>
+
+</vex-page-layout>
+
+</div>

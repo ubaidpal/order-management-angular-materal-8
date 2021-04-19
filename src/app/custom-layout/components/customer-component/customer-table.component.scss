@@ -1,0 +1,54 @@
+// .vex-page-layout-header{
+//     background-color: #f2f4f6!important;
+// }
+// .all-order{
+//     color:#000!important;
+// }
+.new-customer-btn-color{
+    background-color: #4A74E6!important;
+}
+
+// .table-header{
+//     margin:#fff!important;
+// }
+//  .mat-icon{
+//     width:15px !important;
+//     height:15px !important;
+//     color:#2680eb;
+// }
+.empty-table {
+    height: 300px;
+    margin-top: 10%;
+    margin-bottom: 10%;
+  }
+  .empty-table-button{
+    width: 120px;
+    height: 30px;
+  }
+  .table-note-notification{
+    color: var(--toolbar-bell-icon-color);
+}
+.border-bottom-width{
+  th,td{
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+  }
+}
+
+.message-block{
+  position: absolute;
+  right: 10px;
+  width: 300px;
+  top: -4px;
+  p{
+    margin-top: 5px;
+  }
+}
+table{
+  td{
+    outline: none;
+  }
+}
+.close-icon{
+  float: right;
+}

@@ -1,0 +1,297 @@
+<div *ngIf="!showEmptyGrid">
+  <mat-accordion>
+    <mat-expansion-panel
+      class="accordion-body-p-0 mt-0"
+      [expanded]="pointIndex === 0"
+      *ngFor="let shipment of shipmentsArray; let pointIndex = index"
+    >
+      <mat-expansion-panel-header
+        class="  border-b border-dark setToggleIconLeft"
+        style="min-height: 64px;"
+      >
+        <mat-panel-title fxLayoutAlign="start center" class="pl-10">
+          <h3 class="m-0 border-r border-dark lh-1 pr-3">{{shipment?.vesselId}}</h3>
+          <span class="text-secondary font-12 ml-3"
+            >Shipment Date: {{shipment?.shippedOn | date: "MMM d yyyy"}}</span
+          >
+        </mat-panel-title>
+        <mat-panel-description fxLayoutAlign="end center">
+          <button
+            (click)="$event.stopPropagation()"
+            [matMenuTriggerFor]="actionsMenu"
+            [matMenuTriggerData]="{ shipment: shipment }"
+            mat-icon-button
+            type="button"
+          >
+            <ic-icon
+              [icon]="icMoreHoriz"
+              size="28px"
+              class="text-secondary"
+            ></ic-icon>
+          </button>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <table class="w-100 mt-6">
+        <tr>
+          <td
+            class="text-secondary border-r border-dark px-4 py-2 text-right"
+            style="width: 160px;"
+          >
+            PI Number
+          </td>
+          <td class="px-4 py-2">{{ordersArray?.proformaInvoiceNo}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Ship To
+          </td>
+          <td class="px-4 py-2">{{ordersArray.shippingLocation && ordersArray.shippingLocation.name ? ordersArray.shippingLocation.name : ''}}, {{getCountry(ordersArray?.countryId)}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            PI Date
+          </td>
+          <td class="px-4 py-2" style="width: 160px;">{{ordersArray?.proformaInvoiceDate | date: "MMM d yyyy"}}</td>
+        </tr>
+        <tr>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Customer
+          </td>
+          <td class="px-4 py-2">{{getCustomer(ordersArray?.customerId) | titlecase}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            From Port
+          </td>
+          <td class="px-4 py-2">{{ordersArray?.fromPort}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Shipment Date
+          </td>
+          <td class="px-4 py-2">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+              <div>{{ordersArray?.shipmentDate | date: "MMM d yyyy"}}</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Branch
+          </td>
+          <td class="px-4 py-2">{{getBranches(ordersArray?.customerBranchId) | titlecase}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Ship By
+          </td>
+          <td class="px-4 py-2">{{ordersArray?.shipBy}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Actual Shipment
+          </td>
+          <td class="px-4 py-2">{{shipment?.shippedOn | date: "MMM d yyyy"}}</td>
+        </tr>
+        <tr>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Currency
+          </td>
+          <td class="px-4 py-2">{{getCurrency(ordersArray?.currencyId)}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Transhipment
+          </td>
+          <td class="px-4 py-2">{{ordersArray?.isTranshipmentAllowed == 'true' ? 'Allowed' : 'Not Allowed'}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Vessel ID
+          </td>
+          <td class="px-4 py-2">{{shipment?.vesselId}}</td>
+        </tr>
+        <tr>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Contact Person
+          </td>
+          <td class="px-4 py-2">{{ordersArray && ordersArray.customerContact ? ordersArray.customerContact.name : ''}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Origin of Goods
+          </td>
+          <td class="px-4 py-2">{{getCountry(ordersArray?.originOfGoods)}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            PO Number
+          </td>
+          <td class="px-4 py-2">{{ordersArray?.orderNo}}</td>
+        </tr>
+        <tr>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Contact Details
+          </td>
+          <td class="px-4 py-2">{{ordersArray && ordersArray.customerContact ? ordersArray.customerContact.phone : '' }}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            Type
+          </td>
+          <td class="px-4 py-2">{{ordersArray?.shippingType}}</td>
+          <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+            PO Date
+          </td>
+          <td class="px-4 py-2">{{ordersArray?.orderDate | date: "MMM d yyyy"}}</td>
+        </tr>
+        <tr>
+          <td
+            class="text-secondary border-r border-dark px-4 py-2 text-right"
+            colspan="5"
+          >
+            Delivery Terms
+          </td>
+          <td class="px-4 py-2">{{ordersArray?.paymentTerms}}</td>
+        </tr>
+      </table>
+
+      <table class="w-full border-t border-dark  mt-5" mat-table matSort>
+        <thead>
+          <tr class="border-b border-dark">
+            <th
+              class="pl-6 pr-4 py-4 weight-400 text-secondary font-13 text-left"
+            >
+              ITEM NAME
+            </th>
+            <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+              SIZE
+            </th>
+            <th class="px-4 py-4 weight-400 text-secondary font-13 text-right">
+              SHIPPED CARTONS
+            </th>
+            <th class="pl-4 pr-6 py-4 weight-400 text-secondary font-13 text-right">
+              SHIPPED PIECES
+            </th>
+          </tr>
+        </thead>
+        <tbody class="field-pb-0 " *ngIf="shipment.shipmentProducts">
+          <tr class="border-b border-dark" *ngFor="let product of shipment.shipmentProducts; let personIndex = index">
+            <td class=" pl-6 pr-4 py-2">
+              <div>{{getProductById(product?.productId ,'name')}}
+
+                <!-- <div
+                class="rounded-full px-2 py-1 font-medium text-xs inline-block ml-2 text-center"
+                style="background-color: #ebf0fd; color: #5c77ff; min-width: 50px;"
+              >
+                NEW
+              </div> -->
+
+              </div>
+            <span class="text-secondary" style="font-size: 11px;"
+              >{{getProductById(product?.productId, 'code')}}</span
+            >
+            </td>
+            <td class=" px-4 py-2">
+              {{getProductVariant(product?.productId, product?.productVariationId)}}
+            </td>
+            <td class=" px-4 py-2 text-right">
+              {{product?.shippedQuantity}}
+            </td>
+            <td class=" pl-4 py-2 text-right pr-6">
+              {{product?.pieces}}
+            </td>
+          </tr>
+        
+        </tbody>
+      </table>
+
+      <div
+        fxLayout="row"
+        fxLayout.lt-sm="column"
+        fxLayoutGap="0"
+        fxLayoutGap.lt-sm="10"
+        class="mt-5 px-6 mb-6 mt-3"
+      >
+        <div fxFlex="50" fxLayout="column" class="border-r border-dark pr-5">
+          <div class="mb-4">
+            <h3 class="m-0 text-secondary weight-400 float-left">
+              Total Cartons
+            </h3>
+            <span class="float-right font-18">{{shipment.totalCartons | number:'1.0-2'}}</span>
+          </div>
+          <div class="">
+            <h3 class="m-0 text-secondary weight-400 float-left">
+              Total Pieces
+            </h3>
+            <span class="float-right font-18">{{shipment.totalPieces | number:'1.0-2'}}</span>
+          </div>
+        </div>
+        <div fxFlex="50" fxLayout="column" class="pl-5">
+          <div class="mb-4">
+            <h3 class="m-0 text-secondary weight-400 float-left">
+              Total Volume
+            </h3>
+            <span class="float-right font-18">{{shipment.totalVolume | number:'1.2-2'}} m3</span>
+          </div>
+          <div class="">
+            <h3 class="m-0 text-secondary weight-400 float-left">
+              Gross Weight
+            </h3>
+            <span class="float-right font-18">{{shipment.totalWeight | number:'1.2-2'}} Kgs</span>
+          </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
+    <ng-template matMenuContent let-shipment="shipment">
+      <button mat-menu-item (click)="openCreateShipmentDailog(shipment)">
+        <mat-icon [icIcon]="icEdit"></mat-icon>
+        <span>Modify</span>
+      </button>
+      <button mat-menu-item (click)="deleteShipment(shipment)"> 
+        <mat-icon [icIcon]="icDelete"></mat-icon>
+        <span>Delete</span>
+      </button>
+    </ng-template>
+  </mat-menu>
+</div>
+
+<div class="empty-table" align="center" *ngIf="showEmptyGrid" style="min-height: 400px;"
+fxLayout="column"
+fxLayoutGap="0"
+fxLayoutAlign="center center"
+>
+  <svg
+    fill="#9AA5B6"
+    version="1.0"
+    xmlns="http://www.w3.org/2000/svg"
+    width="50.000000pt"
+    height="50.000000pt"
+    viewBox="0 0 512.000000 512.000000"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <metadata>
+      Created by potrace 1.15, written by Peter Selinger 2001-2017
+    </metadata>
+    <g
+      transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+      fill="#9AA5B6"
+      stroke="#9AA5B6"
+    >
+      <path
+        d="M1152 4299 c-71 -28 -144 -101 -171 -174 -21 -55 -21 -64 -21 -1210
+      l0 -1155 160 0 160 0 0 1120 0 1120 960 0 960 0 0 160 0 160 -997 -1 c-978 0
+      -999 0 -1051 -20z"
+      />
+      <path
+        d="M1792 3659 c-72 -28 -144 -102 -171 -174 -21 -57 -21 -58 -19 -1263
+      l3 -1207 23 -43 c29 -55 89 -115 144 -144 l43 -23 967 -3 c961 -2 967 -2 1022
+      19 75 28 147 99 175 174 21 55 21 64 21 1245 0 1176 0 1190 -21 1244 -23 64
+      -86 133 -150 168 l-44 23 -970 2 c-955 2 -971 2 -1023 -18z m1888 -1419 l0
+      -1120 -880 0 -880 0 0 1120 0 1120 880 0 880 0 0 -1120z"
+      />
+    </g>
+  </svg>
+
+  <h3 class="mt-4">No shipments found</h3>
+  <div>
+    <span class="table-note-notification text-secondary"
+      >Not shipments added yet, add your first one now</span
+    >
+  </div>
+  <br />
+  <div align="center" class="w-full flex-col sm:flex-row justify-between">
+    <button
+    mat-raised-button
+    mat-button
+    type="button"
+    color="primary"
+    class="btn-large"
+    (click)="openCreateShipmentDailog('')"
+    >
+      Create Shipping
+    </button>
+  </div>
+</div>

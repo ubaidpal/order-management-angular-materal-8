@@ -1,0 +1,42 @@
+<div
+  class="rounded px-2 py-1 font-medium text-xs float-left"
+  style="background-color: #f4433626; color: #f44336; white-space: nowrap; "
+  *ngIf="badgeStatus === 'cancelled'"
+>
+  Cancelled
+</div>
+<div
+  class="rounded px-2 py-1 font-medium text-xs float-left"
+  style="background-color: #d5f4f0; color: #2db6a5; white-space: nowrap; "
+  *ngIf="badgeStatus === 'completed' || badgeStatus == UtilStatus.Completed"
+>
+  Completed
+</div>
+<div
+  class="rounded px-2 py-1 font-medium text-xs float-left"
+  style="background-color: #d5f4f0; color: #2db6a5; white-space: nowrap; "
+  *ngIf="badgeStatus === 'shipped' || badgeStatus == UtilStatus.Shipped"
+>
+    Shipped
+</div>
+<div
+  class="rounded px-2 py-1 font-medium text-xs float-left"
+  style="background-color: #fcf4d5; color: #d46618; white-space: nowrap; "
+  *ngIf="badgeStatus === 'pending' || badgeStatus == UtilStatus.New"
+>
+  New
+</div>
+<div
+  class="rounded px-2 py-1 font-medium text-xs float-left"
+  style="background-color: #ebf0fd; color: #7b9bed; white-space: nowrap; "
+  *ngIf="badgeStatus === 'in progress' || badgeStatus === 'in-progress' || badgeStatus == UtilStatus.InProgress"
+>
+  In Progress
+</div>
+<div
+  class="rounded px-2 py-1 font-medium text-xs float-left"
+  style="background-color: #ebf0fd; color: #7b9bed; white-space: nowrap; "
+  *ngIf="badgeStatus === 'ready for shipment' || badgeStatus == UtilStatus.ReadyForShipment"
+>
+  Ready for Shipment
+</div>

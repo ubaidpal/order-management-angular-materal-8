@@ -1,0 +1,434 @@
+@import "~simplebar/dist/simplebar.css";
+@import "~highlight.js/styles/androidstudio.css";
+// Vex Core
+@import "./@vex/styles/core";
+/* Add application styles & imports to this file! */
+// @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+/*
+  You can override any CSS Variable or style here
+  Example:
+
+  :root {
+   --sidenav-background: #333333;
+  }
+
+  All possible variables can be found in @vex/styles/core or by simply inspecting the element you want to change
+  in Chrome/Firefox DevTools
+*/
+.bg-light-gray{
+  background-color: #F8F9FA;
+}
+.p-rel{
+  position: relative;
+}
+.font-13{
+  font-size: 13px;
+}
+.font-12{
+  font-size: 12px;
+}
+.font-18{
+  font-size: 18px;
+}
+.lh-1{
+  line-height: 1;
+}
+table{
+  td,th, tr{
+    outline: none !important;
+  }
+}
+.mat-checkbox-frame{
+  border-width: 1px !important;
+}
+.field-pb-0 {
+  .mat-form-field-wrapper{
+    padding-bottom: 0;
+  }
+}
+.resize-none{
+  resize: none;
+}
+.field-mtr-5 {
+  .mat-form-field-infix{
+    margin-top: -5px;
+  }
+}
+.field-top-5 {
+  .mat-form-field-infix{
+    top: -4px;
+  }
+}
+.sfield-top-5 {
+  .mat-form-field-infix{
+    top: -4px;
+  }
+  .mat-select-arrow-wrapper{
+    position: relative;
+    top: 4px;
+  }
+}
+.pointer{
+  cursor: pointer;
+}
+.mat-form-field-disabled{
+  .mat-form-field-outline{
+    background: #F8F9FA;
+    border-radius: 5px;
+  }
+}
+.border-c-dark{
+  border-color: #99999973;
+}
+
+  .mat-table mat-row, .mat-table mat-header-row, .mat-table mat-footer-row, .mat-table th.mat-header-cell, .mat-table td.mat-cell, .mat-table td.mat-footer-cell{
+    border-bottom-color: #9999994d;
+  }
+.phone-number-block{
+   position: relative;
+   padding-left: 0;
+   .phone-number{
+     position: absolute;
+     left: 2px;
+     top: 2px;
+     width: 100px;
+     z-index: 10;     
+     .mat-form-field-outline-start{
+       border: none;
+       background-color: #F8F9FA;
+     }
+     .mat-form-field-outline-end{
+      border-radius: 0;
+      background-color: #F8F9FA;
+      border-top: none;
+      border-bottom: none;
+      
+     }
+     .mat-form-field-outline-gap{
+       border: none;
+       background-color: #F8F9FA;
+     }
+     .mat-form-field-flex{
+      height: 51px;
+     }
+     .mat-select-value{
+      top: -4px;
+      position: relative;
+     }
+     label.mat-form-field-label.ng-star-inserted{
+       &.mat-form-field-empty{
+        .ng-star-inserted{
+          background-color: transparent;
+        }
+       }
+       .ng-star-inserted{
+         background-color: #fff;
+       }
+     }
+     &:hover{
+      .mat-form-field-outline-end{
+        border-color: #F8F9FA !important;
+        
+       }
+     }
+   }
+   input.mat-input-element{
+    padding-left: 100px;
+    box-sizing: border-box;
+   }
+ }
+ .primary-dropdown{
+  > div{
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+  }
+  &.minW-155{
+    >div {
+      min-width: 155px;
+    }
+  }
+  button:hover{
+      background-color: #EBF0FD !important;
+  }
+}
+.text-primary{
+  color: #5c77ff;
+}
+.weight-400{
+  font-weight: 400;
+}
+.weight-500{
+  font-weight: 500;
+}
+.icon-button-pb-0{
+  span{
+    padding-bottom: 0 !important;
+  }
+}
+.icon-button-pt-0{
+  span{
+    padding-top: 0 !important;
+  }
+}
+.btn-large {
+  min-width: 110px !important;
+  border-radius: 3px !important;
+  &.border {
+    border: 1px solid #cacfd7 !important;
+  }
+  &.c-dark {
+    color: #333 !important;
+  }
+}
+.border-dark{
+  border-color: #D5DADF !important;
+}
+.dailog-title{
+  background-color: #000;
+  color: #fff;
+  margin-top: -24px !important;
+}
+.w-100{
+  width: 100%;
+}
+.w-9rem{
+  width: 9rem;
+}
+.toggle-btn-40{
+  .mat-button-toggle{
+    height: 40px;
+    button, .mat-button-toggle-label-content{
+      height: 40px;
+      line-height: 2.9;
+    }
+  }
+}
+.accordion-body-p-0{
+  .mat-expansion-panel-body{
+    padding: 0;
+  }
+}
+.setToggleIconLeft{
+  position: relative;
+  .mat-expansion-indicator{
+    left: 34px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 26px;
+    &:after{
+      border-color: #0000008a;
+    }
+  }
+}
+.mat-select-field{
+  width: 100%;
+  .mat-form-field{
+    width: 100%;
+  }
+}
+.cdk-overlay-pane{
+  // margin-left: 30px;
+}
+.mat-select-panel-wrap{
+    overflow: hidden;
+    padding-bottom: 3px;
+    padding-left: 3px;
+  .mat-select-panel{
+    min-width: 100% !important;
+  }
+  .box-search-icon{
+    position: absolute;
+    right: 16px;
+    top: 5px;
+    .mat-button-wrapper{
+      .material-icons{
+        font-size: 15px;
+      }
+    }
+  }
+}
+.mat-snack-bar-container{
+  &.snackbar-danger{
+    background-color: #f8d7da;
+    color: #721c24;
+    border:1px solid #f5c6cb;
+    .mat-simple-snackbar-action{
+      color: #491217;
+    }
+  }
+  &.snackbar-success{
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    .mat-simple-snackbar-action{
+      color: #491217;
+    }
+  }
+  &.snackbar-warning{
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    .mat-simple-snackbar-action{
+      color: #491217;
+    }
+  }
+}
+.vex-breadcrumb{
+  &.active{
+    opacity: 1 !important;
+  }
+}
+.readonly-field{
+  .mat-form-field-wrapper{
+    background-color: #F8F9FA;
+    color: rgba(0, 0, 0, 0.50);
+  }
+  &.pb-00{
+    .mat-form-field-wrapper{
+      padding-bottom: 0;
+    }
+  }
+}
+.hide-input-spinner{
+  -moz-appearance: textfield;
+  &::-webkit-inner-spin-button, 
+  &::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+  }
+}
+.custom-autocoplete{
+  .autocomplete-container{
+    height: 50px;
+    input{
+      height: 50px !important;
+    }
+  }
+}
+.multi-search-field{
+  input{
+    box-sizing: border-box;
+  }
+  .dropdown-btn{
+    padding: 14px 12px 10px !important;
+    border-color: #adadad61 !important;
+  }
+  .selected-item{
+    margin-bottom: 3px;
+  }
+}
+.popover-custom-block{
+  display: inline-block;
+  position: relative;
+  .cell{
+    display: inline-block    
+  }  
+  .popover-visible-block{
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 20px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 3px;
+    padding: 5px 0;
+    max-height: 130px;
+    overflow-y: scroll;
+    ul{
+      margin: 0;
+      padding: 0;
+      li{
+        float: left;
+        width: 100%;
+        list-style: none;
+        margin-bottom: 5px;
+        padding: 0 10px;
+        &:last-child{
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  &:hover{
+    .popover-visible-block{
+      display: block;
+    }
+  }
+}
+.hide-percentage {
+  .subheading-1 {
+    display: none;
+  }
+  button.bg-card{
+    display: none;
+  }
+}
+.dashboard-orders-block{
+  .table-top-header.vex-page-layout-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+.prgress-bar-right{
+  .mat-progress-bar-fill{
+    transform-origin: top right !important;
+  }
+}
+.shipped-progress-bar{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1;
+  .mat-progress-bar-background.mat-progress-bar-element,
+  .mat-progress-bar-buffer.mat-progress-bar-element{
+    opacity: 0;
+  }
+  .mat-progress-bar-fill{
+      &:after{
+          background-color: #14af9b !important;
+      }    
+  }
+}
+.primary-contact-tab-height{
+  .mat-tab-body-content{
+    max-height: 66vh;
+    min-height: 30vh;
+  }
+}
+
+.packing-button .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+  line-height: 35px;
+  padding: 0 12px;
+}
+.tooltip-custom{
+  display: flex;
+  flex-direction: column;
+  > div {
+    float: left;
+    clear: both;
+  }
+}
+.bread-white-space{
+  a{
+    white-space: nowrap;
+  }
+}
+.product-mat-tab{
+  .mat-tab-label{
+    min-height: 64px;
+  }
+}
+
+@media screen 
+  and (min-device-width: 960px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+    .desktop-pl-0{
+      padding-left: 0 !important;
+    }
+}
+
+

@@ -1,0 +1,369 @@
+<mat-dialog-content fxLayout="column" class="-mt-6">
+  <form (ngSubmit)="submit()" [formGroup]="form">
+  <vex-page-layout>
+    <vex-page-layout-content
+      [class.container]="layoutCtrl.value === 'boxed'"
+      [class.px-gutter]="layoutCtrl.value === 'fullwidth'"
+      class="-mx-6 "
+      style="padding: 0;"
+    >
+      <div class="card overflow-auto" style="min-height: 400px;">
+        <div
+          class="bg-app-bar px-6 h-16 border-b sticky left-0"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          style="background-color: #1A202E; color: #fff;"
+        >
+          <h2 class="title my-0 " fxFlex="50" fxHide.xs>
+            <span>{{dailogTitle}} </span>
+          </h2>
+          <div fxFlex="50">
+            <button
+              class="text-secondary float-right"
+              mat-dialog-close
+              mat-icon-button
+              type="button"
+            >
+              <mat-icon [icIcon]="icClose" style="color: #fff;"></mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div fxLayout="column">
+          <div
+            fxLayout="row"
+            fxLayout.lt-sm="column"
+            fxLayoutGap="15px"
+            fxLayoutGap.lt-sm="0"
+            class="px-6 py-6 border-b border-dark field-pb-0"
+          >
+            <mat-form-field appearance="outline" fxFlex="25">
+              <mat-label>Select Invoice </mat-label>
+              <mat-select (click)="$event.stopPropagation()" formControlName="invoice">
+                <mat-option *ngFor="let invoice of allInvoice;" [value]="invoice.id">{{invoice.invoiceNo}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="25" class="readonly-field p-rel">
+              <mat-label>Shipment Date </mat-label>
+              <input
+                matInput
+                [matDatepicker]="shipmentDate"
+                (click)="$event.stopPropagation()"
+                formControlName="shipmentDate"
+                readonly
+              />
+              <mat-datepicker-toggle
+                matSuffix
+              ></mat-datepicker-toggle>
+              <mat-datepicker #shipmentDate></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="25">
+              <mat-label>Shipped On </mat-label>
+              <input
+                matInput
+                [matDatepicker]="shippedOn"
+                (click)="$event.stopPropagation()"
+                formControlName="shippedOn"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="shippedOn"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #shippedOn></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="25">
+              <mat-label>Vessel ID </mat-label>
+              <input matInput formControlName="vesselId" required/>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- table -->
+        <table class="w-full " mat-table matSort>
+          <thead>
+            <tr class="border-b border-dark">
+              <th
+                class="pl-6 pr-4 py-4 weight-400 text-secondary font-13 text-left"
+              >
+                <mat-checkbox
+                  color="primary"
+                  (change)="selectAllProducts()" 
+                  formControlName="isAllSelected"
+                ></mat-checkbox>
+              </th>
+              <th
+                class="pl-6 pr-4 py-4 weight-400 text-secondary font-13 text-left"
+              >
+                ITEM NAME
+              </th>
+              <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+                SIZE
+              </th>
+              <th
+                class="px-4 py-4 weight-400 text-secondary font-13 text-right"
+              >
+                PACKED CARTONS
+              </th>              
+              <th
+                class="px-4 py-4 weight-400 text-secondary font-13 text-right"
+              >
+                PACKED PIECES
+              </th>
+              <th
+                class="px-4 py-4 weight-400 text-secondary font-13 text-right"
+              >
+                {{'Balance Cartons' | uppercase}}
+              </th>
+              <th
+                class="px-4 py-4 weight-400 text-secondary font-13 text-right"
+              >
+                {{'Balance Pieces' | uppercase}}
+              </th>
+              <th
+                class="px-4 py-4 weight-400 text-secondary font-13 text-right"
+                style="width: 180px;"
+              >
+                SHIPPED CARTONS
+              </th>
+              <th
+                class="px-4 py-4 weight-400 text-secondary font-13 text-right"
+                style="width: 180px;"
+              >
+                SHIPPED PIECES
+              </th>
+              <th
+                class="px-4 py-4 weight-400 text-secondary font-13 text-right"
+              ></th>
+            </tr>
+          </thead>
+          <tbody class="field-pb-0 ">
+            <tr class="border-b border-dark" formArrayName="orderProducts" *ngFor="let product of ordersProductsArray.controls; let personIndex = index">
+              <td class=" pl-6 pr-4 py-2" [formGroupName]="personIndex">
+                <mat-checkbox
+                  color="primary"
+                  formControlName="isSelected"
+                  (change)="enabelDisableCartons(personIndex)" 
+                ></mat-checkbox>
+              </td>
+              <td class=" pl-6 pr-4 py-2" [formGroupName]="personIndex">
+                <div>{{getProductById(product ,'name')}}</div>
+                <span class="text-secondary" style="font-size: 11px;">
+                  {{getProductById(product, 'code')}}
+                </span>
+              </td>
+              <td class=" px-4 py-2" [formGroupName]="personIndex">
+                {{getProductVariant(product)}}
+              </td>
+              <td class=" px-4 py-2 text-right" [formGroupName]="personIndex">
+                {{product.value?.quantityPacked}}
+              </td>
+              <td class=" px-4 py-2 text-right" [formGroupName]="personIndex">
+                {{product.value?.piecesPacked}}
+              </td>
+              <td class=" px-4 py-2 text-right" [formGroupName]="personIndex">
+                {{getBalance(product).cartonsBalance}}
+              </td>
+              <td class=" px-4 py-2 text-right" [formGroupName]="personIndex">
+                {{getBalance(product).piecesBalance}}
+              </td>
+              <td class=" px-4 py-2 " [formGroupName]="personIndex">
+                <mat-form-field
+                  appearance="outline"
+                  class="text-right field-mtr-5 float-right"
+                  style="width: 100px;"
+                >
+                  <input matInput class="text-right" formControlName="shippedCartons"
+                    (input)="numberValidation($event, 'shippedCartons', personIndex, product.value)"
+                  />
+                </mat-form-field>
+              </td>
+              <td class=" px-4 py-2 text-right" [formGroupName]="personIndex">
+                {{product.value && product.value.shippedPieces ? product.value.shippedPieces : '0'}}
+              </td>
+              <td class=" px-4 py-2 text-right" [formGroupName]="personIndex"></td>
+            </tr>
+
+            <!-- <tr class="border-b border-dark">
+              <td class="pl-6 pr-4 py-2"></td>
+              <td class=" px-4 py-2">
+                <mat-form-field appearance="outline" class="w-100 field-top-5">
+                  <input matInput placeholder="Search for item" />
+                  <mat-icon
+                    [icIcon]="icSearch"
+                    class="ltr:mr-3 float-right"
+                    matSuffix
+                    style="color: #9AA5B6;"
+                  ></mat-icon>
+                </mat-form-field>
+              </td>
+              <td class=" px-4 py-2">
+                <mat-form-field
+                  appearance="outline"
+                  fxFlex="auto"
+                  style="width: 120px;"
+                >
+                  <mat-label>Select </mat-label>
+                  <mat-select (click)="$event.stopPropagation()">
+                    <mat-option value="large">Large</mat-option>
+                    <mat-option value="xLarge">xx Large</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td class=" px-4 py-2 text-right">
+                0
+              </td>
+              <td class=" px-4 py-2 text-right">
+                0
+              </td>
+              <td class=" px-4 py-2">
+                <mat-form-field
+                  appearance="outline"
+                  class="text-right"
+                  style="width: 100px;"
+                >
+                  <input matInput value="0" class="text-right" />
+                </mat-form-field>
+              </td>
+              <td class=" px-4 py-2 text-right">
+                0
+              </td>
+              <td class=" px-4 py-2">
+                <button color="primary" mat-button type="button">
+                  <mat-icon
+                    [icIcon]="icDelete"
+                    style="color: #b8bfca;"
+                  ></mat-icon>
+                </button>
+              </td>
+            </tr> -->
+          </tbody>
+        </table>
+        <!-- /table -->
+
+        <!-- <div
+          fxLayout="row"
+          fxLayout.lt-sm="column"
+          fxLayoutGap="32px"
+          fxLayoutGap.lt-sm="0"
+          class="px-6 py-2 border-b border-dark"
+        >
+          <a
+            class="text-primary pointer mt-1"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+          >
+            <mat-icon
+              [icIcon]="icAdd"
+              color="primary"
+              size="16px"
+              class="mt-2"
+            ></mat-icon>
+            Add More Field
+          </a>
+        </div> -->
+        <div
+          fxLayout="row"
+          fxLayout.lt-sm="column"
+          fxLayoutGap="0"
+          fxLayoutGap.lt-sm="10"
+          class="mt-5 px-6 mb-6 mt-3"
+        >
+          <div fxFlex="50" fxLayout="column" class="border-r border-dark pr-5">
+            <div class="mb-4">
+              <h3 class="m-0 text-secondary weight-400 float-left">
+                Total Cartons
+              </h3>
+              <span class="float-right font-18">
+                {{getTotalDetailForShipment().totalCartons | number:'1.0-2'}}
+              </span>
+            </div>
+            <div class="">
+              <h3 class="m-0 text-secondary weight-400 float-left">
+                Total Pieces
+              </h3>
+              <span class="float-right font-18">
+                {{getTotalDetailForShipment().totalPieces | number:'1.0-2'}}
+              </span>
+            </div>
+          </div>
+          <div fxFlex="50" fxLayout="column" class="pl-5">
+            <div class="mb-4">
+              <h3 class="m-0 text-secondary weight-400 float-left">
+                Total Volume
+              </h3>
+              <span class="float-right font-18">{{getTotalDetailForShipment().totalVolume | number:'1.2-2'}} m3</span>
+            </div>
+            <div class="">
+              <h3 class="m-0 text-secondary weight-400 float-left">
+                Gross Weight
+              </h3>
+              <span class="float-right font-18">{{getTotalDetailForShipment().totalWeight | number:'1.2-2'}} Kgs</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #branchesEmptyData>
+          <div class="empty-table" align="center">
+            <svg
+              fill="#9AA5B6"
+              version="1.0"
+              xmlns="http://www.w3.org/2000/svg"
+              width="50.000000pt"
+              height="50.000000pt"
+              viewBox="0 0 512.000000 512.000000"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <metadata>
+                Created by potrace 1.15, written by Peter Selinger 2001-2017
+              </metadata>
+              <g
+                transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+                fill="#9AA5B6"
+                stroke="#9AA5B6"
+              >
+                <path
+                  d="M1152 4299 c-71 -28 -144 -101 -171 -174 -21 -55 -21 -64 -21 -1210
+              l0 -1155 160 0 160 0 0 1120 0 1120 960 0 960 0 0 160 0 160 -997 -1 c-978 0
+              -999 0 -1051 -20z"
+                />
+                <path
+                  d="M1792 3659 c-72 -28 -144 -102 -171 -174 -21 -57 -21 -58 -19 -1263
+              l3 -1207 23 -43 c29 -55 89 -115 144 -144 l43 -23 967 -3 c961 -2 967 -2 1022
+              19 75 28 147 99 175 174 21 55 21 64 21 1245 0 1176 0 1190 -21 1244 -23 64
+              -86 133 -150 168 l-44 23 -970 2 c-955 2 -971 2 -1023 -18z m1888 -1419 l0
+              -1120 -880 0 -880 0 0 1120 0 1120 880 0 880 0 0 -1120z"
+                />
+              </g>
+            </svg>
+
+            <h4>No Shipments Found</h4>
+            <p>No Shipment added yet, add your first one now</p>
+            <br />
+          </div>
+        </ng-template>
+      </div>
+    </vex-page-layout-content>
+  </vex-page-layout>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions class="border-t border-dark -mx-6">
+    <div class="py-3  px-6 w-100">
+        <button mat-button type="button" class="btn-large border c-dark " mat-dialog-close>
+            Cancel
+          </button>
+        <div class="float-right" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="end">          
+          <button
+            color="primary"
+            mat-raised-button
+            mat-button
+            type="submit"
+            class="btn-large"
+            (click)="submit()"
+            [disabled]="!form.valid"
+          >
+            {{buttonTitle}}
+          </button>
+        </div>
+      </div>
+</mat-dialog-actions>

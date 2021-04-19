@@ -1,0 +1,66 @@
+<div class="branches-card">
+  <div class="card overflow-hidden branches-body">
+    <div
+      *ngIf="contact.id"
+      (click)="openContact.emit(contact.id)"
+      class="p-4 hover:bg-hover trans-ease-out cursor-pointer relative"
+      matRipple
+    >
+      <h2 class="title mb-1 mt-3">{{ contact?.name | titlecase }}</h2>
+
+      <div class="body-2 text-secondary weight-400">
+        <span
+          >{{ contact?.city | titlecase }},
+          {{ getCountryName(contact?.country) | titlecase }}</span
+        >
+      </div>
+
+      <div class="body-2 text-secondary bottom-address-block">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+          <button
+            mat-fab
+            class="icon-button-pb-0 icon-button-pt-0 address-icon"
+          >
+            <ic-icon [icon]="mapMarkerAlt"></ic-icon>
+          </button>
+          <span class="address">{{ contact?.addressLine1 }}, {{ contact?.addressLine2 }}</span>
+         
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="!contact.id"
+      (click)="openContact.emit(contact.id)"
+      class="p-4 text-center hover:bg-hover trans-ease-out cursor-pointer relative"
+      matRipple
+      fxLayout="column"
+      fxLayoutAlign="center center"
+    >
+      <!-- <div
+       style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+       class="rounded-full w-12 h-12 flex items-center justify-center ltr:mr-1 rtl:ml-1 add-icon">
+         <ic-icon [icon]="iconsPlus" inline="true" size="18px"></ic-icon>
+     </div> -->
+      <div>
+        <button
+          mat-fab
+          style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255); width: 50px;height: 50px; font-size: 35px; "
+          class="icon-button-pb-0"
+        >
+          <ic-icon
+            [icon]="icPlus"
+            style="position: relative; top: -8px;"
+          ></ic-icon>
+        </button>
+
+        <h2 class="title mb-1 mt-3">Add New Branch</h2>
+
+        <div class="body-2  text-w">
+          <span class="text-secondary weight-400"
+            >Create branches to add to your customer's profile</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

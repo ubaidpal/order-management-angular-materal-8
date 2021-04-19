@@ -1,0 +1,162 @@
+<mat-dialog-content fxLayout="column" class="-mt-6" style="width: 992px;">
+    <form (ngSubmit)="submit()" [formGroup]="form">
+    <vex-page-layout>
+      <vex-page-layout-content
+        [class.container]="layoutCtrl.value === 'boxed'"
+        [class.px-gutter]="layoutCtrl.value === 'fullwidth'"
+        class="-mx-6 "
+        style="padding: 0;"
+      >
+         
+          <div
+            class="bg-app-bar px-6 h-16 border-b sticky left-0"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            style="background-color: #1A202E; color: #fff;"
+          >
+            <h2 class="title my-0 " fxFlex="50" fxHide.xs>
+              <span>Update Packing </span>
+            </h2>
+            <div fxFlex="50">
+              <button
+                class="text-secondary float-right"
+                mat-dialog-close
+                mat-icon-button
+                type="button"
+              >
+                <mat-icon [icIcon]="icClose" style="color: #fff;"></mat-icon>
+              </button>
+            </div>
+          </div>
+  
+          <div fxLayout="column">
+            <div
+              fxLayout="row"
+              fxLayout.lt-sm="column"
+              fxLayoutGap="15px"
+              fxLayoutGap.lt-sm="0"
+              class="px-6 pt-6 border-b border-dark  "
+            >
+            <mat-form-field
+                appearance="outline"
+                fxFlex="33.33"
+            >
+              <mat-label>Invoice </mat-label>
+                  <input matInput formControlName="invoiceField" />
+              </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="33.33">
+                <input matInput type="datetime-local" placeholder="start date" formControlName="date" >
+              </mat-form-field>
+            </div>
+  
+            <table @stagger [dataSource]="dataSource" class="w-full bg-transparent" mat-table matSort>
+              <ng-container matColumnDef="checkbox">
+                <th *matHeaderCellDef mat-header-cell>
+                  <mat-checkbox (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()" color="primary">
+                  </mat-checkbox>
+                </th>
+                <td *matCellDef="let row" class="w-4 " mat-cell>
+                  <mat-checkbox (change)="$event ? selection.toggle(row) : null" (click)="$event.stopPropagation()"
+                    [checked]="selection.isSelected(row)" color="primary">
+                  </mat-checkbox>
+                </td>
+              </ng-container>
+              
+              <ng-container matColumnDef="name">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ "Item Name" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="">
+                    {{row["name"]}}
+                    <p><small class="text-secondary text-sm">{{ row.code | uppercase }}</small></p>
+                </td>
+              </ng-container>
+             
+              <ng-container matColumnDef="size">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ "size" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="">          
+                    {{row["size"]}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="orderQty">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ "order Qty" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="">          
+                    {{row["orderQty"]}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="packedQty">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ "packed Qty" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="">          
+                    {{row["packedQty"]}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="balance">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ "balance" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="">          
+                    {{row["balance"]}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="progress">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ "Cartons Packed" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="" [ngClass]="{'mat-form-field-disabled': row.balance < 1}">
+                  <mat-form-field appearance="outline" fxFlex="100px" class="field-mtr-5 field-pb-0">
+                    <input matInput type="number" 
+                      (input)="row.quantityReceived = $event.target.value; autoSelect($event.target.value, row)" 
+                      (blur)="checkBalance($event.target.value, row)" 
+                      [readonly]="row.balance < 1" 
+                      [value]="row.quantityReceived"
+                    />
+                  </mat-form-field>
+                </td>
+              </ng-container>
+        
+              <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+              <tr
+                *matRowDef="let row; columns: visibleColumns"
+                @fadeInUp
+                class="hover:bg-hover trans-ease-out cursor-pointer"
+                mat-row
+              ></tr>
+            </table>
+  
+         
+        </div>
+      </vex-page-layout-content>
+    </vex-page-layout>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions class="border-t border-dark -mx-6">
+      <div class="py-3  px-6 w-100">
+            
+          <div class="float-right" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="end">          
+            <button mat-button type="button" class="btn-large border c-dark " mat-dialog-close>
+            Cancel
+            </button>
+            <button
+              color="primary"
+              mat-raised-button
+              mat-button
+              type="submit"
+              class="btn-large"
+              (click)="submit()"
+
+              [disabled]="!form.valid"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+  </mat-dialog-actions>
+  

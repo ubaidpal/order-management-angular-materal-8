@@ -1,0 +1,12 @@
+.ol-dropdown{
+    position: relative;
+    top: 13px;
+    background: #fff;
+}
+
+@media only screen and (max-width: 900px) {
+    .ol-dropdown{
+        position: relative;
+    }
+    
+  }

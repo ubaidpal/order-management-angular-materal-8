@@ -1,0 +1,138 @@
+<vex-secondary-toolbar current="Dashboard">
+  <vex-breadcrumbs [crumbs]="['Dashboards', 'Analytics']" class="flex-auto"></vex-breadcrumbs>
+
+  <button class="ml-2" color="primary" mat-icon-button type="button">
+    <mat-icon [icIcon]="icMoreVert"></mat-icon>
+  </button>
+</vex-secondary-toolbar>
+
+<div class="p-gutter"
+     gdColumns="1fr 1fr 1fr 1fr"
+     gdColumns.lt-md="1fr 1fr"
+     gdColumns.lt-sm="1fr"
+     gdGap="16px"
+     vexContainer>
+
+ 
+  <vex-widget-quick-value-center 
+    class="hide-percentage"
+    [icon]="icLoyalty"
+    [color]="theme.colors.primary"
+    gdColumn.lt-sm="1"
+    label="Total Demand (PCS)"
+    value="67.4k"></vex-widget-quick-value-center>
+  <vex-widget-quick-value-center 
+    class="hide-percentage"
+    [icon]="icDescription"
+    [color]="theme.colors.purple"
+    gdColumn.lt-sm="1"
+    label="Pending Orders"
+    value="96.2k"></vex-widget-quick-value-center>
+  <vex-widget-quick-value-center 
+    class="hide-percentage"
+    [icon]="icMovetoinbox"
+    [color]="theme.colors.orange"
+    gdColumn.lt-sm="1"
+    label="In Progress Orders"
+    value="6.92%"></vex-widget-quick-value-center>
+  <vex-widget-quick-value-center 
+    class="hide-percentage"
+    [icon]="icDirectionsBoat"
+    [color]="theme.colors.teal"
+    gdColumn.lt-sm="1"
+    label="Shipped Orders"
+    value="16m 48s"></vex-widget-quick-value-center>
+    
+  <div
+    gdColumn="1 / 3"
+    gdColumn.lt-md="1 / -1"
+    gdColumn.lt-sm="1"
+    class="dashboard-orders-block"
+  >
+    <open-orders-table
+      [status]="utilsStatus.New"
+      [currentPage]="currentPage"
+      [activeStatus]="utilsStatus.New"
+      [activeTab]="0"
+      tableTitle="New"
+    >
+    </open-orders-table>
+  </div>
+  <div
+    gdColumn="3 / -1"
+    gdColumn.lt-md="1 / -1"
+    gdColumn.lt-sm="1"
+    class="dashboard-orders-block"
+  >
+    <open-orders-table
+      [status]="utilsStatus.InProgress"
+      [currentPage]="currentPage"
+      [activeStatus]="utilsStatus.InProgress"
+      [activeTab]="1"
+      tableTitle="In Progress"
+    >
+    </open-orders-table>
+  </div>
+  <div
+    gdColumn="1 / 3"
+    gdColumn.lt-md="1 / -1"
+    gdColumn.lt-sm="1"
+    class="dashboard-orders-block"
+  >
+    <open-orders-table
+      [status]="utilsStatus.Shipped"
+      [currentPage]="currentPage"
+      [activeStatus]="utilsStatus.Shipped"
+      [activeTab]="2"
+      tableTitle="Shipped"
+    >
+    </open-orders-table>
+  </div>
+  <div
+    gdColumn="3 / -1"
+    gdColumn.lt-md="1 / -1"
+    gdColumn.lt-sm="1"
+    class="dashboard-orders-block"
+  >
+    <open-orders-table
+      [currentPage]="currentPage"
+      tableTitle="Outstanding"
+    >
+    </open-orders-table>
+  </div>
+  
+  <!-- <vex-widget-assistant gdColumn="1 / 3" gdColumn.lt-md="1 / -1" gdColumn.lt-sm="1"></vex-widget-assistant> -->
+<!-- 
+  <vex-widget-quick-line-chart [icon]="icPageView"
+                               [series]="pageViewsSeries"
+                               [color]="theme.colors.primary"
+                               gdColumn.lt-sm="1"
+                               label="Page Views"
+                               value="92.4k"></vex-widget-quick-line-chart>
+
+  <vex-widget-quick-line-chart [icon]="icGroup"
+                               [options]="uniqueUsersOptions"
+                               [series]="uniqueUsersSeries"
+                               [color]="theme.colors.orange"
+                               gdColumn.lt-sm="1"
+                               label="Unique Users"
+                               value="67.2k"></vex-widget-quick-line-chart> -->
+
+  <!-- <vex-widget-large-chart [series]="userSessionsSeries"
+                          gdColumn="1 / 3"
+                          gdColumn.lt-md="1 / -1"
+                          gdColumn.lt-sm="1"></vex-widget-large-chart>
+
+  <vex-widget-table [columns]="tableColumns"
+                    [data]="tableData"
+                    class="w-full overflow-auto shadow" gdColumn="3 / -1"
+                    gdColumn.lt-md="1 / -1"
+                    gdColumn.lt-sm="1"></vex-widget-table> -->
+
+
+  <!-- <vex-widget-large-goal-chart [series]="salesSeries"
+                               gdColumn="1 / -1"
+                               gdColumn.lt-sm="1"
+                               total="4,374"></vex-widget-large-goal-chart> -->
+
+</div>

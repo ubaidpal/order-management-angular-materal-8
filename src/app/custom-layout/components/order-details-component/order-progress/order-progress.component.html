@@ -1,0 +1,148 @@
+<div class="px-6">
+  <!-- <h3 class="border-b border-t border-dark px-6 py-4" style="background-color: #f3f4f6;">
+    {{dashReplace(ordersArray?.proformaInvoiceNo ,ordersArray?.orderNo)}}
+  </h3> -->
+  <div
+    fxLayout="row"
+    fxLayout.lt-sm="column"
+    fxLayoutGap="25px"
+    fxLayoutGap.lt-sm="0"
+    class="p-6"
+  >
+    <div fxFlex="100">
+      <h5 class="mb-1">Order Progress
+
+        <span class="float-right">
+          {{totalPackedPercentage(totalShippedCartons + totalPackedCartons, totalCartonsOfProducts + totalCartonsOfProducts) }} % 
+        </span>
+      </h5>
+      <div class="p-rel">        
+        <mat-progress-bar
+          mode="determinate"
+          [value]="totalPackedPercentage(totalPackedCartons, totalCartonsOfProducts)"
+          style="height: 20px;"
+        ></mat-progress-bar>
+        <div class="shipped-progress-bar">
+            <mat-progress-bar
+            mode="determinate"
+            [value]="totalPackedPercentage(totalShippedCartons, totalCartonsOfProducts)"
+            style="height: 20px;"            
+          ></mat-progress-bar>
+        </div>
+        <div class="">
+          
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="25px" class="mt-3">
+        <div fxLayout="row" fxLayoutGap="10px">
+          <div class="w-3 h-3 bg-primary-500 rounded mt-1 cursor-pointer"></div>
+          <span>Packed {{totalPackedCartons | number:'1.0-2'}} of {{totalCartonsOfProducts | number:'1.0-2'}}</span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px">
+          <div class="w-3 h-3 bg-green-500 rounded mt-1 cursor-pointer"></div>
+          <span>Shipped {{totalShippedCartons | number:'1.0-2'}} of {{totalCartonsOfProducts | number:'1.0-2'}}</span>
+        </div>
+      </div>
+      <!-- <p class="mt-1">
+        {{totalPackedCartons}} of {{totalCartonsOfProducts}} cartons packed
+        <span class="float-right">{{totalPackedPercentage(totalPackedCartons, totalCartonsOfProducts) }} %</span>
+      </p> -->
+    </div>
+  </div>
+  <table class="w-full border-t border-dark" mat-table matSort>
+    <thead>
+      <tr class="border-b border-dark">
+        <th
+          class="pl-6 pr-4 py-4 weight-400 text-secondary font-13 text-left"
+        >
+          ITEM NAME
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          SIZE
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          ORDER QTY
+        </th>
+        <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+          PACKED QTY
+        </th>
+        <th
+          class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+          style="width: 180px;"
+        >
+          SHIPPED QTY
+        </th>
+        <th
+          class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+          style="width: 180px;"
+        >
+          BALANCE
+        </th>
+        <th
+          class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+          style="width: 180px;"
+        >
+          PACKING PROGRESS
+        </th>
+        <th
+          class="px-4 py-4 weight-400 text-secondary font-13 text-left"
+          style="width: 140px;"
+        >
+          STATUS
+        </th>
+      </tr>
+    </thead>
+    <tbody class="field-pb-0 ">
+      <tr class="border-b border-dark" *ngFor="let product of orderProducts; let personIndex = index">
+        <td class=" pl-6 pr-4 py-2">
+          <div class="float-left"> 
+            <div [matTooltip]="(product.piecesPerCarton | number: '1.0-2') + ' pcs/carton'" matTooltipPosition="below">{{getProductById(product.productId, 'name')}}</div>
+            <span class="text-secondary" style="font-size: 11px;">{{getProductById(product.productId, 'code')}}</span>
+          </div>
+        </td>
+        <td class=" px-4 py-2">
+          {{getProductVariant(product.productId, product.productVariationId)}}
+        </td>
+        <td class=" px-4 py-2">
+          {{product.quantity}}
+        </td>
+        <td class=" px-4 py-2">
+          {{product.quantityPacked ? product.quantityPacked : '0'}}
+        </td>
+        <td class=" px-4 py-2">
+          {{product.quantityShipped ? product.quantityShipped : '0'}}
+        </td>
+        <td class=" px-4 py-2">
+          {{product.quantity - (product.quantityPacked ? product.quantityPacked : '0')}}
+        </td>
+        <td class=" px-4 py-2 text-left">
+          <mat-progress-bar
+          mode="determinate"
+          [value]="totalPackedPercentage(product.quantityPacked, product.quantity)"
+          style="height: 7px;  "
+        ></mat-progress-bar>
+        <p class="text-secondary mt-1" style="font-size: 11px;">
+          {{(product.quantityPacked ? product.quantityPacked : 0) | number:'1.0-2'}} of {{(product.quantity ? product.quantity : 0) | number:'1.0-2'}}
+          <span class="float-right"> {{totalPackedPercentage(product.quantityPacked, product.quantity) | number:'1.2-2'}} %</span>
+        </p>
+      </td>
+      <td class=" px-4 py-2 text-right">
+        <vex-status-badge [status]="product.status" *ngIf="product"></vex-status-badge>
+      </td>
+
+        <!-- <td class=" px-4 py-2">
+          <mat-progress-bar
+            mode="determinate"
+            [value]="getProducedPieces(product, 'pieces_percentage')"
+            style="height: 7px; opacity: 0.4;"
+          ></mat-progress-bar>
+          <p class="text-secondary mt-1" style="font-size: 11px;">
+            {{getProducedPieces(product, 'pieces')}} of {{(product.pieces ? product.pieces : 0) | number:'1.0-2'}}
+            <span class="float-right"> {{getProducedPieces(product, 'pieces_percentage')}}%</span>
+          </p>
+        </td> -->
+        
+      </tr>
+    </tbody>
+  </table>
+</div>

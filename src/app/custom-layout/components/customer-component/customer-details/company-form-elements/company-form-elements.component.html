@@ -1,0 +1,157 @@
+
+
+
+<div [@stagger]="true" class="p-gutter" vexContainer>
+  <div class="card" >
+    <form  [formGroup]="formAddCustomer" style="width:100%" (ngSubmit)="save()">
+      <div class="pt-4 pb-4 pr-6 pl-6 border-b border-c-dark" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+        <h2 class="title m-0" fxFlex="50">Company Details</h2>
+        <div fxFlex="50">
+          <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="8px">
+            <!-- <button (click)="backToCustomerPage()" 
+            class="btn-large border"mat-raised-button
+            type="button"
+            >Cancel</button> -->
+            <mat-progress-spinner mode="indeterminate" diameter="35" *ngIf="disableButton"></mat-progress-spinner>
+            <button mat-raised-button
+            [disabled]="disableButton"
+             type="button" 
+            (click)="save()" color="primary">Save Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div fxLayout="row" fxLayout.lt-md="column">
+        <div @fadeInUp fxFlex="60" >
+          <div class="px-6 py-4" fxLayout="row" fxLayoutAlign="start center">
+            <div style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+              class="rounded-full w-12 h-12 flex items-center justify-center mr-3">
+              <ic-icon [icon]="icBusiness" inline="true" size="18px"></ic-icon>
+            </div>
+
+            <h2 class="title m-0"> Business Information</h2>
+          </div>
+
+          <div class="px-6 py-4" fxLayout="column">
+            <mat-form-field appearance="outline">
+              <mat-label>Business Name</mat-label>
+              <input matInput formControlName="name" required>
+            </mat-form-field>            
+
+            <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="16px" fxLayoutGap.lt-sm="0">
+              <mat-form-field appearance="outline" fxFlex="auto">
+                <mat-label>Registration Number</mat-label>
+                <input matInput formControlName="registrationNumber" required>
+              </mat-form-field>
+              <mat-form-field appearance="outline" fxFlex="auto">
+                <mat-label>Country</mat-label>
+                <mat-select formControlName="country" (selectionChange)="getStateByCountryId($event.value)">
+                  <mat-option *ngFor="let c of countries" [value]="c.id"  >{{ c.name}}</mat-option>
+                
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Address Line 1</mat-label>
+              <input formControlName="addressLine1" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Address Line 2</mat-label>
+              <input formControlName="addressLine2"  matInput>
+            </mat-form-field>
+
+            <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="16px" fxLayoutGap.lt-sm="0">
+              <mat-form-field fxFlex="auto" appearance="outline">
+                <mat-label>City</mat-label>
+                <input formControlName="city"  matInput>
+              </mat-form-field>
+              <mat-form-field fxFlex="auto" appearance="outline">
+                <mat-label>State</mat-label>
+                <input formControlName="state"  matInput>
+              </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="16px" fxLayoutGap.lt-sm="0">
+              <mat-form-field fxFlex="auto" appearance="outline">
+                <mat-label>Post Code</mat-label>
+                <input formControlName="postcode" matInput>
+              </mat-form-field>
+              <div fxFlex="auto" fxLayout="row" fxLayoutGap="8px" class="phone-number-block">
+                <mat-form-field  fxFlex="none" class="vex-flex-form-field" appearance="outline" color="primary" class="phone-number">
+                  <mat-label>Phone Number</mat-label>
+                  <mat-select formControlName="phonePrefix">
+                    <mat-option *ngFor="let option of phonePrefixOptions" [value]="option">{{ option }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+  
+                <mat-form-field fxFlex="auto"  appearance="outline" color="primary" class="field-top-5">
+                  <mat-label></mat-label>
+                  <input formControlName="phoneNumber" matInput (input)="phoneNumberValidation($event, 'phoneNumber')">
+                  <mat-hint align="end"></mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div @fadeInUp fxFlex="40">
+          
+          <div class="px-6 py-4 desktop-pl-0" fxLayout="row" fxLayoutAlign="start center">
+            <div style="background-color: rgba(92, 119, 255, 0.098); color: rgb(92, 119, 255);"
+              class="rounded-full w-12 h-12 flex items-center justify-center mr-3">
+              <ic-icon [icon]="iconsUser" inline="true" size="18px"></ic-icon>
+            </div>
+
+            <h2 class="title m-0"> Primary Contact</h2>
+          </div>
+
+          <div class="px-6 py-4 desktop-pl-0" fxLayout="column">
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Representative</mat-label>
+              <input formControlName="representative" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Role</mat-label>
+              <input cdkFocusInitial formControlName="role" matInput>
+              <!-- <mat-select  formControlName="role">
+                <mat-option> </mat-option>
+              
+              </mat-select> -->
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="auto">
+              <mat-label>Email</mat-label>
+              <input formControlName="email" matInput >
+            </mat-form-field>
+
+            <div fxFlex="auto" fxLayout="row" fxLayoutGap="8px" class="phone-number-block">
+              <mat-form-field  fxFlex="none" class="vex-flex-form-field" appearance="outline" color="primary" class="phone-number">
+                <mat-label>Phone Number</mat-label>
+                <mat-select formControlName="phonePrefix2">
+                  <mat-option *ngFor="let option of phonePrefixOptions" [value]="option">{{ option }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field fxFlex="auto"  appearance="outline" color="primary" class="field-top-5">
+                <mat-label></mat-label>
+                <input formControlName="phoneNumber2" matInput (input)="phoneNumberValidation($event, 'phoneNumber2')">
+                <mat-hint align="end"></mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="auto" fxLayout="row" fxLayoutGap="8px" class="mt-5">
+              <mat-radio-group formControlName="hasBranch">
+                <mat-radio-button [value]=false  color="primary" class="example-radio-button mr-4">No Branches</mat-radio-button>
+                <mat-radio-button  [value]=true  color="primary" class="example-radio-button mr-4">Multiple Branches</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>

@@ -1,0 +1,94 @@
+<vex-page-layout-content
+    class="px-0"
+>
+<div style="position: relative; top: 0; right: 0;" class="packing-button">
+    <mat-button-toggle-group multiple [value]="['name']"
+                             #stickyColumns="matButtonToggleGroup"
+                             class="example-sticky-toggle-group">
+      <mat-button-toggle value="name"> Name </mat-button-toggle>
+      <mat-button-toggle value="ordered"> Ordered </mat-button-toggle>
+      <mat-button-toggle value="packed"> Packed </mat-button-toggle>
+      <mat-button-toggle value="balance"> Balance </mat-button-toggle>
+    </mat-button-toggle-group>
+</div>
+  <div class="overflow-auto">
+    
+      
+    <div 
+        fxFlex="100"
+    >
+        <table @stagger [dataSource]="dataSource" class="w-full bg-transparent" mat-table matSort>
+             <ng-container matColumnDef="name" [sticky]="isSticky(stickyColumns, 'name')">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header class="bg-white ">
+                {{ "Item Name" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="bg-white">          
+                    <div class="mt-2 pr-4">
+                        <mat-icon [icIcon]="icCheckCircle" size="16px" class=" mr-2 mt-1 float-left" 
+                            [ngClass]="(row['balance'] == 0)?'text-green-500':'text-gray-500'"
+                        ></mat-icon>
+                        <div
+                            fxLayout="row"
+                            fxLayoutGap="0px"
+                            fxLayoutAlign="start center"
+                        >
+                            <span class="itemName" matTooltipPosition="above" [matTooltip]="row.name">{{row.name}}</span> 
+                            <span class="sizeName" *ngIf="row.size"> - {{row.size}}</span>
+                        </div>
+                    </div>
+                </td>
+                <td mat-footer-cell *matFooterCellDef> <b>Grand Total</b> </td>
+            </ng-container>
+            <ng-container matColumnDef="ordered" [sticky]="isSticky(stickyColumns, 'ordered')">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header class="bg-white">
+                {{ "ordered" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="bg-white">          
+                    {{row["ordered"] | number:'1.0-2'}}
+                </td>
+                <td mat-footer-cell *matFooterCellDef class="pl-3"> <b>{{totalQuantity | number:'1.0-2'}}</b> </td>
+            </ng-container>
+            <ng-container matColumnDef="packed" [sticky]="isSticky(stickyColumns, 'packed')">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header class="bg-white">
+                {{ "packed" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="bg-white">          
+                    {{row["packed"] | number:'1.0-2'}}
+                </td>
+                <td mat-footer-cell *matFooterCellDef class="pl-3"> <b>{{totalPacked | number:'1.0-2'}}</b> </td>
+            </ng-container>
+            <ng-container matColumnDef="balance" [sticky]="isSticky(stickyColumns, 'balance')">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header class="border-r border-dark bg-white">
+                {{ "balance" | uppercase }}
+                </th>
+                <td *matCellDef="let row" mat-cell class="border-r border-dark bg-white">
+                    {{row["balance"] | number:'1.0-2'}}
+                </td>
+                <td mat-footer-cell *matFooterCellDef class="pl-3"> <b>{{totalBalance | number:'1.0-2'}}</b> </td>
+            </ng-container>  
+
+
+            <ng-container *ngFor="let column of columns; trackBy: trackByProperty">
+                <ng-container *ngIf="column.type === 'date'" [matColumnDef]="column.property">
+                    <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+                        <span style="width: 50px; white-space: break-spaces;" class="text-left">{{ column.label }}</span>
+                    </th>
+                    <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+                        {{ row[column.property] ? row[column.property] : 0 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="pl-3"> <b> {{getTotalCount(column) | number:'1.0-2'}} </b> </td>
+                </ng-container>
+            </ng-container>
+
+            <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+            <tr
+                *matRowDef="let row; columns: visibleColumns"
+                @fadeInUp
+                class="hover:bg-hover trans-ease-out cursor-pointer"
+                mat-row
+            ></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedFooterColumns" class="bg-light-gray"></tr>
+        </table>
+    </div>  
+  </div>
+</vex-page-layout-content>

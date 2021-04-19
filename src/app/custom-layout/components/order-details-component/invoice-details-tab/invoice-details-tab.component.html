@@ -1,0 +1,292 @@
+<div>
+  <section class="accordion-body-p-0 mt-0" *ngFor="let data of rowArray; let pointIndex = index"
+    >
+    <div class="  border-b   setToggleIconLeft py-3">
+      <mat-panel-title fxLayoutAlign="start center" class="pl-10">
+        <h3 class="m-0 border-r border-dark lh-1 pr-3"> {{data?.invoiceNo}}</h3>
+        <span *ngIf="data?.shipmentDates && data?.shipmentDates.length > 0">
+          <span *ngFor="let n of data.shipmentDates;let last = last;">
+            <span class="text-secondary font-12 ml-3" *ngIf="last">Shipment Date: {{dateFormate(n?.newShipmentDate)}} </span>
+          </span>
+        </span>
+        <span class="text-secondary font-12 ml-3" *ngIf="data?.shipmentDates && data?.shipmentDates.length == 0">{{dateFormate(data?.shipmentDate)}}</span>
+        <vex-status-badge [status]="data?.status" *ngIf="data" class="m-2"></vex-status-badge>
+      </mat-panel-title>
+      <!-- <mat-panel-description fxLayoutAlign="end center">
+        <button (click)="$event.stopPropagation()" [matMenuTriggerData]="{ customer: data }"
+          [matMenuTriggerFor]="actionsMenu" mat-icon-button type="button">
+          <ic-icon [icon]="icMoreHoriz" size="28px" class="text-secondary"></ic-icon>
+        </button>
+      </mat-panel-description> -->
+    </div>
+
+    <table class="w-100 mt-6">
+      <tr>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right" style="width: 160px;">
+          PI Number
+        </td>
+        <td class="px-4 py-2">{{data?.invoiceNo}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Ship To
+        </td>
+        <td class="px-4 py-2">{{data.shippingLocation && data.shippingLocation.name ? data.shippingLocation.name : ''}}, {{getCountry(ordersArray?.countryId)}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          PI Date
+        </td>
+        <td class="px-4 py-2" style="width: 160px;">{{dateFormate(ordersArray?.proformaInvoiceDate)}}</td>
+      </tr>
+      <tr>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Customer
+        </td>
+        <td class="px-4 py-2">{{getCustomer(data?.customerId) | titlecase}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          From Port
+        </td>
+        <td class="px-4 py-2">{{ordersArray?.fromPort}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Shipment Date
+        </td>
+        <td class="px-4 py-2">
+          <div  *ngIf="data?.shipmentDates && data?.shipmentDates.length > 0;else defultShipmentDate" >
+            <div *ngFor="let n of data.shipmentDates;let last = last;">
+
+              <div *ngIf="last">
+                <a href="javascript:" (click)="openShipmentDateHistoryDailogComponent(data?.shipmentDates, data?.shipmentDate)">
+
+                  <span style="color: #5c77ff;">{{dateFormate(n?.newShipmentDate)}}</span>
+                </a>
+                
+                <mat-icon [icIcon]="icEditPen" class="text-secondary ml-2 pointer" size="12px" 
+                  style="padding-top: 5px; vertical-align: middle;"
+                  (click)="openUpdateShipmentDateDailogComponent(data?.id, n?.newShipmentDate)"></mat-icon>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #defultShipmentDate>
+
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+              <div>
+
+                <a href="javascript:" (click)="openShipmentDateHistoryDailogComponent(data?.id, data?.shipmentDate)">
+
+                  <span>{{dateFormate(data?.shipmentDate)}}</span>
+                </a>
+
+                <mat-icon [icIcon]="icEditPen" class="text-secondary ml-2 pointer" size="12px" style="padding-top: 5px;vertical-align: middle;"
+                  (click)="openUpdateShipmentDateDailogComponent(data?.id, data?.shipmentDate)"></mat-icon>
+              </div>
+            </div>
+
+          </ng-template>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Branch
+        </td>
+        <td class="px-4 py-2">{{getBranches(ordersArray?.customerBranchId) | titlecase}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Ship By
+        </td>
+        <td class="px-4 py-2">{{data?.shipBy}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Actual Shipment
+        </td>
+        <td class="px-4 py-2">{{dateFormate(data?.actualShipmentDate) }}</td>
+      </tr>
+      <tr>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Currency
+        </td>
+        <td class="px-4 py-2">{{getCurrency(ordersArray?.currencyId)}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Transhipment
+        </td>
+        <td class="px-4 py-2">{{data?.isTranshipmentAllowed ? 'Allowed' : 'Not Allowed'}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Vessel ID
+        </td>
+        <td class="px-4 py-2">{{data?.vesselId}}</td>
+      </tr>
+      <tr>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Contact Person
+        </td>
+        <td class="px-4 py-2">{{data && data.customerContact ? data.customerContact.name : ''}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Origin of Goods
+        </td>
+        <td class="px-4 py-2">{{getCountry(data?.originOfGoods)}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          PO Number
+        </td>
+        <td class="px-4 py-2">{{ordersArray?.orderNo}}</td>
+      </tr>
+      <tr>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Contact Details
+        </td>
+        <td class="px-4 py-2">{{data && data.customerContact ? data.customerContact.phone : '' }}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          Type
+        </td>
+        <td class="px-4 py-2">{{data?.shippingType}}</td>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right">
+          PO Date
+        </td>
+        <td class="px-4 py-2">{{dateFormate(ordersArray?.orderDate)}}</td>
+      </tr>
+      <tr>
+        <td class="text-secondary border-r border-dark px-4 py-2 text-right" colspan="5">
+          Delivery Terms
+        </td>
+        <td class="px-4 py-2">{{data?.deliveryTerms}}</td>
+      </tr>
+    </table>
+
+    <table class="w-full border-t border-dark  mt-5" mat-table matSort>
+      <thead>
+        <tr class="border-b border-dark">
+          <th class="pl-6 pr-4 py-4 weight-400 text-secondary font-13 text-left">
+            ITEM NAME
+          </th>
+          <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+            SIZE
+          </th>
+          <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+            CARTONS
+          </th>
+          <th class="px-4 py-4 weight-400 text-secondary font-13 text-left">
+            PIECES
+          </th>
+          <th class="px-4 py-4 weight-400 text-secondary font-13 text-left" style="width: 180px;">
+            PRICE/CARTON
+          </th>
+          <th class="px-4 py-4 weight-400 text-secondary font-13 text-left" style="width: 180px;">
+            AMOUNT
+          </th>
+          <th class="px-4 py-4 weight-400 text-secondary font-13 text-left" style="width: 200px;">
+            PACKING PROGRESS
+          </th>
+          <th class="px-4 py-4 weight-400 text-secondary font-13 text-left" style="width: 140px;">
+            STATUS
+          </th>
+        </tr>
+      </thead>
+      <tbody class="field-pb-0 " *ngIf="data.invoiceProducts">
+        <tr class="border-b border-dark" *ngFor="let product of data.invoiceProducts; let personIndex = index">
+          <td class=" pl-6 pr-4 py-2">
+            <div>{{getProductById(product?.productId ,'name')}}</div>
+            <span class="text-secondary" style="font-size: 11px;">{{getProductById(product?.productId, 'code')}}</span>
+          </td>
+          <td class=" px-4 py-2">
+            {{getProductVariant(product?.productId, product?.productVariationId)}}
+          </td>
+          <td class=" px-4 py-2 ">
+            {{product?.quantity | number:'1.0-2'}}
+          </td>
+          <td class=" px-4 py-2">
+            {{product?.pieces | number:'1.0-2'}}
+          </td>
+          <td class=" px-4 py-2">
+            {{product?.unitPrice | number:'1.2-2'}}
+          </td>
+          <td class=" px-4 py-2">
+            {{product?.totalAmount | number:'1.2-2'}}
+          </td>
+          <td class=" px-4 py-2 ">
+            <mat-progress-bar mode="determinate" [value]="packedCalculation(product)" style="height: 7px;  ">
+            </mat-progress-bar>
+            <p class="text-secondary mt-1" style="font-size: 11px;">
+              {{product?.quantityPacked}} of {{product?.quantity}}
+              <span class="float-right">{{packedCalculation(product)}} %</span>
+            </p>
+          </td>
+          <td class=" px-4 py-2 text-right">
+            <vex-status-badge [status]="product?.status" *ngIf="product"></vex-status-badge>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="25px" fxLayoutGap.lt-sm="10" class="mt-5 px-6 mb-6">
+      <div fxFlex="60" fxLayout="column">
+
+        <mat-form-field appearance="outline" fxFlex="auto">
+          <mat-label>Payment Terms</mat-label>
+            <input cdkFocusInitial value="{{data?.paymentTerms}}" matInput readonly />
+          </mat-form-field>
+        
+          <mat-form-field appearance="outline"
+          fxFlex="auto"
+          class="field-pb-0">
+          <mat-label>Special Clause</mat-label>
+            <textarea matInput value="{{data?.specialClause}}" style="min-height: 106px;" readonly></textarea>
+          </mat-form-field>
+
+      </div>
+      <div fxFlex="40">
+        <div class="w-100 p-5" style="background-color: #f8f9fa;">
+          <table class="font-medium w-100">
+            <tbody>
+              <tr>
+                <td class="pb-4 text-secondary text-left">
+                  Total Cartons
+                </td>
+                <td class="pb-4 pl-12 text-right">
+                  {{data?.totalCartons | number:'1.0-2'}}
+                </td>
+              </tr>
+              <tr>
+                <td class="pb-4 text-secondary text-left">
+                  Total Pieces
+                </td>
+                <td class="pb-4 pl-12 text-right">{{data?.totalPieces | number:'1.0-2'}}</td>
+              </tr>
+              <tr>
+                <td class="pb-4 text-secondary text-left">
+                  Total Volume
+                </td>
+                <td class="pb-4 pl-12 text-right">{{data?.totalVolume | number:'1.2-2'}}‬ m3</td>
+              </tr>
+              <tr>
+                <td class="pb-4 text-secondary text-left">
+                  Gross Weight
+                </td>
+                <td class="pb-4 pl-12 text-right">{{data?.totalWeight | number:'1.2-2'}} Kgs</td>
+              </tr>
+
+              <tr>
+                <td class=" headline text-left " style="font-size: 19px;">
+                  Grand Total
+                </td>
+                <td class=" headline pl-12  text-right"
+                style="font-size: 19px;">
+                  {{getCurrency(data?.currencyId)}} {{grandTotal(data) | number:'1.2-2'}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
+  <ng-template let-customer="customer" matMenuContent>
+    <button mat-menu-item (click)="updateInvoice(customer)">
+      <span>Edit Details</span>
+    </button>
+    <button mat-menu-item (click)="openCompleteInvoice(customer)">
+      <span>Complete Invoice</span>
+    </button>
+    <button (click)="deleteInovice(customer)" mat-menu-item>
+      <span>Delete</span>
+    </button>
+  </ng-template>
+</mat-menu>

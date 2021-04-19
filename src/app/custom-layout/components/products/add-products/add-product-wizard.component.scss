@@ -1,0 +1,55 @@
+.margin-top-head{
+    margin-top: 20px!important;
+}
+.btn-dflex{
+    display: flex;
+    align-items: center;
+    padding-bottom: 27px;
+    button{
+        height: 100%;
+    }
+}
+.r-dash{
+    &:before{
+        content: "";
+        position: absolute;
+        right: -6px;
+        top: -15px;
+        bottom: 0;
+        margin: auto;
+        width: 4px;
+        height: 1px;
+        background-color: #7C8D9F;
+    }
+}
+.btn-large{
+    min-width: 110px;
+    border-radius: 3px;
+    &.border{
+        border: 1px solid #CACFD7;
+    }
+    &.c-dark{
+        color: #333;
+    }
+}
+.table-block{
+    tr{
+        border-top: 1px solid #0000001f;
+    }
+    th{
+        text-align: left;
+        font-size: 13px;
+        font-weight: 400;
+        color: #0000008a;
+        padding: 20px 0;
+    }
+    td{
+        text-align: left;
+        padding: 15px 0;
+    }
+}
+.field-spinner{
+    position: absolute;
+    right: 35px;
+    top: 3px;
+}

@@ -1,0 +1,461 @@
+<div
+  fxLayout="row"
+  fxLayoutAlign="start center"
+  mat-dialog-title
+  class="-mx-6 dailog-title pl-6 pr-6 pt-4 pb-4 mb-2"
+>
+  <img
+    *ngIf="contact?.imageSrc"
+    [src]="contact?.imageSrc"
+    class="avatar ltr:mr-5 rtl:ml-5"
+  />
+  <h2 class="headline m-0" fxFlex="auto" *ngIf="this.contact && this.contact.name">{{ this.contact.name}}</h2>
+  <h2 class="headline m-0" fxFlex="auto" *ngIf="this.contact && !this.contact.name">Create Branch</h2>
+  
+
+  <!-- <button (click)="toggleStar()" class="text-secondary" mat-icon-button type="button">
+    <mat-icon *ngIf="contact?.starred" [icIcon]="icStar" class="text-amber-500"></mat-icon>
+    <mat-icon *ngIf="!contact?.starred" [icIcon]="icStarBorder"></mat-icon>
+  </button> -->
+
+  <button
+    class="text-secondary"
+    mat-dialog-close
+    mat-icon-button
+    type="button"
+    style="color: #fff;"
+  >
+    <mat-icon [icIcon]="icClose"></mat-icon>
+  </button>
+</div>
+<form>
+  <mat-tab-group class="vex-tabs -mx-6 primary-contact-tab-height">
+    <mat-tab label="Branch Details">
+      <div class="p-6">
+        <mat-dialog-content fxLayout="column">
+          <div
+            fxLayout="column"
+            fxLayout.gt-xs="row"
+            fxLayoutGap="8px"
+            fxLayoutGap.gt-xs="24px"
+          >
+            <mat-form-field
+              class="flex-auto"
+              appearance="outline"
+              color="primary"
+            >
+              <mat-label>Branch Name</mat-label>
+              <input
+                cdkFocusInitial
+                [ngModel]="contact?.name"
+                (ngModelChange)="contact.name = $event"
+                name="name"
+                matInput
+              />
+              <div *ngIf="validError" class="invalid-feedback">
+                <div style="color: #f55c51;">Branch name is required</div>
+              </div>
+            </mat-form-field>
+
+            <mat-form-field
+              class="flex-auto"
+              appearance="outline"
+              color="primary"
+            >
+              <mat-label>Country</mat-label>
+              <mat-select
+                cdkFocusInitial
+                [ngModel]="contact?.country"
+                (ngModelChange)="contact.country = $event"
+                name="country"
+                (selectionChange)="onCountrySelect($event.value)"
+              >
+                <mat-option
+                  *ngFor="let country of countries"
+                  [value]="country.id"
+                  >{{ country.name }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxLayout="column"
+            fxLayout.gt-xs="row"
+            fxLayoutGap="8px"
+            fxLayoutGap.gt-xs="24px"
+          >
+            <mat-form-field
+              class="flex-auto"
+              appearance="outline"
+              color="primary"
+            >
+              <mat-label>Address Line 1</mat-label>
+              <input
+                cdkFocusInitial
+                [ngModel]="contact?.addressLine1"
+                (ngModelChange)="contact.addressLine1 = $event"
+                name="addressLine1"
+                matInput
+              />
+            </mat-form-field>
+
+            <mat-form-field
+              class="flex-auto"
+              appearance="outline"
+              color="primary"
+            >
+              <mat-label>Address Line 2</mat-label>
+              <input
+                cdkFocusInitial
+                [ngModel]="contact?.addressLine2"
+                (ngModelChange)="contact.addressLine2 = $event"
+                name="addressLine2"
+                matInput
+              />
+            </mat-form-field>
+          </div>
+
+          <div
+            fxLayout="column"
+            fxLayout.gt-xs="row"
+            fxLayoutGap="8px"
+            fxLayoutGap.gt-xs="24px"
+          >
+            <mat-form-field
+              class="flex-auto"
+              appearance="outline"
+              color="primary"
+            >
+              <mat-label>City</mat-label>
+              <input
+                cdkFocusInitial
+                [ngModel]="contact?.city"
+                (ngModelChange)="contact.city = $event"
+                name="city"
+                matInput
+              />
+            </mat-form-field>
+
+            <mat-form-field
+              class="flex-auto"
+              appearance="outline"
+              color="primary"
+            >
+              <mat-label>State</mat-label>
+              <input
+                cdkFocusInitial
+                [ngModel]="contact?.state"
+                (ngModelChange)="contact.state = $event"
+                name="state"
+                matInput
+              />
+            </mat-form-field>
+          </div>
+
+          <div
+            fxLayout="column"
+            fxLayout.gt-xs="row"
+            fxLayoutGap="8px"
+            fxLayoutGap.gt-xs="24px"
+          >
+            <mat-form-field
+              class="flex-auto"
+              appearance="outline"
+              color="primary"
+            >
+              <mat-label>Post Code</mat-label>
+              <input
+                cdkFocusInitial
+                matInput
+                [ngModel]="contact?.postCode"
+                (ngModelChange)="contact.postCode = $event"
+                name="postCode"
+                matInput
+              />
+            </mat-form-field>
+
+            <div
+              fxFlex="auto"
+              fxLayout="row"
+              fxLayoutGap="8px"
+              class="phone-number-block"
+            >
+              <mat-form-field
+                fxFlex="none"
+                class="vex-flex-form-field"
+                appearance="outline"
+                color="primary"
+                class="phone-number"
+              >
+                <mat-label>Phone Number</mat-label>
+                <mat-select
+                  [ngModel]="contact?.phonePrefix"
+                  (ngModelChange)="contact.phonePrefix = $event"
+                  name="phonePrefix"
+                >
+                  <mat-option
+                    *ngFor="let option of phonePrefixOptions"
+                    [value]="option"
+                    >{{ option }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field
+                fxFlex="auto"
+                appearance="outline"
+                color="primary"
+                class="field-top-5"
+              >
+                <mat-label></mat-label>
+                <input
+                  [ngModel]="contact?.phone"
+                  (ngModelChange)="contact.phone = $event"
+                  name="phone"
+                  matInput
+                  (input)="phoneNumberValidation($event, 'phone')"
+                />
+                <mat-hint align="end"></mat-hint>
+              </mat-form-field>
+            </div>
+
+            <!-- <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px">
+              <mat-form-field
+                appearance="outline"
+                class="none"
+                color="primary"
+                class="vex-flex-form-field r-dash"
+                fxFlex="none"
+              >
+                <mat-label>Phone Number</mat-label>
+                <input
+                  cdkFocusInitial
+                  [ngModel]="contact?.phone"
+                  (ngModelChange)="contact.phone = $event"
+                  name="phone"
+                  matInput
+                />
+              </mat-form-field>
+
+              <mat-form-field
+                class="flex-auto"
+                appearance="outline"
+                color="primary"
+              >
+                <mat-label></mat-label>
+                <input
+                  cdkFocusInitial
+                  [ngModel]="contact?.phone"
+                  (ngModelChange)="contact.phone = $event"
+                  name="phone"
+                  matInput
+                />
+              </mat-form-field>
+            </div> -->
+          </div>
+        </mat-dialog-content>
+      </div>
+    </mat-tab>
+    <mat-tab label="Primary Contact">
+      <div>
+        <table @stagger class="w-full" mat-table matSort>
+          <thead>
+            <tr>
+              <th
+                class="w-1/2 pl-4 pr-2 py-4 border-b weight-400"
+                align="start"
+                style="color:#7C8D9F; width: 25%;"
+              >
+                NAME
+              </th>
+              <th
+                class="w-1/4 px-2 py-4 border-b weight-400"
+                align="start"
+                style="color: #7C8D9F; width: 25%;"
+              >
+                EMAIL
+              </th>
+              <th
+                class="w-1/4 px-2 py-4 border-b weight-400"
+                align="start"
+                style="color: #7C8D9F; width: 25%;"
+              >
+                PHONE
+              </th>
+              <th
+                class="w-1/4 px-2 py-4 border-b weight-400"
+                align="start"
+                style="color: #7C8D9F; width: 15%;"
+              >
+                ROLE
+              </th>
+
+              <th
+                class="w-1/4 px-2 py-2 border-b weight-400"
+                style="color: #7C8D9F; width: 5%;"
+              >
+                PRIMARY
+              </th>
+              <th
+                class="w-1/4 px-2 py-2 border-b weight-400"
+                style="width: 5%;"
+              ></th>
+            </tr>
+          </thead>
+          <tbody *ngIf="contact && contact.addresses">
+            <tr *ngFor="let address of contact.addresses; let i = index">
+              <td class="pl-4 pr-2 py-2 border-b">
+                <mat-form-field
+                  class="w-100 field-pb-0"
+                  appearance="outline"
+                  color="primary"
+                >
+                  <input
+                    [(ngModel)]="addresses[i].name"
+                    name="name[]_{{ i }}"
+                    matInput
+                  />
+                </mat-form-field>
+              </td>
+              <td class="px-2 py-2 border-b">
+                <mat-form-field
+                  class="w-100 field-pb-0"
+                  appearance="outline"
+                  color="primary"
+                >
+                  <input
+                    type="text"
+                    [(ngModel)]="addresses[i].email"
+                    name="email[]_{{ i }}"
+                    matInput
+                  />
+                </mat-form-field>
+              </td>
+              <td class="px-2 py-2 border-b">
+                <div
+                  fxFlex="auto"
+                  fxLayout="row"
+                  fxLayoutGap="8px"
+                  class="phone-number-block"
+                >
+                  <mat-form-field
+                    fxFlex="none"
+                    class="vex-flex-form-field field-pb-0"
+                    appearance="outline"
+                    color="primary"
+                    class="phone-number"
+                  >
+                    <mat-label>Phone Number</mat-label>
+                    <mat-select
+                      [(ngModel)]="addresses[i].phonePrefix2"
+                      (ngModelChange)="addresses[i].phonePrefix2 = $event" 
+                      name="phonePrefix2[]_{{ i }}"
+                    >
+                      <mat-option
+                        *ngFor="let phoneCode of phonePrefixOptions"
+                        [value]="phoneCode"
+                        >{{ phoneCode }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field
+                    fxFlex="auto"
+                    appearance="outline"
+                    color="primary"
+                    class="field-top-5 field-pb-0"
+                  >
+                    <mat-label></mat-label>
+                    <input
+                      [(ngModel)]="addresses[i].phone"
+                      name="phone[]_{{ i }}"
+                      matInput
+                      (input)="multiPhoneNumberValidation($event, i)"
+                    />
+                    <mat-hint align="end"></mat-hint>
+                  </mat-form-field>
+                </div>
+
+                <!-- <mat-form-field
+                  class="none"
+                  appearance="outline"
+                  color="primary"
+                >
+                  <input
+                    [(ngModel)]="addresses[i].phone"
+                    name="phone[]_{{ i }}"
+                    matInput
+                  />
+                </mat-form-field> -->
+              </td>
+              <td class="px-2 py-2 border-b">
+                <mat-form-field
+                  class="w-100 field-pb-0"
+                  appearance="outline"
+                  color="primary"
+                >
+                <input
+                      [(ngModel)]="addresses[i].role"
+                      name="role[]_{{ i }}"
+                      matInput
+                    />
+                 
+                </mat-form-field>
+              </td>
+              <td class="px-2 py-2 border-b">
+                <mat-slide-toggle
+                  [(ngModel)]="addresses[i].isPrimary"
+                  name="isPrimary[]_{{ i }}"
+                  (change)="checkValue(i)"
+                  color="primary"
+                  labelPosition="before"
+                  class="push-up"
+                ></mat-slide-toggle>
+              </td>
+              <td class="px-2 py-2 border-b">
+                <button
+                  color="primary"
+                  (click)="removeAddress(i)"
+                  mat-button
+                  type="button"
+                  class="push-up"
+                >
+                  <mat-icon
+                    [icIcon]="icDelete"
+                    class="ltr:mr-3 rtl:ml-3"
+                    matPrefix
+                    style="color: #B8BFCA;"
+                  ></mat-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <mat-dialog-actions>
+          <button
+            color="primary"
+            (click)="addMoreField()"
+            mat-button
+            type="button"
+            class="ml-3"
+          >
+            <mat-icon [icIcon]="icAdd"></mat-icon>
+            Add More Field
+          </button>
+        </mat-dialog-actions>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <mat-dialog-actions align="end" class="border-t -mx-6 pl-6 pr-6 pt-3 pb-3">
+    <!-- <button mat-button mat-dialog-close type="button">Back</button>
+        <button color="primary" mat-button type="submit">Save</button> -->
+
+    <button mat-button mat-dialog-close type="button" class="btn-large border c-dark">Cancel</button>
+    <button color="primary" (click)="save()" mat-raised-button type="submit" class="btn-large">
+      Confirm
+    </button>
+  </mat-dialog-actions>
+</form>

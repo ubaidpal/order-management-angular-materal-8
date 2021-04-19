@@ -1,0 +1,187 @@
+<form (ngSubmit)="save()" [formGroup]="form" style="width:900px">
+  <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="-mx-6 dailog-title pl-6 pr-6 pt-4 pb-4 mb-2">
+    <h2 *ngIf="form.get('name').value || form.get('name').value" class="headline m-0" fxFlex="auto">
+      {{ form.get("name").value}}
+    </h2>
+    <h2 *ngIf="!form.get('name').value && !form.get('name').value" class="headline m-0" fxFlex="auto">
+      Create Shipping Location
+    </h2>
+
+    <!-- <button [matMenuTriggerFor]="settingsMenu" class="text-secondary" mat-icon-button type="button">
+      <mat-icon [icIcon]="icMoreVert"></mat-icon>
+    </button> -->
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon [icIcon]="icClose" style="color: #fff;"></mat-icon>
+    </button>
+  </div>
+
+  <mat-tab-group class="vex-tabs -mx-6">
+    <mat-tab label="Shipping Details ">
+      <div class="px-6">
+        <mat-dialog-content fxLayout="column">
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" class="mt-6">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Ship To</mat-label>
+              <input formControlName="name" matInput />
+              <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                <div style="color: #f55c51;" *ngIf="f.name.errors.required">Ship To is required</div>
+              </div>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Country</mat-label>
+              <mat-select formControlName="countryId">
+                <mat-option *ngFor="let country of countries"
+                  [value]="country.id">{{ country.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Address Line 1</mat-label>
+              <input formControlName="addressLine1" matInput />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Address Line 2</mat-label>
+              <input formControlName="addressLine2" matInput />
+
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>City</mat-label>
+              <input formControlName="city" matInput />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>State</mat-label>
+              <input formControlName="state" matInput />
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Postcode</mat-label>
+              <input formControlName="postCode" matInput (input)="phoneNumberValidation($event, 'postCode')" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Load Plan</mat-label>
+              <mat-select formControlName="loadingStyleId">
+                <mat-option *ngFor="let p of loadPlan"
+                  [value]="p.id">{{ p.name}}</mat-option>
+              </mat-select>
+
+              
+            </mat-form-field>
+          </div>
+        </mat-dialog-content>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Invoice Settings" class="px-6">
+      <div class="px-6">
+        <mat-dialog-content fxLayout="column">
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px" class="mt-6">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Currency</mat-label>
+              <mat-select formControlName="currencyId">
+                <mat-option *ngFor="let c of currencyList"
+                [value]="c.id">{{ c.name}}</mat-option> 
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Ship To</mat-label>
+              <input formControlName="ship2" matInput />
+             
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Contact Person</mat-label>
+              <mat-select formControlName="contactPersonId">
+                <mat-option *ngFor="let contact of contactList"
+                  [value]="contact.id">{{ contact.name}}</mat-option> 
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Ship By</mat-label>
+              <mat-select formControlName="shipBy">
+                <mat-option *ngFor="let s of shippingMethod;let i = index"
+                  [value]="s">{{ s}}</mat-option> 
+              </mat-select>
+           
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Transhipment</mat-label>
+              <mat-select formControlName="isTranshipmentAllowed">
+                <mat-option [value]=true>Allowed</mat-option>
+                <mat-option [value]=false>Not Allowed</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Origin of Goods</mat-label>
+              <mat-select formControlName="countryOfOriginId">
+                <mat-option *ngFor="let c of countries"
+                  [value]="c.id">{{ c.name}}</mat-option>
+              </mat-select>
+         
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="shippingType">
+                <mat-option *ngFor="let t of shippingType;let i = index" [value]="t">{{ t }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Delivery Terms</mat-label>
+              <input formControlName="deliveryTerms" matInput />
+              
+            </mat-form-field>
+          </div>
+        </mat-dialog-content>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <mat-dialog-actions align="end" class="border-t -mx-6 pl-6 pr-6 pt-3 pb-3">
+    <button mat-raised-button mat-dialog-close type="button" class="btn-large border c-dark">
+      CANCEL
+    </button>
+    <button *ngIf="isCreateMode()" color="primary" mat-raised-button type="submit" class="btn-large">
+      Confirm
+    </button>
+    <button *ngIf="isUpdateMode()" color="primary" mat-raised-button type="submit" class="btn-large">
+      Confirm
+    </button>
+  </mat-dialog-actions>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icPrint"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDownload"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon [icIcon]="icDelete"></mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>
